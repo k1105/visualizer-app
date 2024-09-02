@@ -39,7 +39,7 @@ type Props = {
 export const updatePeople = ({ relation, people, bboxes, personId }: Props) => {
   const activePersonIds = new Set(relation.flat().map((entry) => entry.id));
 
-  // people = people.filter((person) => activePersonIds.has(person.id));
+  people = people.filter((person) => activePersonIds.has(person.id));
 
   for (let i = 0; i < relation.length; i++) {
     if (relation[i].length === 0) {
@@ -51,6 +51,7 @@ export const updatePeople = ({ relation, people, bboxes, personId }: Props) => {
       const person = people.find((p) => p.id === relation[i][0].id);
       if (person) {
         person.bbox = bboxes[i];
+        person.speed = Math.sqrt(relation[i][0].dist);
       } else {
         console.error("更新対象のpersonが存在していません");
       }

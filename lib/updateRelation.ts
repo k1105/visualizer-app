@@ -107,9 +107,11 @@ const resolveConflicts = (
 };
 
 export const updateRelation = ({ people, bboxes, threshold }: Props) => {
-  const relation: { id: number; dist: number }[][] = new Array(
-    bboxes.length
-  ).fill([]);
+  const relation: { id: number; dist: number }[][] = [];
+
+  for (let i = 0; i < bboxes.length; i++) {
+    relation.push([]);
+  }
 
   for (const person of people) {
     const center: { x: number; y: number } = person.center();
@@ -131,9 +133,12 @@ export const updateRelation = ({ people, bboxes, threshold }: Props) => {
     }
 
     if (boxId >= 0) {
+      // console.log("id: " + person.id + ", dist: " + minDist);
       relation[boxId].push({ id: person.id, dist: minDist });
     }
   }
+
+  // console.log(relation);
 
   return resolveConflicts(relation, people, bboxes, threshold);
 };
