@@ -1,13 +1,13 @@
 import { P5CanvasInstance } from "@p5-wrapper/react";
-import { Person } from "@/types/PersonClass";
+import { DisplayedPerson } from "@/types/DisplayedPersonClass";
 
 export const visualizeDebugInformation = (
-  person: Person,
+  person: DisplayedPerson,
   threshold: number,
   p5: P5CanvasInstance
 ) => {
-  const box = person.bbox.bbox;
-  const bboxCenter = person.bbox.center();
+  const box = person.smoothedBbox().bbox;
+  const bboxCenter = person.smoothedBbox().center();
 
   p5.push();
   p5.textAlign(p5.LEFT);
@@ -23,7 +23,7 @@ export const visualizeDebugInformation = (
   p5.push();
   p5.noFill();
   p5.stroke(0, 255, 0);
-  p5.circle(bboxCenter.x / 2, bboxCenter.y / 2, threshold * 2);
+  p5.circle(bboxCenter.x, bboxCenter.y, threshold * 2);
   p5.stroke(255, 0, 0);
   p5.rect(box[0], box[1], box[2] - box[0], box[3] - box[1]);
   p5.pop();

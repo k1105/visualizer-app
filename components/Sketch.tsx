@@ -7,42 +7,7 @@ import { visualizeDebugInformation } from "@/lib/visualizeDebugInformation";
 import { Monitor } from "./Monitor";
 import { Person } from "@/types/PersonClass";
 import { Bbox } from "@/types/BboxClass";
-
-class DisplayedPerson extends Person {
-  characterId: number;
-  lastUpdated: number;
-  movingStatus: "walking" | "paused";
-  pausedFrameCount: number;
-
-  constructor(
-    id: number,
-    speed: { x: number; y: number },
-    bbox: Bbox,
-    lastUpdated: number
-  ) {
-    super(id, speed, bbox);
-    this.characterId = 0;
-    this.lastUpdated = lastUpdated;
-    this.movingStatus = "paused";
-    this.pausedFrameCount = 0;
-  }
-
-  update(person: Person) {
-    this.bbox = person.bbox;
-    this.speed = person.speed;
-  }
-
-  smoothedBbox() {
-    return this.bbox;
-  }
-
-  aspectRatio() {
-    return (
-      (this.bbox.bbox[3] - this.bbox.bbox[1]) /
-      (this.bbox.bbox[2] - this.bbox.bbox[0])
-    );
-  }
-}
+import { DisplayedPerson } from "@/types/DisplayedPersonClass";
 
 function sketch(p5: P5CanvasInstance) {
   let bboxes: Bbox[] = [];
@@ -128,7 +93,7 @@ function sketch(p5: P5CanvasInstance) {
     p5.clear();
 
     for (const person of displayedPeople) {
-      const box = person.bbox.bbox;
+      const box = person.smoothedBbox().bbox;
       let displayCharacter = "";
 
       p5.textSize(box[3] - box[1]);
@@ -165,9 +130,9 @@ function sketch(p5: P5CanvasInstance) {
         }
       }
 
-      p5.text(displayCharacter, Math.floor(box[0]), box[1], box[2] - box[0]);
+      p5.text(displayCharacter, box[0], box[1], box[2] - box[0]);
 
-      // visualizeDebugInformation(person, threshold, p5);
+      visualizeDebugInformation(person, threshold, p5);
     }
   };
 }
@@ -186,7 +151,7 @@ export function Sketch({
         bboxes={bboxes}
         isAudioEnabled={isAudioEnabled}
       />
-      {/* <Monitor /> */}
+      <Monitor />
     </>
   );
 }
