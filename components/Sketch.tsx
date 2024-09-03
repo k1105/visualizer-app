@@ -6,22 +6,34 @@ import { updatePeople } from "@/lib/updatePeople";
 import { visualizeDebugInformation } from "@/lib/visualizeDebugInformation";
 import { Monitor } from "./Monitor";
 
-class Person implements PersonAttribute {
-  id: number;
-  speed: { x: number; y: number };
-  bbox: Bbox;
+class Bbox implements BboxAttribute {
+  confidence: number;
+  bbox: [number, number, number, number];
 
-  constructor(id: number, speed: { x: number; y: number }, bbox: Bbox) {
-    this.id = id;
-    this.speed = speed;
+  constructor(confidence: number, bbox: [number, number, number, number]) {
+    this.confidence = confidence;
     this.bbox = bbox;
   }
 
   center() {
     return {
-      x: (this.bbox.bbox[0] + this.bbox.bbox[2]) / 2,
-      y: (this.bbox.bbox[1] + this.bbox.bbox[3]) / 2,
+      x: (this.bbox[0] + this.bbox[2]) / 2,
+      y: (this.bbox[1] + this.bbox[3]) / 2,
     };
+  }
+}
+
+class Person implements PersonAttribute {
+  id: number;
+  speed: { x: number; y: number };
+  bbox: Bbox;
+  lostFrameCount: number;
+
+  constructor(id: number, speed: { x: number; y: number }, bbox: Bbox) {
+    this.id = id;
+    this.speed = speed;
+    this.bbox = bbox;
+    this.lostFrameCount = 0;
   }
 }
 
@@ -49,7 +61,11 @@ class DisplayedPerson extends Person {
     this.speed = person.speed;
   }
 
-  getAspectRatio() {
+  smoothedBbox() {
+    return this.bbox;
+  }
+
+  aspectRatio() {
     return (
       (this.bbox.bbox[3] - this.bbox.bbox[1]) /
       (this.bbox.bbox[2] - this.bbox.bbox[0])
@@ -59,12 +75,11 @@ class DisplayedPerson extends Person {
 
 function sketch(p5: P5CanvasInstance) {
   let bboxes: Bbox[] = [];
-  let prevBboxes: Bbox[] = [];
   let k = 0; //拡大比率
   let people: Person[] = [];
   let displayedPeople: DisplayedPerson[] = [];
   let personId: number = 0;
-  const threshold: number = 100; //どれくらいの値？
+  const threshold: number = 200; //どれくらいの値？
   const charList = ["L", "へ", "9", "フ", "8", "乙"];
   const audioList = [
     new Audio("/audio/lite/L-lite.m4a"),
@@ -95,8 +110,9 @@ function sketch(p5: P5CanvasInstance) {
   p5.updateWithProps = (props) => {
     isAudioEnabled = props.isAudioEnabled as boolean;
 
-    prevBboxes = bboxes;
-    bboxes = props.bboxes as Bbox[];
+    bboxes = (props.bboxes as BboxAttribute[]).map(
+      (bbox: BboxAttribute) => new Bbox(bbox.confidence, bbox.bbox)
+    );
     for (let i = 0; i < bboxes.length; i++) {
       bboxes[i].bbox[0] *= k;
       bboxes[i].bbox[1] *= k;
@@ -171,16 +187,16 @@ function sketch(p5: P5CanvasInstance) {
       }
 
       if (person.movingStatus === "paused") {
-        if (person.getAspectRatio() > 2) {
+        if (person.aspectRatio() > 2) {
           displayCharacter = "l";
         } else {
           displayCharacter = "T";
         }
       }
 
-      p5.text(displayCharacter, box[0], box[1], box[2] - box[0]);
+      p5.text(displayCharacter, Math.floor(box[0]), box[1], box[2] - box[0]);
 
-      visualizeDebugInformation(person, threshold, p5);
+      // visualizeDebugInformation(person, threshold, p5);
     }
   };
 }
@@ -199,7 +215,7 @@ export function Sketch({
         bboxes={bboxes}
         isAudioEnabled={isAudioEnabled}
       />
-      <Monitor />
+      {/* <Monitor /> */}
     </>
   );
 }

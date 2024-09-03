@@ -1,19 +1,31 @@
-class Person implements PersonAttribute {
-  id: number;
-  speed: { x: number; y: number };
-  bbox: Bbox;
+class Bbox implements BboxAttribute {
+  confidence: number;
+  bbox: [number, number, number, number];
 
-  constructor(id: number, speed: { x: number; y: number }, bbox: Bbox) {
-    this.id = id;
-    this.speed = speed;
+  constructor(confidence: number, bbox: [number, number, number, number]) {
+    this.confidence = confidence;
     this.bbox = bbox;
   }
 
   center() {
     return {
-      x: (this.bbox.bbox[0] + this.bbox.bbox[2]) / 2,
-      y: (this.bbox.bbox[1] + this.bbox.bbox[3]) / 2,
+      x: (this.bbox[0] + this.bbox[2]) / 2,
+      y: (this.bbox[1] + this.bbox[3]) / 2,
     };
+  }
+}
+
+class Person implements PersonAttribute {
+  id: number;
+  speed: { x: number; y: number };
+  bbox: Bbox;
+  lostFrameCount: number;
+
+  constructor(id: number, speed: { x: number; y: number }, bbox: Bbox) {
+    this.id = id;
+    this.speed = speed;
+    this.bbox = bbox;
+    this.lostFrameCount = 0;
   }
 }
 
@@ -26,7 +38,6 @@ type Props = {
 
 export const updatePeople = ({ relation, people, bboxes, personId }: Props) => {
   const activePersonIds = new Set(relation.flat().map((entry) => entry.id));
-
   people = people.filter((person) => activePersonIds.has(person.id));
 
   for (let i = 0; i < relation.length; i++) {

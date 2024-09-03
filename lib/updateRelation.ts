@@ -1,3 +1,20 @@
+class Bbox implements BboxAttribute {
+  confidence: number;
+  bbox: [number, number, number, number];
+
+  constructor(confidence: number, bbox: [number, number, number, number]) {
+    this.confidence = confidence;
+    this.bbox = bbox;
+  }
+
+  center() {
+    return {
+      x: (this.bbox[0] + this.bbox[2]) / 2,
+      y: (this.bbox[1] + this.bbox[3]) / 2,
+    };
+  }
+}
+
 class Person implements PersonAttribute {
   id: number;
   speed: { x: number; y: number };
@@ -7,13 +24,6 @@ class Person implements PersonAttribute {
     this.id = id;
     this.speed = speed;
     this.bbox = bbox;
-  }
-
-  center() {
-    return {
-      x: (this.bbox.bbox[0] + this.bbox.bbox[2]) / 2,
-      y: (this.bbox.bbox[1] + this.bbox.bbox[3]) / 2,
-    };
   }
 }
 
@@ -77,7 +87,7 @@ const resolveConflicts = (
         for (const pending of pendingPersons) {
           const pendingPerson = people.find((p) => p.id === pending.id);
           const { bestMatchBoxId, minDist } = calculateMinDist(
-            pendingPerson!.center(),
+            pendingPerson!.bbox.center(),
             bboxes,
             threshold,
             pending.dist // 競合時の元の距離を基準として再紐付け
@@ -102,14 +112,11 @@ export const updateRelation = ({ people, bboxes, threshold }: Props) => {
   }
 
   for (const person of people) {
-    const center: { x: number; y: number } = person.center();
+    const center: { x: number; y: number } = person.bbox.center();
     let minDist = threshold ** 2;
     let boxId = -1;
     for (let i = 0; i < bboxes.length; i++) {
-      const bboxCenter = {
-        x: (bboxes[i].bbox[2] + bboxes[i].bbox[0]) / 2,
-        y: (bboxes[i].bbox[3] + bboxes[i].bbox[1]) / 2,
-      };
+      const bboxCenter = bboxes[i].center();
 
       const dist =
         (center.x - bboxCenter.x) ** 2 + (center.y - bboxCenter.y) ** 2;
