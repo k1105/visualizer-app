@@ -5,7 +5,7 @@ interface Bbox {
 
 interface PersonAttribute {
   id: number;
-  speed: number;
+  speed: { x: number; y: number };
   bbox: Bbox;
   center: () => { x: number; y: number };
 }

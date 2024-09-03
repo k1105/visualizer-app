@@ -1,9 +1,9 @@
 class Person implements PersonAttribute {
   id: number;
-  speed: number;
+  speed: { x: number; y: number };
   bbox: Bbox;
 
-  constructor(id: number, speed: number, bbox: Bbox) {
+  constructor(id: number, speed: { x: number; y: number }, bbox: Bbox) {
     this.id = id;
     this.speed = speed;
     this.bbox = bbox;

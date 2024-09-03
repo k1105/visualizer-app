@@ -1,6 +1,7 @@
 import { Sketch } from "@/components/Sketch";
 import { useEffect, useState } from "react";
 import { parseResponse } from "@/lib/parseResponse";
+import { Monitor } from "@/components/Monitor";
 
 type Bbox = {
   confidence: number;

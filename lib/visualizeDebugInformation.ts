@@ -2,10 +2,10 @@ import { P5CanvasInstance } from "@p5-wrapper/react";
 
 class Person implements PersonAttribute {
   id: number;
-  speed: number;
+  speed: { x: number; y: number };
   bbox: Bbox;
 
-  constructor(id: number, speed: number, bbox: Bbox) {
+  constructor(id: number, speed: { x: number; y: number }, bbox: Bbox) {
     this.id = id;
     this.speed = speed;
     this.bbox = bbox;
@@ -32,7 +32,9 @@ export const visualizeDebugInformation = (
   p5.textSize(20);
   p5.text("id: " + person.id, box[0], box[1]);
   p5.translate(0, 30);
-  p5.text("speed: " + Math.floor(person.speed * 100) / 100, box[0], box[1]);
+  p5.text("speed-x: " + Math.floor(person.speed.x * 100) / 100, box[0], box[1]);
+  p5.translate(0, 30);
+  p5.text("speed-y: " + Math.floor(person.speed.y * 100) / 100, box[0], box[1]);
   p5.pop();
 
   p5.push();

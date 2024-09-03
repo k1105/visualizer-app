@@ -4,13 +4,14 @@ import { NextReactP5Wrapper } from "@p5-wrapper/next";
 import { updateRelation } from "@/lib/updateRelation";
 import { updatePeople } from "@/lib/updatePeople";
 import { visualizeDebugInformation } from "@/lib/visualizeDebugInformation";
+import { Monitor } from "./Monitor";
 
 class Person implements PersonAttribute {
   id: number;
-  speed: number;
+  speed: { x: number; y: number };
   bbox: Bbox;
 
-  constructor(id: number, speed: number, bbox: Bbox) {
+  constructor(id: number, speed: { x: number; y: number }, bbox: Bbox) {
     this.id = id;
     this.speed = speed;
     this.bbox = bbox;
@@ -27,16 +28,32 @@ class Person implements PersonAttribute {
 class DisplayedPerson extends Person {
   characterId: number;
   lastUpdated: number;
+  movingStatus: "walking" | "paused";
+  pausedFrameCount: number;
 
-  constructor(id: number, speed: number, bbox: Bbox, lastUpdated: number) {
+  constructor(
+    id: number,
+    speed: { x: number; y: number },
+    bbox: Bbox,
+    lastUpdated: number
+  ) {
     super(id, speed, bbox);
     this.characterId = 0;
     this.lastUpdated = lastUpdated;
+    this.movingStatus = "paused";
+    this.pausedFrameCount = 0;
   }
 
   update(person: Person) {
     this.bbox = person.bbox;
     this.speed = person.speed;
+  }
+
+  getAspectRatio() {
+    return (
+      (this.bbox.bbox[3] - this.bbox.bbox[1]) /
+      (this.bbox.bbox[2] - this.bbox.bbox[0])
+    );
   }
 }
 
@@ -121,30 +138,49 @@ function sketch(p5: P5CanvasInstance) {
   };
 
   p5.draw = () => {
-    p5.background(0);
+    p5.clear();
 
     for (const person of displayedPeople) {
       const box = person.bbox.bbox;
+      let displayCharacter = "";
 
       p5.textSize(box[3] - box[1]);
       p5.textAlign(p5.CENTER);
       if (
         isAudioEnabled &&
-        person.speed > 50 &&
-        p5.frameCount - person.lastUpdated > 5
+        (Math.abs(person.speed.x) > 50 || person.movingStatus === "walking")
       ) {
-        person.characterId++;
-        person.lastUpdated = p5.frameCount;
-        setTimeout(function () {
-          audioList[person.characterId % charList.length].play();
-        }, 200);
+        person.movingStatus = "walking";
+
+        if (p5.frameCount - person.lastUpdated > 5) {
+          person.characterId++;
+          person.lastUpdated = p5.frameCount;
+          setTimeout(function () {
+            audioList[person.characterId % charList.length].play();
+          }, 200);
+          person.pausedFrameCount = 0;
+        }
+        displayCharacter = charList[person.characterId % charList.length];
       }
-      p5.text(
-        charList[person.characterId % charList.length],
-        box[0],
-        box[1],
-        box[2] - box[0]
-      );
+
+      if (Math.abs(person.speed.x) < 30 && Math.abs(person.speed.y) < 30) {
+        person.pausedFrameCount++;
+        if (person.pausedFrameCount > 3) {
+          person.movingStatus = "paused";
+        }
+      }
+
+      if (person.movingStatus === "paused") {
+        if (person.getAspectRatio() > 2) {
+          displayCharacter = "l";
+        } else {
+          displayCharacter = "T";
+        }
+      }
+
+      p5.text(displayCharacter, box[0], box[1], box[2] - box[0]);
+
+      visualizeDebugInformation(person, threshold, p5);
     }
   };
 }
@@ -157,10 +193,13 @@ export function Sketch({
   isAudioEnabled: boolean;
 }) {
   return (
-    <NextReactP5Wrapper
-      sketch={sketch}
-      bboxes={bboxes}
-      isAudioEnabled={isAudioEnabled}
-    />
+    <>
+      <NextReactP5Wrapper
+        sketch={sketch}
+        bboxes={bboxes}
+        isAudioEnabled={isAudioEnabled}
+      />
+      <Monitor />
+    </>
   );
 }

@@ -1,9 +1,9 @@
 class Person implements PersonAttribute {
   id: number;
-  speed: number;
+  speed: { x: number; y: number };
   bbox: Bbox;
 
-  constructor(id: number, speed: number, bbox: Bbox) {
+  constructor(id: number, speed: { x: number; y: number }, bbox: Bbox) {
     this.id = id;
     this.speed = speed;
     this.bbox = bbox;
@@ -32,14 +32,25 @@ export const updatePeople = ({ relation, people, bboxes, personId }: Props) => {
   for (let i = 0; i < relation.length; i++) {
     if (relation[i].length === 0) {
       // 新規の人間がフレームイン
-      people.push(new Person(personId, 0, bboxes[i]));
+      people.push(new Person(personId, { x: 0, y: 0 }, bboxes[i]));
       personId++;
     } else if (relation[i].length === 1) {
       // 既存の人を更新
       const person = people.find((p) => p.id === relation[i][0].id);
       if (person) {
+        person.speed = {
+          x:
+            (bboxes[i].bbox[0] +
+              bboxes[i].bbox[2] -
+              (person.bbox.bbox[0] + person.bbox.bbox[2])) /
+            2,
+          y:
+            (bboxes[i].bbox[1] +
+              bboxes[i].bbox[3] -
+              (person.bbox.bbox[1] + person.bbox.bbox[3])) /
+            2,
+        };
         person.bbox = bboxes[i];
-        person.speed = Math.sqrt(relation[i][0].dist);
       } else {
         console.error("更新対象のpersonが存在していません");
       }
