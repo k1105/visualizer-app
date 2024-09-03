@@ -1,31 +1,5 @@
-class Bbox implements BboxAttribute {
-  confidence: number;
-  bbox: [number, number, number, number];
-
-  constructor(confidence: number, bbox: [number, number, number, number]) {
-    this.confidence = confidence;
-    this.bbox = bbox;
-  }
-
-  center() {
-    return {
-      x: (this.bbox[0] + this.bbox[2]) / 2,
-      y: (this.bbox[1] + this.bbox[3]) / 2,
-    };
-  }
-}
-
-class Person implements PersonAttribute {
-  id: number;
-  speed: { x: number; y: number };
-  bbox: Bbox;
-
-  constructor(id: number, speed: { x: number; y: number }, bbox: Bbox) {
-    this.id = id;
-    this.speed = speed;
-    this.bbox = bbox;
-  }
-}
+import { Person } from "@/types/PersonClass";
+import { Bbox } from "@/types/BboxClass";
 
 type Props = {
   people: Person[];
@@ -43,10 +17,7 @@ const calculateMinDist = (
   let bestMatchBoxId = -1;
 
   for (let i = 0; i < bboxes.length; i++) {
-    const bboxCenter = {
-      x: (bboxes[i].bbox[2] + bboxes[i].bbox[0]) / 2,
-      y: (bboxes[i].bbox[3] + bboxes[i].bbox[1]) / 2,
-    };
+    const bboxCenter = bboxes[i].center();
 
     const dist =
       (center.x - bboxCenter.x) ** 2 + (center.y - bboxCenter.y) ** 2;

@@ -1,33 +1,5 @@
-class Bbox implements BboxAttribute {
-  confidence: number;
-  bbox: [number, number, number, number];
-
-  constructor(confidence: number, bbox: [number, number, number, number]) {
-    this.confidence = confidence;
-    this.bbox = bbox;
-  }
-
-  center() {
-    return {
-      x: (this.bbox[0] + this.bbox[2]) / 2,
-      y: (this.bbox[1] + this.bbox[3]) / 2,
-    };
-  }
-}
-
-class Person implements PersonAttribute {
-  id: number;
-  speed: { x: number; y: number };
-  bbox: Bbox;
-  lostFrameCount: number;
-
-  constructor(id: number, speed: { x: number; y: number }, bbox: Bbox) {
-    this.id = id;
-    this.speed = speed;
-    this.bbox = bbox;
-    this.lostFrameCount = 0;
-  }
-}
+import { Bbox } from "@/types/BboxClass";
+import { Person } from "@/types/PersonClass";
 
 type Props = {
   relation: { id: number; dist: number }[][];
