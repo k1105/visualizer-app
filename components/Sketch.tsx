@@ -48,7 +48,7 @@ function sketch(p5: P5CanvasInstance) {
   let displayedPeople: DisplayedPerson[] = [];
   let personId: number = 0;
   const threshold: number = 100; //どれくらいの値？
-  const charList = ["L", "へ", "7", "フ", "1", "乙"];
+  const charList = ["L", "へ", "9", "フ", "8", "乙"];
   const audioList = [
     new Audio("/audio/lite/L-lite.m4a"),
     new Audio("/audio/lite/He-lite.m4a"),
@@ -58,16 +58,15 @@ function sketch(p5: P5CanvasInstance) {
     new Audio("/audio/lite/Otsu-lite.m4a"),
   ];
 
-  const inputImageSize = { x: 1280, y: 720 }; //defaultのmacwebcam: 1280 x720, test用の動画ファイル：2366 × 1348
+  const inputImageSize = { x: 1280, y: 720 };
   const inputAspectRatio = inputImageSize.y / inputImageSize.x;
+  let isAudioEnabled = false;
 
   p5.setup = () => {
     p5.createCanvas(innerWidth, innerHeight);
     p5.fill(250);
     p5.noStroke();
     const aspectRatio = innerHeight / innerWidth;
-
-    //カンバスサイズとinputのフレームサイズに基づいて拡大比率を設定
 
     if (aspectRatio >= inputAspectRatio) {
       k = innerWidth / inputImageSize.x;
@@ -77,7 +76,8 @@ function sketch(p5: P5CanvasInstance) {
   };
 
   p5.updateWithProps = (props) => {
-    // START: update Bboxes
+    isAudioEnabled = props.isAudioEnabled as boolean;
+
     prevBboxes = bboxes;
     bboxes = props.bboxes as Bbox[];
     for (let i = 0; i < bboxes.length; i++) {
@@ -86,23 +86,17 @@ function sketch(p5: P5CanvasInstance) {
       bboxes[i].bbox[2] *= k;
       bboxes[i].bbox[3] *= k;
     }
-    // FINISH: update Bboxes
 
-    // update relation
     const relation: { id: number; dist: number }[][] = updateRelation({
       people,
       bboxes,
       threshold,
     });
-    // FINISH: update relation
-
-    console.log(relation);
 
     const res = updatePeople({ relation, people, bboxes, personId });
 
     people = res.people;
 
-    // まずは、既存の displayedPeople の要素が currentPeople に存在するかをチェックし、存在しない場合は削除
     displayedPeople = displayedPeople.filter((displayedPerson) =>
       people.some((person) => person.id === displayedPerson.id)
     );
@@ -134,10 +128,16 @@ function sketch(p5: P5CanvasInstance) {
 
       p5.textSize(box[3] - box[1]);
       p5.textAlign(p5.CENTER);
-      if (person.speed > 50 && p5.frameCount - person.lastUpdated > 3) {
-        audioList[person.characterId % charList.length].play();
+      if (
+        isAudioEnabled &&
+        person.speed > 50 &&
+        p5.frameCount - person.lastUpdated > 5
+      ) {
         person.characterId++;
         person.lastUpdated = p5.frameCount;
+        setTimeout(function () {
+          audioList[person.characterId % charList.length].play();
+        }, 200);
       }
       p5.text(
         charList[person.characterId % charList.length],
@@ -145,12 +145,22 @@ function sketch(p5: P5CanvasInstance) {
         box[1],
         box[2] - box[0]
       );
-
-      // visualizeDebugInformation(person, threshold, p5);
     }
   };
 }
 
-export function Sketch({ bboxes }: { bboxes: Bbox[] }) {
-  return <NextReactP5Wrapper sketch={sketch} bboxes={bboxes} />;
+export function Sketch({
+  bboxes,
+  isAudioEnabled,
+}: {
+  bboxes: Bbox[];
+  isAudioEnabled: boolean;
+}) {
+  return (
+    <NextReactP5Wrapper
+      sketch={sketch}
+      bboxes={bboxes}
+      isAudioEnabled={isAudioEnabled}
+    />
+  );
 }

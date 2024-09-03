@@ -1,5 +1,5 @@
 import { Sketch } from "@/components/Sketch";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { parseResponse } from "@/lib/parseResponse";
 
 type Bbox = {
@@ -9,6 +9,7 @@ type Bbox = {
 
 const Home = () => {
   const [bboxes, setBboxes] = useState<Bbox[]>([]);
+  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
 
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:8765");
@@ -26,10 +27,37 @@ const Home = () => {
     };
   }, []);
 
+  const enableAudio = () => {
+    setIsAudioEnabled(true);
+  };
+
   return (
     <>
+      {!isAudioEnabled && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 1000,
+          }}
+        >
+          <button
+            onClick={enableAudio}
+            style={{ padding: "10px 20px", fontSize: "18px" }}
+          >
+            Click to enable audio
+          </button>
+        </div>
+      )}
       <div>
-        <Sketch bboxes={bboxes} />
+        <Sketch bboxes={bboxes} isAudioEnabled={isAudioEnabled} />
       </div>
       <style jsx>{``}</style>
     </>
