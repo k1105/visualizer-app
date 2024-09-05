@@ -4,6 +4,7 @@ import { Person } from "./PersonClass";
 export class DisplayedPerson extends Person {
   characterId: number;
   lastUpdated: number;
+  smoothedBbox: Bbox;
   movingStatus: "walking" | "paused";
   pausedFrameCount: number;
   private bboxes: Bbox[];
@@ -20,16 +21,15 @@ export class DisplayedPerson extends Person {
     this.movingStatus = "paused";
     this.pausedFrameCount = 0;
     this.bboxes = [bbox];
+    this.smoothedBbox = bbox;
   }
 
   update(person: Person) {
     this.bbox = person.bbox;
     this.speed = person.speed;
     this.bboxes.push(person.bbox);
-    if (this.bboxes.length > 3) this.bboxes.shift();
-  }
+    if (this.bboxes.length > 5) this.bboxes.shift();
 
-  smoothedBbox() {
     const smoothedBbox: Bbox = new Bbox(0, [0, 0, 0, 0]);
     if (this.bboxes.length > 0) {
       for (let i = 0; i < 4; i++) {
@@ -45,9 +45,9 @@ export class DisplayedPerson extends Person {
         }
         smoothedBbox.bbox[i] = val / totalWeight;
       }
-      return smoothedBbox;
+      this.smoothedBbox = smoothedBbox;
     } else {
-      return this.bbox;
+      this.smoothedBbox = this.bbox;
     }
   }
 

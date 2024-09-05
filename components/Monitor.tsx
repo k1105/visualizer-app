@@ -1,18 +1,37 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 
-export const Monitor = () => {
+type MonitorProps = {
+  setCameraResolution: (
+    resolution: { width: number; height: number } | null
+  ) => void;
+  scale: number;
+  xOffset: number;
+  yOffset: number;
+};
+
+export const Monitor = ({
+  setCameraResolution,
+  scale,
+  xOffset,
+  yOffset,
+}: MonitorProps) => {
   const [innerWidth, setInnerWidth] = useState<number>(0);
   const [innerHeight, setInnerHeight] = useState<number>(0);
-  const [cameraResolution, setCameraResolution] = useState<{
-    width: number;
-    height: number;
-  } | null>(null);
+  const webcamContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setInnerWidth(window.innerWidth);
     setInnerHeight(window.innerHeight);
   }, []);
+
+  useEffect(() => {
+    webcamContainerRef.current!.style.left = `${xOffset}px`;
+  }, [xOffset]);
+
+  useEffect(() => {
+    webcamContainerRef.current!.style.top = `${yOffset}px`;
+  }, [yOffset]);
 
   const handleUserMedia = (stream: MediaStream) => {
     const videoTrack = stream.getVideoTracks()[0];
@@ -29,11 +48,7 @@ export const Monitor = () => {
 
   return (
     <>
-      <Webcam
-        width={innerWidth}
-        height={innerHeight}
-        onUserMedia={handleUserMedia}
-        videoConstraints={videoConstraints}
+      <div
         style={{
           position: "absolute",
           top: "0",
@@ -41,23 +56,16 @@ export const Monitor = () => {
           zIndex: "-1",
           opacity: "0.5",
         }}
-      />
-      {cameraResolution && (
-        <div
-          style={{
-            position: "absolute",
-            top: "10px",
-            left: "10px",
-            color: "white",
-            zIndex: "10",
-          }}
-        >
-          <p>
-            Camera Resolution: {cameraResolution.width}x
-            {cameraResolution.height}
-          </p>
-        </div>
-      )}
+        ref={webcamContainerRef}
+      >
+        <Webcam
+          mirrored
+          width={innerWidth * scale}
+          height={innerHeight * scale}
+          onUserMedia={handleUserMedia}
+          videoConstraints={videoConstraints}
+        />
+      </div>
     </>
   );
 };

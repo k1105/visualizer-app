@@ -1,22 +1,18 @@
 import { Sketch } from "@/components/Sketch";
 import { useEffect, useState } from "react";
 import { parseResponse } from "@/lib/parseResponse";
-import { Monitor } from "@/components/Monitor";
-
-type Bbox = {
-  confidence: number;
-  bbox: [number, number, number, number];
-};
+import { Bbox } from "@/types/BboxClass";
 
 const Home = () => {
   const [bboxes, setBboxes] = useState<Bbox[]>([]);
   const [isAudioEnabled, setIsAudioEnabled] = useState(false);
 
   useEffect(() => {
+    // const ws = new WebSocket("ws://192.168.0.100:8765");
     const ws = new WebSocket("ws://localhost:8765");
 
     ws.onmessage = (event) => {
-      setBboxes(parseResponse(event.data));
+      setBboxes(parseResponse(event.data) as Bbox[]);
     };
 
     ws.onclose = () => {
