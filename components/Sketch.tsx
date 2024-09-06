@@ -64,12 +64,6 @@ export function Sketch({
         bboxes = (props.bboxes as BboxAttribute[]).map(
           (bbox: BboxAttribute) => new Bbox(bbox.confidence, bbox.bbox)
         );
-        for (let i = 0; i < bboxes.length; i++) {
-          bboxes[i].bbox[0] *= k * (props.scale as number);
-          bboxes[i].bbox[1] *= k * (props.scale as number);
-          bboxes[i].bbox[2] *= k * (props.scale as number);
-          bboxes[i].bbox[3] *= k * (props.scale as number);
-        }
 
         const relation: { id: number; dist: number }[][] = updateRelation({
           people: peopleRef.current,
@@ -108,6 +102,10 @@ export function Sketch({
               )
             );
           }
+        }
+
+        for (const displayedPerson of displayedPeopleRef.current) {
+          displayedPerson.smoothedBbox.scale(k * (props.scale as number));
         }
         personId = res.personId;
       };

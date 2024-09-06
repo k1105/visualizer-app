@@ -9,6 +9,10 @@ export const parseResponse = (data: string) => {
         bbox: item.bbox,
       }));
 
+      // const formattedResults = parsedData.map(
+      //   (item) => new Person(item.id, item.speed, item.bbox)
+      // );
+
       return formattedResults;
     } else {
       console.error("Unexpected data format: ", parsedData);

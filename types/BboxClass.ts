@@ -13,4 +13,11 @@ export class Bbox implements BboxAttribute {
       y: (this.bbox[1] + this.bbox[3]) / 2,
     };
   }
+
+  scale(k: number) {
+    this.bbox[0] *= k;
+    this.bbox[1] *= k;
+    this.bbox[2] *= k;
+    this.bbox[3] *= k;
+  }
 }

@@ -2,9 +2,11 @@ import { Sketch } from "@/components/Sketch";
 import { useEffect, useState } from "react";
 import { parseResponse } from "@/lib/parseResponse";
 import { Bbox } from "@/types/BboxClass";
+import { Person } from "@/types/PersonClass";
 
 const Home = () => {
   const [bboxes, setBboxes] = useState<Bbox[]>([]);
+  // const [people, setPeople] = useState<Person[]>([]);
   const [isAudioEnabled, setIsAudioEnabled] = useState(false);
 
   useEffect(() => {
@@ -13,6 +15,7 @@ const Home = () => {
 
     ws.onmessage = (event) => {
       setBboxes(parseResponse(event.data) as Bbox[]);
+      // setPeople(parseResponse(event.data) as Person[]);
     };
 
     ws.onclose = () => {
