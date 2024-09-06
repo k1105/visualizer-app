@@ -12,6 +12,8 @@ import { Monitor } from "./Monitor";
 import { ColorPalette } from "./ColorPalette";
 import { VisibilityOn } from "./icon/VisibilityOn";
 import { VisibilityOff } from "./icon/VisibilityOff";
+import { RadioOn } from "./icon/RadioOn";
+import { RadioOff } from "./icon/RadioOff";
 
 type Props = {
   thresholdRef: MutableRefObject<number>;
@@ -53,12 +55,13 @@ export const Debugger = ({
     height: number;
   } | null>(null);
 
-  const [monitorVisiblity, setMonitorVisiblity] = useState<boolean>(true);
-  const [guideVisiblity, setGuideVisiblity] = useState<boolean>(true);
-  const [debuggerVisiblity, setDebuggerVisiblity] = useState<boolean>(true);
+  const [cameraVisibility, setCameraVisibility] = useState<boolean>(true);
+  const [guideVisibility, setGuideVisibility] = useState<boolean>(true);
+  const [debuggerVisibility, setDebuggerVisibility] = useState<boolean>(true);
   const [showMessage, setShowMessage] = useState<boolean>(false);
   const [innerWidth, setInnerWidth] = useState<number>(0);
   const [innerHeight, setInnerHeight] = useState<number>(0);
+  const [mirrored, setMirrored] = useState<boolean>(false);
 
   useEffect(() => {
     setInnerWidth(window.innerWidth);
@@ -74,7 +77,7 @@ export const Debugger = ({
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "d" || event.key === "D") {
         // 大文字小文字両方に対応
-        setDebuggerVisiblity((prev) => !prev);
+        setDebuggerVisibility((prev) => !prev);
       }
     };
 
@@ -86,7 +89,7 @@ export const Debugger = ({
 
   // Show "Press d to show Debugger." message for 5 seconds after hiding the debugger
   useEffect(() => {
-    if (!debuggerVisiblity) {
+    if (!debuggerVisibility) {
       setShowMessage(true);
       const timeout = setTimeout(() => {
         setShowMessage(false);
@@ -94,7 +97,7 @@ export const Debugger = ({
 
       return () => clearTimeout(timeout); // クリーンアップ
     }
-  }, [debuggerVisiblity]);
+  }, [debuggerVisibility]);
 
   const sketch = useCallback(
     (p5: P5CanvasInstance) => {
@@ -157,9 +160,9 @@ export const Debugger = ({
 
   return (
     <>
-      {debuggerVisiblity && (
+      {debuggerVisibility && (
         <div>
-          {guideVisiblity && (
+          {guideVisibility && (
             <div style={{ position: "absolute", top: 0, left: 0, zIndex: 90 }}>
               <NextReactP5Wrapper sketch={sketch} />
             </div>
@@ -256,11 +259,28 @@ export const Debugger = ({
               <div
                 className="toggle-list"
                 onClick={() => {
-                  setMonitorVisiblity(!monitorVisiblity);
+                  setMirrored(!mirrored);
                 }}
               >
-                <p>Monitor:</p>
-                {monitorVisiblity ? (
+                <p>Mirror Camera:</p>
+                {mirrored ? (
+                  <RadioOn
+                    style={{ width: "1.5rem", height: "1.5rem", color: "gray" }}
+                  />
+                ) : (
+                  <RadioOff
+                    style={{ width: "1.5rem", height: "1.5rem", color: "gray" }}
+                  />
+                )}
+              </div>
+              <div
+                className="toggle-list"
+                onClick={() => {
+                  setCameraVisibility(!cameraVisibility);
+                }}
+              >
+                <p>Camera:</p>
+                {cameraVisibility ? (
                   <VisibilityOn
                     style={{ width: "1.5rem", height: "1.5rem", color: "gray" }}
                   />
@@ -273,11 +293,11 @@ export const Debugger = ({
               <div
                 className="toggle-list"
                 onClick={() => {
-                  setGuideVisiblity(!guideVisiblity);
+                  setGuideVisibility(!guideVisibility);
                 }}
               >
                 <p>Guide:</p>
-                {guideVisiblity ? (
+                {guideVisibility ? (
                   <VisibilityOn
                     style={{ width: "1.5rem", height: "1.5rem", color: "gray" }}
                   />
@@ -290,7 +310,7 @@ export const Debugger = ({
               <div
                 className="toggle-list"
                 onClick={() => {
-                  setDebuggerVisiblity(false);
+                  setDebuggerVisibility(false);
                 }}
               >
                 <p>Debugger:</p>
@@ -300,9 +320,10 @@ export const Debugger = ({
               </div>
             </div>
           </div>
-          {monitorVisiblity && (
+          {cameraVisibility && (
             <Monitor
               setCameraResolution={setCameraResolution}
+              mirrored={mirrored}
               scale={scale}
               xOffset={xOffset}
               yOffset={yOffset}
@@ -351,7 +372,7 @@ export const Debugger = ({
         </div>
       )}
       {/* Show message when debugger is hidden */}
-      {!debuggerVisiblity && (
+      {!debuggerVisibility && (
         <>
           <div
             className={`message ${!showMessage ? "hide" : ""}`}

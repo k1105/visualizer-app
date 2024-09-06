@@ -1,17 +1,20 @@
+import { Bbox } from "@/types/BboxClass";
+import { Person } from "@/types/PersonClass";
+
 export const parseResponse = (data: string) => {
   try {
     const parsedData = JSON.parse(data);
 
     // 受信したデータが配列形式であることを想定
     if (Array.isArray(parsedData)) {
-      const formattedResults = parsedData.map((item) => ({
-        confidence: item.confidence,
-        bbox: item.bbox,
-      }));
-
-      // const formattedResults = parsedData.map(
-      //   (item) => new Person(item.id, item.speed, item.bbox)
-      // );
+      const formattedResults = parsedData.map(
+        (item) =>
+          new Person(
+            item.id,
+            item.speed,
+            new Bbox(item.bbox.confidence, item.bbox.bbox)
+          )
+      );
 
       return formattedResults;
     } else {

@@ -8,11 +8,13 @@ type MonitorProps = {
   scale: number;
   xOffset: number;
   yOffset: number;
+  mirrored: boolean;
 };
 
 export const Monitor = ({
   setCameraResolution,
   scale,
+  mirrored,
   xOffset,
   yOffset,
 }: MonitorProps) => {
@@ -59,6 +61,7 @@ export const Monitor = ({
         ref={webcamContainerRef}
       >
         <Webcam
+          mirrored={mirrored ? true : false}
           width={innerWidth * scale}
           height={innerHeight * scale}
           onUserMedia={handleUserMedia}

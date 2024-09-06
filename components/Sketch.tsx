@@ -1,19 +1,17 @@
 import * as React from "react";
 import { P5CanvasInstance } from "@p5-wrapper/react";
 import { NextReactP5Wrapper } from "@p5-wrapper/next";
-import { updateRelation } from "@/lib/updateRelation";
-import { updatePeople } from "@/lib/updatePeople";
 import { Person } from "@/types/PersonClass";
 import { Bbox } from "@/types/BboxClass";
 import { DisplayedPerson } from "@/types/DisplayedPersonClass";
 import { Debugger } from "./Debugger";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 
 export function Sketch({
-  bboxes,
+  people,
   isAudioEnabled,
 }: {
-  bboxes: Bbox[];
+  people: Person[];
   isAudioEnabled: boolean;
 }) {
   const thresholdRef = useRef<number>(200);
@@ -61,30 +59,17 @@ export function Sketch({
       p5.updateWithProps = (props) => {
         isAudioEnabled = props.isAudioEnabled as boolean;
 
-        bboxes = (props.bboxes as BboxAttribute[]).map(
-          (bbox: BboxAttribute) => new Bbox(bbox.confidence, bbox.bbox)
-        );
+        peopleRef.current = props.people as Person[];
 
-        const relation: { id: number; dist: number }[][] = updateRelation({
-          people: peopleRef.current,
-          bboxes,
-          threshold: thresholdRef.current,
-        });
-
-        const res = updatePeople({
-          relation,
-          people: peopleRef.current,
-          bboxes,
-          personId,
-        });
-
-        peopleRef.current = res.people;
-
+        // displayPeopleからフレームアウトした人を削除
         displayedPeopleRef.current = displayedPeopleRef.current.filter(
           (displayedPerson) =>
             peopleRef.current.some((person) => person.id === displayedPerson.id)
         );
+      };
 
+      p5.draw = () => {
+        // update displayPeople
         for (const person of peopleRef.current) {
           const displayedPerson = displayedPeopleRef.current.find(
             (p) => p.id === person.id
@@ -105,19 +90,15 @@ export function Sketch({
         }
 
         for (const displayedPerson of displayedPeopleRef.current) {
-          displayedPerson.smoothedBbox.scale(k * (props.scale as number));
+          displayedPerson.smoothedBbox.scale(k * scale);
         }
-        personId = res.personId;
-      };
 
-      p5.draw = () => {
         p5.clear();
         p5.translate(xOffset, yOffset);
         // p5.background(255, 0, 0);
 
         for (const person of displayedPeopleRef.current) {
           const box = person.smoothedBbox.bbox;
-          // const box = person.bbox.bbox;
           let displayCharacter = "";
 
           p5.textSize(box[3] - box[1]);
@@ -169,9 +150,8 @@ export function Sketch({
     <>
       <NextReactP5Wrapper
         sketch={sketch}
-        bboxes={bboxes}
+        people={people}
         isAudioEnabled={isAudioEnabled}
-        scale={scale}
       />
       <Debugger
         thresholdRef={thresholdRef}
