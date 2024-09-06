@@ -59,7 +59,6 @@ export const Monitor = ({
         ref={webcamContainerRef}
       >
         <Webcam
-          mirrored
           width={innerWidth * scale}
           height={innerHeight * scale}
           onUserMedia={handleUserMedia}
