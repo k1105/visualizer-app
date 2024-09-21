@@ -7,10 +7,11 @@ const Home = () => {
   // const [bboxes, setBboxes] = useState<Bbox[]>([]);
   const [people, setPeople] = useState<Person[]>([]);
   const [isAudioEnabled, setIsAudioEnabled] = useState(false);
+  const [server, setServer] = useState<string>("localhost");
 
   useEffect(() => {
     // const ws = new WebSocket("ws://192.168.0.100:8765");
-    const ws = new WebSocket("ws://localhost:8765");
+    const ws = new WebSocket(`ws://${server}:8765`);
 
     ws.onmessage = (event) => {
       // setBboxes(parseResponse(event.data) as Bbox[]);
@@ -24,7 +25,7 @@ const Home = () => {
     return () => {
       ws.close();
     };
-  }, []);
+  }, [server]);
 
   const enableAudio = () => {
     setIsAudioEnabled(true);
@@ -56,7 +57,12 @@ const Home = () => {
         </div>
       )}
       <div>
-        <Sketch people={people} isAudioEnabled={isAudioEnabled} />
+        <Sketch
+          people={people}
+          isAudioEnabled={isAudioEnabled}
+          server={server}
+          setServer={setServer}
+        />
       </div>
       <style jsx>{``}</style>
     </>

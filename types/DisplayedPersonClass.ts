@@ -51,6 +51,25 @@ export class DisplayedPerson extends Person {
     }
   }
 
+  updateMovingStatus(xSpeedThreshold: number, ySpeedThreshold: number) {
+    if (
+      Math.abs(this.speed.x) > xSpeedThreshold ||
+      this.movingStatus === "walking"
+    ) {
+      this.movingStatus = "walking";
+    }
+
+    if (
+      Math.abs(this.speed.x) < xSpeedThreshold &&
+      Math.abs(this.speed.y) < ySpeedThreshold
+    ) {
+      this.pausedFrameCount++;
+      if (this.pausedFrameCount > 3) {
+        this.movingStatus = "paused";
+      }
+    }
+  }
+
   aspectRatio() {
     return (
       (this.bbox.bbox[3] - this.bbox.bbox[1]) /

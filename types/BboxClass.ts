@@ -14,6 +14,14 @@ export class Bbox implements BboxAttribute {
     };
   }
 
+  width() {
+    return this.bbox[2] - this.bbox[0];
+  }
+
+  height() {
+    return this.bbox[3] - this.bbox[1];
+  }
+
   scale(k: number) {
     this.bbox[0] *= k;
     this.bbox[1] *= k;

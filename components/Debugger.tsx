@@ -22,9 +22,11 @@ type Props = {
   scale: number;
   xOffset: number;
   yOffset: number;
+  server: string;
   setScale: (scale: number) => void;
   setXOffset: (offset: number) => void;
   setYOffset: (offset: number) => void;
+  setServer: (server: string) => void;
   setXSpeedThreshold: (threshold: number) => void;
   setYSpeedThreshold: (threshold: number) => void;
   xSpeedThreshold: number;
@@ -37,10 +39,12 @@ export const Debugger = ({
   scale,
   xOffset,
   yOffset,
+  server,
   setTextColor,
   setScale,
   setXOffset,
   setYOffset,
+  setServer,
   xSpeedThreshold,
   ySpeedThreshold,
   setXSpeedThreshold,
@@ -136,14 +140,25 @@ export const Debugger = ({
             box[0],
             box[1]
           );
+          p5.translate(0, 30);
+          p5.text(
+            `bbox-size: ${Math.floor(person.bbox.width() * 100) / 100} x ${
+              Math.floor(person.bbox.height() * 100) / 100
+            }`,
+            box[0],
+            box[1]
+          );
           p5.pop();
 
           p5.push();
           p5.noFill();
           p5.stroke(0, 255, 0);
-          p5.circle(bboxCenter.x, bboxCenter.y, thresholdRef.current * 2);
-          p5.stroke(255, 0, 0);
+          // p5.circle(bboxCenter.x, bboxCenter.y, thresholdRef.current * 2);
+          p5.stroke("#3D72AA");
           p5.rect(box[0], box[1], box[2] - box[0], box[3] - box[1]);
+          p5.drawingContext.setLineDash([5, 5]);
+          p5.line(bboxCenter.x, box[1], bboxCenter.x, box[3]);
+          p5.line(box[0], bboxCenter.y, box[2], bboxCenter.y);
           p5.pop();
         }
       };
@@ -250,6 +265,16 @@ export const Debugger = ({
                   defaultValue={ySpeedThreshold}
                   onChange={(e) => {
                     setYSpeedThreshold(Number(e.target.value));
+                  }}
+                />
+              </div>
+              <div>
+                <p className="headline">server:</p>
+                <input
+                  type="text"
+                  defaultValue={server}
+                  onChange={(e) => {
+                    setServer(String(e.target.value));
                   }}
                 />
               </div>
