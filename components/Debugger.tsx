@@ -24,14 +24,14 @@ type Props = {
   yOffset: number;
   canvasSize: { width: number; height: number };
   server: string;
+  xSpeedThreshold: number;
+  ySpeedThreshold: number;
   setScale: (scale: number) => void;
   setXOffset: (offset: number) => void;
   setYOffset: (offset: number) => void;
   setServer: (server: string) => void;
   setXSpeedThreshold: (threshold: number) => void;
   setYSpeedThreshold: (threshold: number) => void;
-  xSpeedThreshold: number;
-  ySpeedThreshold: number;
   setCanvasSize: (size: { width: number; height: number }) => void;
 };
 
@@ -42,15 +42,17 @@ export const Debugger = ({
   xOffset,
   yOffset,
   server,
+  canvasSize,
+  xSpeedThreshold,
+  ySpeedThreshold,
   setTextColor,
   setScale,
   setXOffset,
   setYOffset,
   setServer,
-  xSpeedThreshold,
-  ySpeedThreshold,
   setXSpeedThreshold,
   setYSpeedThreshold,
+  setCanvasSize,
 }: Props) => {
   const thresholdTextRef = useRef<HTMLParagraphElement>(null);
   const frameRateTextRef = useRef<HTMLParagraphElement>(null);
@@ -66,14 +68,8 @@ export const Debugger = ({
   const [guideVisibility, setGuideVisibility] = useState<boolean>(true);
   const [debuggerVisibility, setDebuggerVisibility] = useState<boolean>(true);
   const [showMessage, setShowMessage] = useState<boolean>(false);
-  const [innerWidth, setInnerWidth] = useState<number>(0);
-  const [innerHeight, setInnerHeight] = useState<number>(0);
-  const [mirrored, setMirrored] = useState<boolean>(false);
 
-  useEffect(() => {
-    setInnerWidth(window.innerWidth);
-    setInnerHeight(window.innerHeight);
-  }, []);
+  const [mirrored, setMirrored] = useState<boolean>(false);
 
   useEffect(() => {
     document.body.style.backgroundColor = backgroundColor;
@@ -124,8 +120,17 @@ export const Debugger = ({
   const sketch = useCallback(
     (p5: P5CanvasInstance) => {
       p5.setup = () => {
-        p5.createCanvas(innerWidth, innerHeight);
+        p5.createCanvas(p5.windowWidth, p5.windowHeight);
         p5.fill(255);
+      };
+
+      p5.updateWithProps = (props) => {
+        if (props.canvasWidth && props.canvasHeight) {
+          p5.resizeCanvas(
+            Number(props.canvasWidth),
+            Number(props.canvasHeight)
+          );
+        }
       };
 
       p5.draw = () => {
@@ -183,17 +188,16 @@ export const Debugger = ({
           p5.line(bboxCenter.x, box[1], bboxCenter.x, box[3]);
           p5.line(box[0], bboxCenter.y, box[2], bboxCenter.y);
           p5.pop();
+          p5.push();
+          p5.stroke(255, 0, 0);
+          p5.strokeWeight(10);
+          p5.noFill();
+          p5.rect(0, 0, p5.width, p5.height);
+          p5.pop();
         }
       };
     },
-    [
-      thresholdRef,
-      displayedPeopleRef,
-      xOffset,
-      yOffset,
-      innerWidth,
-      innerHeight,
-    ]
+    [thresholdRef, displayedPeopleRef, xOffset, yOffset]
   );
 
   return (
@@ -201,8 +205,12 @@ export const Debugger = ({
       {debuggerVisibility && (
         <div>
           {guideVisibility && (
-            <div style={{ position: "absolute", top: 0, left: 0, zIndex: 90 }}>
-              <NextReactP5Wrapper sketch={sketch} />
+            <div className="canvas-wrapper">
+              <NextReactP5Wrapper
+                sketch={sketch}
+                canvasWidth={canvasSize.width}
+                canvasHeight={canvasSize.height}
+              />
             </div>
           )}
 
@@ -292,6 +300,32 @@ export const Debugger = ({
                 />
               </div>
               <div>
+                <p className="headline">canvas width:</p>
+                <input
+                  type="number"
+                  defaultValue={canvasSize.width}
+                  onChange={(e) => {
+                    setCanvasSize({
+                      width: Number(e.target.value),
+                      height: canvasSize.height,
+                    });
+                  }}
+                />
+              </div>
+              <div>
+                <p className="headline">canvas height:</p>
+                <input
+                  type="number"
+                  defaultValue={canvasSize.height}
+                  onChange={(e) => {
+                    setCanvasSize({
+                      width: canvasSize.width,
+                      height: Number(e.target.value),
+                    });
+                  }}
+                />
+              </div>
+              <div>
                 <p className="headline">server:</p>
                 <input
                   type="text"
@@ -370,6 +404,7 @@ export const Debugger = ({
           </div>
           {cameraVisibility && (
             <Monitor
+              canvasSize={canvasSize}
               setCameraResolution={setCameraResolution}
               mirrored={mirrored}
               scale={scale}
@@ -431,6 +466,14 @@ export const Debugger = ({
               display: flex;
               width: 9rem;
               justify-content: space-between;
+            }
+
+            .canvas-wrapper {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              z-index: 90;
             }
           `}</style>
         </div>

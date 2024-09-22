@@ -27,7 +27,7 @@ export function Sketch({
   const [yOffset, setYOffset] = useState<number>(0);
   const [xSpeedThreshold, setXSpeedThreshold] = useState<number>(50);
   const [ySpeedThreshold, setYSpeedThreshold] = useState<number>(50);
-  const [canvaSize, setCanvasSize] = useState<{
+  const [canvasSize, setCanvasSize] = useState<{
     width: number;
     height: number;
   }>({ width: 0, height: 0 });
@@ -54,15 +54,15 @@ export function Sketch({
       let isAudioEnabled = false;
 
       p5.setup = () => {
-        p5.createCanvas(canvaSize.width, canvaSize.height);
+        p5.createCanvas(p5.windowWidth, p5.windowHeight);
         p5.fill(textColor);
         p5.noStroke();
-        const aspectRatio = canvaSize.height / canvaSize.width;
+        const aspectRatio = p5.height / p5.width;
 
         if (aspectRatio >= inputAspectRatio) {
-          k = canvaSize.width / inputImageSize.x;
+          k = p5.width / inputImageSize.x;
         } else {
-          k = canvaSize.height / inputImageSize.y;
+          k = p5.height / inputImageSize.y;
         }
       };
 
@@ -76,6 +76,21 @@ export function Sketch({
           (displayedPerson) =>
             peopleRef.current.some((person) => person.id === displayedPerson.id)
         );
+
+        if (props.canvasWidth && props.canvasHeight) {
+          p5.resizeCanvas(
+            Number(props.canvasWidth),
+            Number(props.canvasHeight)
+          );
+
+          const aspectRatio = p5.height / p5.width;
+
+          if (aspectRatio >= inputAspectRatio) {
+            k = p5.width / inputImageSize.x;
+          } else {
+            k = p5.height / inputImageSize.y;
+          }
+        }
       };
 
       p5.draw = () => {
@@ -104,6 +119,7 @@ export function Sketch({
         }
 
         p5.clear();
+
         p5.translate(xOffset, yOffset);
         // p5.background(255, 0, 0);
 
@@ -138,43 +154,47 @@ export function Sketch({
         }
       };
     },
-    [
-      textColor,
-      xOffset,
-      yOffset,
-      scale,
-      xSpeedThreshold,
-      ySpeedThreshold,
-      canvaSize,
-    ]
+    [textColor, xOffset, yOffset, scale, xSpeedThreshold, ySpeedThreshold]
   );
 
   return (
     <>
-      <NextReactP5Wrapper
-        sketch={sketch}
-        people={people}
-        isAudioEnabled={isAudioEnabled}
-      />
-      <Debugger
-        thresholdRef={thresholdRef}
-        displayedPeopleRef={displayedPeopleRef}
-        setTextColor={setTextColor}
-        xOffset={xOffset}
-        yOffset={yOffset}
-        canvasSize={canvaSize}
-        scale={scale}
-        setXOffset={setXOffset}
-        setYOffset={setYOffset}
-        server={server}
-        setServer={setServer}
-        xSpeedThreshold={xSpeedThreshold}
-        ySpeedThreshold={ySpeedThreshold}
-        setXSpeedThreshold={setXSpeedThreshold}
-        setYSpeedThreshold={setYSpeedThreshold}
-        setScale={setScale}
-        setCanvasSize={setCanvasSize}
-      />
+      <div className="canvas-wrapper">
+        <NextReactP5Wrapper
+          sketch={sketch}
+          people={people}
+          isAudioEnabled={isAudioEnabled}
+          canvasWidth={canvasSize.width}
+          canvasHeight={canvasSize.height}
+        />
+        <Debugger
+          thresholdRef={thresholdRef}
+          displayedPeopleRef={displayedPeopleRef}
+          setTextColor={setTextColor}
+          xOffset={xOffset}
+          yOffset={yOffset}
+          canvasSize={canvasSize}
+          scale={scale}
+          setXOffset={setXOffset}
+          setYOffset={setYOffset}
+          server={server}
+          setServer={setServer}
+          xSpeedThreshold={xSpeedThreshold}
+          ySpeedThreshold={ySpeedThreshold}
+          setXSpeedThreshold={setXSpeedThreshold}
+          setYSpeedThreshold={setYSpeedThreshold}
+          setScale={setScale}
+          setCanvasSize={setCanvasSize}
+        />
+      </div>
+      <style jsx>{`
+        .canvas-wrapper {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+      `}</style>
     </>
   );
 }

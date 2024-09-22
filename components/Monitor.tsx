@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Webcam from "react-webcam";
 
 type MonitorProps = {
@@ -9,6 +9,7 @@ type MonitorProps = {
   xOffset: number;
   yOffset: number;
   mirrored: boolean;
+  canvasSize: { width: number; height: number };
 };
 
 export const Monitor = ({
@@ -17,15 +18,9 @@ export const Monitor = ({
   mirrored,
   xOffset,
   yOffset,
+  canvasSize,
 }: MonitorProps) => {
-  const [innerWidth, setInnerWidth] = useState<number>(0);
-  const [innerHeight, setInnerHeight] = useState<number>(0);
   const webcamContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setInnerWidth(window.innerWidth);
-    setInnerHeight(window.innerHeight);
-  }, []);
 
   useEffect(() => {
     webcamContainerRef.current!.style.left = `${xOffset}px`;
@@ -62,8 +57,8 @@ export const Monitor = ({
       >
         <Webcam
           mirrored={mirrored ? true : false}
-          width={innerWidth * scale}
-          height={innerHeight * scale}
+          width={canvasSize.width * scale}
+          height={canvasSize.height * scale}
           onUserMedia={handleUserMedia}
           videoConstraints={videoConstraints}
         />
