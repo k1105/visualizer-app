@@ -21,7 +21,6 @@ export function Sketch({
   const thresholdRef = useRef<number>(200);
   const peopleRef = useRef<Person[]>([]);
   const displayedPeopleRef = useRef<DisplayedPerson[]>([]);
-  const displayCharacterRef = useRef<string>("i");
   const [textColor, setTextColor] = useState<string>("white");
   const [scale, setScale] = useState<number>(1);
   const [xOffset, setXOffset] = useState<number>(0);
@@ -112,7 +111,7 @@ export function Sketch({
               person.bbox.width() / 10,
               person.bbox.height() / 10
             );
-            if (res !== "") displayCharacterRef.current = res;
+            if (res !== "") person.displayCharacter = res;
           } else {
             //walking
             if (isAudioEnabled && p5.frameCount - person.lastUpdated > 5) {
@@ -123,11 +122,11 @@ export function Sketch({
               }, 200);
               person.pausedFrameCount = 0;
             }
-            displayCharacterRef.current =
+            person.displayCharacter =
               charList[person.characterId % charList.length];
           }
 
-          p5.text(displayCharacterRef.current, box[0], box[1], box[2] - box[0]);
+          p5.text(person.displayCharacter, box[0], box[1], box[2] - box[0]);
         }
       };
     },

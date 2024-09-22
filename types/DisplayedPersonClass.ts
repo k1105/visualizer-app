@@ -7,6 +7,7 @@ export class DisplayedPerson extends Person {
   smoothedBbox: Bbox;
   movingStatus: "walking" | "paused";
   pausedFrameCount: number;
+  displayCharacter: string;
   private bboxes: Bbox[];
 
   constructor(
@@ -22,6 +23,7 @@ export class DisplayedPerson extends Person {
     this.pausedFrameCount = 0;
     this.bboxes = [bbox];
     this.smoothedBbox = bbox;
+    this.displayCharacter = "i";
   }
 
   update(person: Person) {
