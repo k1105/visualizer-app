@@ -209,7 +209,6 @@ export const Debugger = ({
           <div
             className={`debugger-container ${align === "center" && "center"}
              ${align === "left" && "left"} ${align === "right" && "right"}`}
-            style={{ zIndex: 99 }}
           >
             <div className="item-list">
               <div>
@@ -389,6 +388,7 @@ export const Debugger = ({
               flex-flow: column;
               gap: 2rem;
               position: absolute;
+              z-index: 99;
 
               &.left {
                 top: 10px;
