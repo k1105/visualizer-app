@@ -380,11 +380,6 @@ export const Debugger = ({
           )}
 
           <style jsx>{`
-            .main {
-              width: 100vw;
-              height: 100vh;
-            }
-
             .debugger-container {
               background-color: rgb(0 0 0 /0.3);
               padding: 30px;
