@@ -83,7 +83,7 @@ export function Sketch({
             displayedPeopleRef.current.push(
               new DisplayedPerson(
                 person.id,
-                person.speed,
+                person.getSpeed(),
                 person.bbox,
                 p5.frameCount
               )

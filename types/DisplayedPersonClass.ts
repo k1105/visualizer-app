@@ -28,7 +28,7 @@ export class DisplayedPerson extends Person {
 
   update(person: Person) {
     this.bbox = person.bbox;
-    this.speed = person.speed;
+    this.setSpeed(person.getSpeed());
     this.bboxes.push(person.bbox);
     if (this.bboxes.length > 5) this.bboxes.shift();
 
@@ -54,16 +54,17 @@ export class DisplayedPerson extends Person {
   }
 
   updateMovingStatus(xSpeedThreshold: number, ySpeedThreshold: number) {
+    const speed = this.getSpeed();
     if (
-      Math.abs(this.speed.x) > xSpeedThreshold ||
+      Math.abs(speed.x) > xSpeedThreshold ||
       this.movingStatus === "walking"
     ) {
       this.movingStatus = "walking";
     }
 
     if (
-      Math.abs(this.speed.x) < xSpeedThreshold &&
-      Math.abs(this.speed.y) < ySpeedThreshold
+      Math.abs(speed.x) < xSpeedThreshold &&
+      Math.abs(speed.y) < ySpeedThreshold
     ) {
       this.pausedFrameCount++;
       if (this.pausedFrameCount > 3) {

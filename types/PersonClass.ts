@@ -2,7 +2,7 @@ import { Bbox } from "./BboxClass";
 
 export class Person implements PersonAttribute {
   id: number;
-  speed: { x: number; y: number };
+  private speed: { x: number; y: number };
   bbox: Bbox;
   lostFrameCount: number;
 
@@ -11,5 +11,13 @@ export class Person implements PersonAttribute {
     this.speed = speed;
     this.bbox = bbox;
     this.lostFrameCount = 0;
+  }
+
+  getSpeed() {
+    return this.speed;
+  }
+
+  setSpeed(speed: { x: number; y: number }) {
+    this.speed = speed;
   }
 }
