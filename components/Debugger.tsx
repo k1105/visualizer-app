@@ -22,6 +22,7 @@ type Props = {
   scale: number;
   xOffset: number;
   yOffset: number;
+  canvasSize: { width: number; height: number };
   server: string;
   setScale: (scale: number) => void;
   setXOffset: (offset: number) => void;
@@ -31,6 +32,7 @@ type Props = {
   setYSpeedThreshold: (threshold: number) => void;
   xSpeedThreshold: number;
   ySpeedThreshold: number;
+  setCanvasSize: (size: { width: number; height: number }) => void;
 };
 
 export const Debugger = ({
@@ -59,6 +61,7 @@ export const Debugger = ({
     height: number;
   } | null>(null);
 
+  const [align, setAlign] = useState<string>("left");
   const [cameraVisibility, setCameraVisibility] = useState<boolean>(true);
   const [guideVisibility, setGuideVisibility] = useState<boolean>(true);
   const [debuggerVisibility, setDebuggerVisibility] = useState<boolean>(true);
@@ -82,6 +85,21 @@ export const Debugger = ({
       if (event.key === "d" || event.key === "D") {
         // 大文字小文字両方に対応
         setDebuggerVisibility((prev) => !prev);
+      }
+
+      if (event.key === "l" || event.key === "L") {
+        // 大文字小文字両方に対応
+        setAlign("left");
+      }
+
+      if (event.key === "r" || event.key === "R") {
+        // 大文字小文字両方に対応
+        setAlign("right");
+      }
+
+      if (event.key === "c" || event.key === "C") {
+        // 大文字小文字両方に対応
+        setAlign("center");
       }
     };
 
@@ -189,8 +207,9 @@ export const Debugger = ({
           )}
 
           <div
-            className="debugger-container"
-            style={{ position: "absolute", top: 0, left: 0, zIndex: 99 }}
+            className={`debugger-container ${align === "center" && "center"}
+             ${align === "left" && "left"} ${align === "right" && "right"}`}
+            style={{ zIndex: 99 }}
           >
             <div className="item-list">
               <div>
@@ -361,17 +380,37 @@ export const Debugger = ({
           )}
 
           <style jsx>{`
+            .main {
+              width: 100vw;
+              height: 100vh;
+            }
+
             .debugger-container {
               background-color: rgb(0 0 0 /0.3);
               padding: 30px;
               color: white;
               border-radius: 10px;
-              margin-left: 10px;
-              margin-top: 10px;
               display: flex;
               flex-flow: column;
               gap: 2rem;
+              position: absolute;
+
+              &.left {
+                top: 10px;
+                left: 10px;
+              }
+
+              &.center {
+                top: 10px;
+                left: 40vw;
+              }
+
+              &.right {
+                top: 10px;
+                right: 10px;
+              }
             }
+
             .headline {
               font-size: 0.9rem;
               margin-bottom: 0.2rem;

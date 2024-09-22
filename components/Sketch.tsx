@@ -4,7 +4,7 @@ import { NextReactP5Wrapper } from "@p5-wrapper/next";
 import { Person } from "@/types/PersonClass";
 import { DisplayedPerson } from "@/types/DisplayedPersonClass";
 import { Debugger } from "./Debugger";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { findClosestCharacter } from "@/lib/findClosestCharacter";
 
 export function Sketch({
@@ -27,6 +27,14 @@ export function Sketch({
   const [yOffset, setYOffset] = useState<number>(0);
   const [xSpeedThreshold, setXSpeedThreshold] = useState<number>(50);
   const [ySpeedThreshold, setYSpeedThreshold] = useState<number>(50);
+  const [canvaSize, setCanvasSize] = useState<{
+    width: number;
+    height: number;
+  }>({ width: 0, height: 0 });
+
+  useEffect(() => {
+    setCanvasSize({ width: window.innerWidth, height: window.innerHeight });
+  }, []);
 
   const sketch = useCallback(
     (p5: P5CanvasInstance) => {
@@ -46,15 +54,15 @@ export function Sketch({
       let isAudioEnabled = false;
 
       p5.setup = () => {
-        p5.createCanvas(innerWidth, innerHeight);
+        p5.createCanvas(canvaSize.width, canvaSize.height);
         p5.fill(textColor);
         p5.noStroke();
-        const aspectRatio = innerHeight / innerWidth;
+        const aspectRatio = canvaSize.height / canvaSize.width;
 
         if (aspectRatio >= inputAspectRatio) {
-          k = innerWidth / inputImageSize.x;
+          k = canvaSize.width / inputImageSize.x;
         } else {
-          k = innerHeight / inputImageSize.y;
+          k = canvaSize.height / inputImageSize.y;
         }
       };
 
@@ -130,7 +138,15 @@ export function Sketch({
         }
       };
     },
-    [textColor, xOffset, yOffset, scale, xSpeedThreshold, ySpeedThreshold]
+    [
+      textColor,
+      xOffset,
+      yOffset,
+      scale,
+      xSpeedThreshold,
+      ySpeedThreshold,
+      canvaSize,
+    ]
   );
 
   return (
@@ -146,6 +162,7 @@ export function Sketch({
         setTextColor={setTextColor}
         xOffset={xOffset}
         yOffset={yOffset}
+        canvasSize={canvaSize}
         scale={scale}
         setXOffset={setXOffset}
         setYOffset={setYOffset}
@@ -156,6 +173,7 @@ export function Sketch({
         setXSpeedThreshold={setXSpeedThreshold}
         setYSpeedThreshold={setYSpeedThreshold}
         setScale={setScale}
+        setCanvasSize={setCanvasSize}
       />
     </>
   );
