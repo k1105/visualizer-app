@@ -1,19 +1,12 @@
-import { P5CanvasInstance } from "@p5-wrapper/react";
 import { DisplayedPerson } from "@/types/DisplayedPersonClass";
-import { NextReactP5Wrapper } from "@p5-wrapper/next";
-import {
-  MutableRefObject,
-  useCallback,
-  useRef,
-  useState,
-  useEffect,
-} from "react";
+import { MutableRefObject, useRef, useState, useEffect } from "react";
 import { Monitor } from "./Monitor";
-import { ColorPalette } from "./ColorPalette";
-import { VisibilityOn } from "./icon/VisibilityOn";
-import { VisibilityOff } from "./icon/VisibilityOff";
+import { ColorPalette } from "./debugger/ColorPalette";
 import { RadioOn } from "./icon/RadioOn";
 import { RadioOff } from "./icon/RadioOff";
+import Guide from "./debugger/Guide";
+import ToggleVisibilityButton from "./debugger/ToggleVisibilityButton";
+import ValueInputField from "./debugger/ValueInputField";
 
 type Props = {
   thresholdRef: MutableRefObject<number>;
@@ -117,103 +110,19 @@ export const Debugger = ({
     }
   }, [debuggerVisibility]);
 
-  const sketch = useCallback(
-    (p5: P5CanvasInstance) => {
-      p5.setup = () => {
-        p5.createCanvas(p5.windowWidth, p5.windowHeight);
-        p5.fill(255);
-      };
-
-      p5.updateWithProps = (props) => {
-        if (props.canvasWidth && props.canvasHeight) {
-          p5.resizeCanvas(
-            Number(props.canvasWidth),
-            Number(props.canvasHeight)
-          );
-        }
-      };
-
-      p5.draw = () => {
-        frameRateTextRef.current!.innerText = `${Math.floor(p5.frameRate())}`;
-        thresholdTextRef.current!.innerText = `${thresholdRef.current}`;
-
-        p5.clear();
-        p5.textSize(16);
-        p5.textAlign(p5.LEFT);
-
-        p5.translate(xOffset, yOffset);
-
-        for (const person of displayedPeopleRef.current) {
-          const box = person.smoothedBbox.bbox;
-          const bboxCenter = person.smoothedBbox.center();
-          const speed = person.getSpeed();
-          p5.push();
-          p5.textAlign(p5.LEFT);
-          p5.translate(20, 50);
-          p5.textSize(20);
-          p5.text("id: " + person.id, box[0], box[1]);
-          p5.translate(0, 30);
-          p5.text(
-            "speed-x: " + Math.floor(speed.x * 100) / 100,
-            box[0],
-            box[1]
-          );
-          p5.translate(0, 30);
-          p5.text(
-            "speed-y: " + Math.floor(speed.y * 100) / 100,
-            box[0],
-            box[1]
-          );
-          p5.translate(0, 30);
-          p5.text(
-            `bbox-size: ${Math.floor(person.bbox.width() * 100) / 100} x ${
-              Math.floor(person.bbox.height() * 100) / 100
-            }`,
-            box[0],
-            box[1]
-          );
-          p5.pop();
-
-          p5.push();
-          p5.noFill();
-          p5.stroke(0, 255, 0);
-          if (person.movingStatus == "walking") {
-            p5.strokeWeight(10);
-          }
-          // p5.circle(bboxCenter.x, bboxCenter.y, thresholdRef.current * 2);
-          p5.stroke("#3D72AA");
-          p5.rect(box[0], box[1], box[2] - box[0], box[3] - box[1]);
-          p5.strokeWeight(1);
-          p5.drawingContext.setLineDash([5, 5]);
-          p5.line(bboxCenter.x, box[1], bboxCenter.x, box[3]);
-          p5.line(box[0], bboxCenter.y, box[2], bboxCenter.y);
-          p5.pop();
-        }
-
-        p5.push();
-        p5.stroke(255, 0, 0);
-        p5.strokeWeight(10);
-        p5.noFill();
-        p5.rect(0, 0, p5.width, p5.height);
-        p5.pop();
-      };
-    },
-    [thresholdRef, displayedPeopleRef, xOffset, yOffset]
-  );
-
   return (
     <>
       {debuggerVisibility && (
         <div>
-          {guideVisibility && (
-            <div className="canvas-wrapper">
-              <NextReactP5Wrapper
-                sketch={sketch}
-                canvasWidth={canvasSize.width}
-                canvasHeight={canvasSize.height}
-              />
-            </div>
-          )}
+          <Guide
+            frameRateTextRef={frameRateTextRef}
+            thresholdTextRef={thresholdTextRef}
+            thresholdRef={thresholdRef}
+            xOffset={xOffset}
+            yOffset={yOffset}
+            displayedPeopleRef={displayedPeopleRef}
+            canvasSize={canvasSize}
+          />
 
           <div
             className={`debugger-container ${align === "center" && "center"}
@@ -249,57 +158,31 @@ export const Debugger = ({
                 <p className="headline">Text Color: </p>
                 <ColorPalette setColor={setTextColor} />
               </div>
-              <div>
-                <p className="headline">Scale:</p>
-                <input
-                  type="number"
-                  defaultValue={scale}
-                  step={0.1}
-                  onChange={(e) => {
-                    setScale(Number(e.target.value));
-                  }}
-                />
-              </div>
-              <div>
-                <p className="headline">X-offset:</p>
-                <input
-                  type="number"
-                  defaultValue={xOffset}
-                  onChange={(e) => {
-                    setXOffset(Number(e.target.value));
-                  }}
-                />
-              </div>
-              <div>
-                <p className="headline">Y-offset:</p>
-                <input
-                  type="number"
-                  defaultValue={yOffset}
-                  onChange={(e) => {
-                    setYOffset(Number(e.target.value));
-                  }}
-                />
-              </div>
-              <div>
-                <p className="headline">X-speed threshold:</p>
-                <input
-                  type="number"
-                  defaultValue={xSpeedThreshold}
-                  onChange={(e) => {
-                    setXSpeedThreshold(Number(e.target.value));
-                  }}
-                />
-              </div>
-              <div>
-                <p className="headline">Y-speed threshold:</p>
-                <input
-                  type="number"
-                  defaultValue={ySpeedThreshold}
-                  onChange={(e) => {
-                    setYSpeedThreshold(Number(e.target.value));
-                  }}
-                />
-              </div>
+              <ValueInputField
+                propertyName="Scale"
+                value={scale}
+                setValue={setScale}
+              />
+              <ValueInputField
+                propertyName="X-Offset"
+                value={xOffset}
+                setValue={setXOffset}
+              />
+              <ValueInputField
+                propertyName="Y-offset"
+                value={yOffset}
+                setValue={setYOffset}
+              />
+              <ValueInputField
+                propertyName="X-Speed Threshold"
+                value={xSpeedThreshold}
+                setValue={setXSpeedThreshold}
+              />
+              <ValueInputField
+                propertyName="Y-Speed Threshold"
+                value={ySpeedThreshold}
+                setValue={setYSpeedThreshold}
+              />
               <div>
                 <p className="headline">canvas width:</p>
                 <input
@@ -356,51 +239,21 @@ export const Debugger = ({
                   />
                 )}
               </div>
-              <div
-                className="toggle-list"
-                onClick={() => {
-                  setCameraVisibility(!cameraVisibility);
-                }}
-              >
-                <p>Camera:</p>
-                {cameraVisibility ? (
-                  <VisibilityOn
-                    style={{ width: "1.5rem", height: "1.5rem", color: "gray" }}
-                  />
-                ) : (
-                  <VisibilityOff
-                    style={{ width: "1.5rem", height: "1.5rem", color: "gray" }}
-                  />
-                )}
-              </div>
-              <div
-                className="toggle-list"
-                onClick={() => {
-                  setGuideVisibility(!guideVisibility);
-                }}
-              >
-                <p>Guide:</p>
-                {guideVisibility ? (
-                  <VisibilityOn
-                    style={{ width: "1.5rem", height: "1.5rem", color: "gray" }}
-                  />
-                ) : (
-                  <VisibilityOff
-                    style={{ width: "1.5rem", height: "1.5rem", color: "gray" }}
-                  />
-                )}
-              </div>
-              <div
-                className="toggle-list"
-                onClick={() => {
-                  setDebuggerVisibility(false);
-                }}
-              >
-                <p>Debugger:</p>
-                <VisibilityOn
-                  style={{ width: "1.5rem", height: "1.5rem", color: "gray" }}
-                />
-              </div>
+              <ToggleVisibilityButton
+                propertyName="Camera"
+                visibility={cameraVisibility}
+                setVisibility={setCameraVisibility}
+              />
+              <ToggleVisibilityButton
+                propertyName="Guide"
+                visibility={guideVisibility}
+                setVisibility={setGuideVisibility}
+              />
+              <ToggleVisibilityButton
+                propertyName="Debugger"
+                visibility={debuggerVisibility}
+                setVisibility={setDebuggerVisibility}
+              />
             </div>
           </div>
           {cameraVisibility && (

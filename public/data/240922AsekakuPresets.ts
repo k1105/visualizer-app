@@ -1,4 +1,5 @@
 type Props = {
+  name: string;
   xOffset: number;
   yOffset: number;
   scale: number;
@@ -8,12 +9,13 @@ type Props = {
   ySpeedThreshold: number;
 };
 
-export const presets: Props = {
-  xOffset: 100,
-  yOffset: 100,
+export const asekakuPresets: Props = {
+  name: "240922_asekaku",
   scale: 1,
-  canvasSize: { width: 1920, height: 1080 },
-  server: "192.168.1.10",
+  xOffset: -296,
+  yOffset: -120,
   xSpeedThreshold: 200,
   ySpeedThreshold: 200,
+  canvasSize: { width: 1680, height: 1080 },
+  server: "192.168.1.10",
 };
