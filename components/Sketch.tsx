@@ -25,6 +25,8 @@ export function Sketch({
   const [scale, setScale] = useState<number>(1);
   const [xOffset, setXOffset] = useState<number>(0);
   const [yOffset, setYOffset] = useState<number>(0);
+  const [xTranslate, setXTranslate] = useState<number>(50);
+  const [yTranslate, setYTranslate] = useState<number>(50);
   const [xSpeedThreshold, setXSpeedThreshold] = useState<number>(50);
   const [ySpeedThreshold, setYSpeedThreshold] = useState<number>(50);
   const [canvasSize, setCanvasSize] = useState<{
@@ -168,6 +170,10 @@ export function Sketch({
           canvasHeight={canvasSize.height}
         />
         <Debugger
+          xTranslate={xTranslate}
+          yTranslate={yTranslate}
+          setXTranslate={setXTranslate}
+          setYTranslate={setYTranslate}
           thresholdRef={thresholdRef}
           displayedPeopleRef={displayedPeopleRef}
           setTextColor={setTextColor}
@@ -192,7 +198,7 @@ export function Sketch({
           position: absolute;
           top: 50%;
           left: 50%;
-          transform: translate(-50%, -50%);
+          transform: translate(${-xTranslate}%, ${-yTranslate}%);
         }
       `}</style>
     </>

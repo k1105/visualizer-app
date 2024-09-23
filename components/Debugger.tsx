@@ -17,12 +17,16 @@ type Props = {
   displayedPeopleRef: MutableRefObject<DisplayedPerson[]>;
   setTextColor: (color: string) => void;
   scale: number;
+  xTranslate: number;
+  yTranslate: number;
   xOffset: number;
   yOffset: number;
   canvasSize: { width: number; height: number };
   server: string;
   xSpeedThreshold: number;
   ySpeedThreshold: number;
+  setXTranslate: (val: number) => void;
+  setYTranslate: (val: number) => void;
   setScale: (scale: number) => void;
   setXOffset: (offset: number) => void;
   setYOffset: (offset: number) => void;
@@ -36,6 +40,8 @@ export const Debugger = ({
   thresholdRef,
   displayedPeopleRef,
   scale,
+  xTranslate,
+  yTranslate,
   xOffset,
   yOffset,
   server,
@@ -44,6 +50,8 @@ export const Debugger = ({
   ySpeedThreshold,
   setTextColor,
   setScale,
+  setXTranslate,
+  setYTranslate,
   setXOffset,
   setYOffset,
   setServer,
@@ -184,6 +192,16 @@ export const Debugger = ({
                 propertyName="Scale"
                 value={scale}
                 setValue={setScale}
+              />
+              <ValueInputField
+                propertyName="X-Translate"
+                value={xTranslate}
+                setValue={setXTranslate}
+              />
+              <ValueInputField
+                propertyName="Y-Translate"
+                value={yTranslate}
+                setValue={setYTranslate}
               />
               <ValueInputField
                 propertyName="X-Offset"
