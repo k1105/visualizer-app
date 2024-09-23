@@ -25,6 +25,7 @@ type Props = {
   server: string;
   xSpeedThreshold: number;
   ySpeedThreshold: number;
+  debuggerVisibility: boolean;
   setXTranslate: (val: number) => void;
   setYTranslate: (val: number) => void;
   setScale: (scale: number) => void;
@@ -34,9 +35,12 @@ type Props = {
   setXSpeedThreshold: (threshold: number) => void;
   setYSpeedThreshold: (threshold: number) => void;
   setCanvasSize: (size: { width: number; height: number }) => void;
+  setDebuggerVisibility: (debuggerVisibility: boolean) => void;
 };
 
 export const Debugger = ({
+  debuggerVisibility,
+  setDebuggerVisibility,
   thresholdRef,
   displayedPeopleRef,
   scale,
@@ -71,7 +75,6 @@ export const Debugger = ({
   const [align, setAlign] = useState<string>("left");
   const [cameraVisibility, setCameraVisibility] = useState<boolean>(true);
   const [guideVisibility, setGuideVisibility] = useState<boolean>(true);
-  const [debuggerVisibility, setDebuggerVisibility] = useState<boolean>(true);
   const [showMessage, setShowMessage] = useState<boolean>(false);
 
   const [mirrored, setMirrored] = useState<boolean>(false);
@@ -103,7 +106,7 @@ export const Debugger = ({
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "d" || event.key === "D") {
         // 大文字小文字両方に対応
-        setDebuggerVisibility((prev) => !prev);
+        setDebuggerVisibility(!debuggerVisibility);
       }
 
       if (event.key === "l" || event.key === "L") {
@@ -126,7 +129,7 @@ export const Debugger = ({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [debuggerVisibility, setDebuggerVisibility]);
 
   // Show "Press d to show Debugger." message for 5 seconds after hiding the debugger
   useEffect(() => {

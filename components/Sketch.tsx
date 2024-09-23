@@ -33,6 +33,7 @@ export function Sketch({
     width: number;
     height: number;
   }>({ width: 0, height: 0 });
+  const [debuggerVisibility, setDebuggerVisibility] = useState<boolean>(true);
 
   useEffect(() => {
     setCanvasSize({ width: window.innerWidth, height: window.innerHeight });
@@ -170,6 +171,8 @@ export function Sketch({
           canvasHeight={canvasSize.height}
         />
         <Debugger
+          debuggerVisibility={debuggerVisibility}
+          setDebuggerVisibility={setDebuggerVisibility}
           xTranslate={xTranslate}
           yTranslate={yTranslate}
           setXTranslate={setXTranslate}
@@ -195,6 +198,7 @@ export function Sketch({
       </div>
       <style jsx>{`
         .canvas-wrapper {
+          cursor: ${!debuggerVisibility && "none"};
           position: absolute;
           top: 50%;
           left: 50%;

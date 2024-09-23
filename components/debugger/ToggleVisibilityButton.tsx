@@ -8,7 +8,7 @@ const ToggleVisibilityButton = ({
   setVisibility,
 }: {
   propertyName: string;
-  setVisibility: (value: SetStateAction<boolean>) => void;
+  setVisibility: (value: boolean) => void;
   visibility: boolean;
 }) => {
   return (
@@ -16,7 +16,7 @@ const ToggleVisibilityButton = ({
       <div
         className="toggle-list"
         onClick={() => {
-          setVisibility((prev) => !prev);
+          setVisibility(!visibility);
         }}
       >
         <p>{propertyName}:</p>
