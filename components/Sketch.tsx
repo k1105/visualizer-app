@@ -129,7 +129,7 @@ export function Sketch({
         for (const person of displayedPeopleRef.current) {
           const box = person.smoothedBbox.bbox;
 
-          p5.textSize(box[3] - box[1]);
+          p5.textSize(1000);
           p5.textAlign(p5.CENTER);
           person.updateMovingStatus(xSpeedThreshold, ySpeedThreshold);
 
