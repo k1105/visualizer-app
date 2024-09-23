@@ -188,13 +188,14 @@ export const Debugger = ({
           p5.line(bboxCenter.x, box[1], bboxCenter.x, box[3]);
           p5.line(box[0], bboxCenter.y, box[2], bboxCenter.y);
           p5.pop();
-          p5.push();
-          p5.stroke(255, 0, 0);
-          p5.strokeWeight(10);
-          p5.noFill();
-          p5.rect(0, 0, p5.width, p5.height);
-          p5.pop();
         }
+
+        p5.push();
+        p5.stroke(255, 0, 0);
+        p5.strokeWeight(10);
+        p5.noFill();
+        p5.rect(0, 0, p5.width, p5.height);
+        p5.pop();
       };
     },
     [thresholdRef, displayedPeopleRef, xOffset, yOffset]
