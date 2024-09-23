@@ -7,6 +7,10 @@ import { RadioOff } from "./icon/RadioOff";
 import Guide from "./debugger/Guide";
 import ToggleVisibilityButton from "./debugger/ToggleVisibilityButton";
 import ValueInputField from "./debugger/ValueInputField";
+import {
+  asekaku_240922,
+  default_preset,
+} from "@/public/data/240922AsekakuPresets";
 
 type Props = {
   thresholdRef: MutableRefObject<number>;
@@ -63,6 +67,24 @@ export const Debugger = ({
   const [showMessage, setShowMessage] = useState<boolean>(false);
 
   const [mirrored, setMirrored] = useState<boolean>(false);
+
+  const presets = [asekaku_240922, default_preset];
+  const [presetName, setPresetName] = useState<string>(presets[0].name);
+
+  const handlePresetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const presetName = e.target.value;
+    const selectedPreset = presets.find((p) => p.name === presetName);
+    if (selectedPreset) {
+      setPresetName(selectedPreset.name);
+      setXOffset(selectedPreset.xOffset);
+      setYOffset(selectedPreset.yOffset);
+      setScale(selectedPreset.scale);
+      setCanvasSize(selectedPreset.canvasSize);
+      setServer(selectedPreset.server);
+      setXSpeedThreshold(selectedPreset.xSpeedThreshold);
+      setYSpeedThreshold(selectedPreset.ySpeedThreshold);
+    }
+  };
 
   useEffect(() => {
     document.body.style.backgroundColor = backgroundColor;
@@ -218,6 +240,20 @@ export const Debugger = ({
                     setServer(String(e.target.value));
                   }}
                 />
+              </div>
+              <div>
+                <p className="headline">Preset</p>
+                <select
+                  id="presetSelector"
+                  value={presetName}
+                  onChange={handlePresetChange}
+                >
+                  {presets.map((preset) => (
+                    <option key={preset.name} value={preset.name}>
+                      {preset.name}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
