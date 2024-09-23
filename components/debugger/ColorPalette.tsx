@@ -8,13 +8,13 @@ export const ColorPalette = ({ setColor }: Props) => {
       <div className="container">
         <div
           className="unit"
-          style={{ backgroundColor: "#AB4F41" }}
-          onClick={() => setColor("#AB4F41")}
+          style={{ backgroundColor: "#31805D" }}
+          onClick={() => setColor("#31805D")}
         />
         <div
           className="unit"
-          style={{ backgroundColor: "#AB9E41" }}
-          onClick={() => setColor("#AB9E41")}
+          style={{ backgroundColor: "#3EA275" }}
+          onClick={() => setColor("#3EA275")}
         />
         <div
           className="unit"
@@ -23,13 +23,13 @@ export const ColorPalette = ({ setColor }: Props) => {
         />
         <div
           className="unit"
-          style={{ backgroundColor: "#5341AB" }}
-          onClick={() => setColor("#5341AB")}
+          style={{ backgroundColor: "#245E44" }}
+          onClick={() => setColor("#245E44")}
         />
         <div
           className="unit"
-          style={{ backgroundColor: "white" }}
-          onClick={() => setColor("white")}
+          style={{ backgroundColor: "#173C2C" }}
+          onClick={() => setColor("#173C2C")}
         />
         <div
           className="unit"
