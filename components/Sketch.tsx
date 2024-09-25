@@ -6,6 +6,7 @@ import { DisplayedPerson } from "@/types/DisplayedPersonClass";
 import { Debugger } from "./Debugger";
 import { useState, useRef, useCallback, useEffect } from "react";
 import { findClosestCharacter } from "@/lib/findClosestCharacter";
+import showCharacter from "./showCharacter";
 
 export function Sketch({
   people,
@@ -27,8 +28,8 @@ export function Sketch({
   const [yOffset, setYOffset] = useState<number>(0);
   const [xTranslate, setXTranslate] = useState<number>(50);
   const [yTranslate, setYTranslate] = useState<number>(50);
-  const [xSpeedThreshold, setXSpeedThreshold] = useState<number>(50);
-  const [ySpeedThreshold, setYSpeedThreshold] = useState<number>(50);
+  const [xSpeedThreshold, setXSpeedThreshold] = useState<number>(1000);
+  const [ySpeedThreshold, setYSpeedThreshold] = useState<number>(1000);
   const [canvasSize, setCanvasSize] = useState<{
     width: number;
     height: number;
@@ -42,7 +43,14 @@ export function Sketch({
   const sketch = useCallback(
     (p5: P5CanvasInstance) => {
       let k = 0; //拡大比率
-      const charList = ["L", "へ", "9", "フ", "8", "乙"];
+      const charList = [
+        { char: "L", xOffset: 10, yOffset: 43 },
+        { char: "へ", xOffset: 5, yOffset: 52 },
+        { char: "9", xOffset: 4, yOffset: 41 },
+        { char: "フ", xOffset: 14, yOffset: 45 },
+        { char: "8", xOffset: 4, yOffset: 42 },
+        { char: "乙", xOffset: 9, yOffset: 40 },
+      ];
       const audioList = [
         new Audio("/audio/lite/L-lite.m4a"),
         new Audio("/audio/lite/He-lite.m4a"),
@@ -128,17 +136,25 @@ export function Sketch({
 
         for (const person of displayedPeopleRef.current) {
           const box = person.smoothedBbox.bbox;
+          const s = 0.01;
 
-          p5.textSize(1000);
-          p5.textAlign(p5.CENTER);
           person.updateMovingStatus(xSpeedThreshold, ySpeedThreshold);
+          const aspectRatio =
+            person.smoothedBbox.height() / person.smoothedBbox.width();
 
           if (person.movingStatus === "paused") {
-            const res = findClosestCharacter(
-              person.bbox.width() / 10,
-              person.bbox.height() / 10
-            );
-            if (res !== "") person.displayCharacter = res;
+            if (aspectRatio > 2) {
+              person.displayCharacter = { char: "I", xOffset: 0, yOffset: 0 };
+            } else if (aspectRatio > 1) {
+              person.displayCharacter = { char: "Y", xOffset: 0, yOffset: 0 };
+            } else {
+              person.displayCharacter = { char: "T", xOffset: 0, yOffset: 0 };
+            }
+            // const res = findClosestCharacter(
+            //   person.bbox.width() * s,
+            //   person.bbox.height() * s
+            // );
+            // if (res.char !== "") person.displayCharacter = res;
           } else {
             //walking
             if (isAudioEnabled && p5.frameCount - person.lastUpdated > 5) {
@@ -153,7 +169,22 @@ export function Sketch({
               charList[person.characterId % charList.length];
           }
 
-          p5.text(person.displayCharacter, box[0], box[1], box[2] - box[0]);
+          showCharacter({ person, p5 });
+
+          // p5.push();
+          // if (person.movingStatus == "walking") {
+          //   p5.textSize(person.bbox.bbox[3] - person.bbox.bbox[1]);
+          //   p5.textAlign(p5.CENTER);
+          //   p5.text(
+          //     person.displayCharacter.char,
+          //     box[0],
+          //     box[1],
+          //     box[2] - box[0]
+          //   );
+          // } else {
+          // }
+
+          // p5.pop();
         }
       };
     },
