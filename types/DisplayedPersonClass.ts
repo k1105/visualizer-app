@@ -56,7 +56,8 @@ export class DisplayedPerson extends Person {
   updateMovingStatus(xSpeedThreshold: number, ySpeedThreshold: number) {
     const speed = this.getSpeed();
     if (
-      Math.abs(speed.x) > xSpeedThreshold ||
+      (Math.abs(speed.x) > xSpeedThreshold &&
+        xSpeedThreshold / ySpeedThreshold > 2) ||
       this.movingStatus === "walking"
     ) {
       this.movingStatus = "walking";
