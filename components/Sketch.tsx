@@ -171,11 +171,12 @@ export function Sketch({
 
             person.previousIndex = res.index;
 
-            person.displayCharacter = {
-              char: res.char,
-              xOffset: 0,
-              yOffset: 0,
-            };
+            if (res.char !== "")
+              person.displayCharacter = {
+                char: res.char,
+                xOffset: 0,
+                yOffset: 0,
+              };
 
             // const res = findClosestCharacter(
             //   person.bbox.width() * s,
@@ -190,6 +191,13 @@ export function Sketch({
               "walking",
               person.previousIndex
             );
+
+            if (res.char !== "")
+              person.displayCharacter = {
+                char: res.char,
+                xOffset: 0,
+                yOffset: 0,
+              };
 
             // if (isAudioEnabled && p5.frameCount - person.lastUpdated > 5) {
             //   person.characterId++;
