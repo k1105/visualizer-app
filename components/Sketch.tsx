@@ -5,9 +5,9 @@ import { Person } from "@/types/PersonClass";
 import { DisplayedPerson } from "@/types/DisplayedPersonClass";
 import { Debugger } from "./Debugger";
 import { useState, useRef, useCallback, useEffect } from "react";
-import { findClosestCharacter } from "@/lib/findClosestCharacter";
 import showCharacter from "./showCharacter";
 import p5Types from "p5";
+import getCharacter from "@/lib/findCharacter";
 
 export function Sketch({
   people,
@@ -150,17 +150,33 @@ export function Sketch({
             person.smoothedBbox.height() / person.smoothedBbox.width();
 
           if (person.movingStatus === "paused") {
-            if (aspectRatio > 2) {
-              person.displayCharacter = { char: "I", xOffset: 0, yOffset: 0 };
-            } else if (aspectRatio > 1) {
-              person.displayCharacter = { char: "Y", xOffset: 0, yOffset: 0 };
-            } else if (aspectRatio > 0.75) {
-              person.displayCharacter = { char: "十", xOffset: 0, yOffset: 0 };
-            } else if (aspectRatio > 0.5) {
-              person.displayCharacter = { char: "大", xOffset: 0, yOffset: 0 };
-            } else {
-              person.displayCharacter = { char: "土", xOffset: 0, yOffset: 0 };
-            }
+            // if (aspectRatio > 2) {
+            //   person.displayCharacter = { char: "I", xOffset: 0, yOffset: 0 };
+            // } else if (aspectRatio > 1) {
+            //   person.displayCharacter = { char: "Y", xOffset: 0, yOffset: 0 };
+            // } else if (aspectRatio > 0.75) {
+            //   person.displayCharacter = { char: "十", xOffset: 0, yOffset: 0 };
+            // } else if (aspectRatio > 0.5) {
+            //   person.displayCharacter = { char: "大", xOffset: 0, yOffset: 0 };
+            // } else {
+            //   person.displayCharacter = { char: "土", xOffset: 0, yOffset: 0 };
+            // }
+
+            const res = getCharacter(
+              person.bbox.width(),
+              person.bbox.height(),
+              "paused",
+              person.previousIndex
+            );
+
+            person.previousIndex = res.index;
+
+            person.displayCharacter = {
+              char: res.char,
+              xOffset: 0,
+              yOffset: 0,
+            };
+
             // const res = findClosestCharacter(
             //   person.bbox.width() * s,
             //   person.bbox.height() * s
@@ -168,16 +184,23 @@ export function Sketch({
             // if (res.char !== "") person.displayCharacter = res;
           } else {
             //walking
-            if (isAudioEnabled && p5.frameCount - person.lastUpdated > 5) {
-              person.characterId++;
-              person.lastUpdated = p5.frameCount;
-              setTimeout(function () {
-                audioList[person.characterId % charList.length].play();
-              }, 200);
-              person.pausedFrameCount = 0;
-            }
-            person.displayCharacter =
-              charList[person.characterId % charList.length];
+            const res = getCharacter(
+              person.bbox.width(),
+              person.bbox.height(),
+              "walking",
+              person.previousIndex
+            );
+
+            // if (isAudioEnabled && p5.frameCount - person.lastUpdated > 5) {
+            //   person.characterId++;
+            //   person.lastUpdated = p5.frameCount;
+            //   setTimeout(function () {
+            //     audioList[person.characterId % charList.length].play();
+            //   }, 200);
+            //   person.pausedFrameCount = 0;
+            // }
+            // person.displayCharacter =
+            //   charList[person.characterId % charList.length];
           }
 
           showCharacter({ person, p5 });

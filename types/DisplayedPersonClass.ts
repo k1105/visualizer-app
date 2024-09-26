@@ -8,6 +8,7 @@ export class DisplayedPerson extends Person {
   movingStatus: "walking" | "paused";
   pausedFrameCount: number;
   displayCharacter: { char: string; xOffset: number; yOffset: number };
+  previousIndex: number | null;
   private bboxes: Bbox[];
 
   constructor(
@@ -24,6 +25,7 @@ export class DisplayedPerson extends Person {
     this.bboxes = [bbox];
     this.smoothedBbox = bbox;
     this.displayCharacter = { char: "i", xOffset: 7, yOffset: 39 };
+    this.previousIndex = null;
   }
 
   update(person: Person) {
@@ -56,8 +58,7 @@ export class DisplayedPerson extends Person {
   updateMovingStatus(xSpeedThreshold: number, ySpeedThreshold: number) {
     const speed = this.getSpeed();
     if (
-      (Math.abs(speed.x) > xSpeedThreshold &&
-        xSpeedThreshold / ySpeedThreshold > 2) ||
+      (Math.abs(speed.x) > xSpeedThreshold && speed.x / speed.y > 2) ||
       this.movingStatus === "walking"
     ) {
       this.movingStatus = "walking";
