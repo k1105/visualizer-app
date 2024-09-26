@@ -7,7 +7,7 @@ import { Debugger } from "./Debugger";
 import { useState, useRef, useCallback, useEffect } from "react";
 import showCharacter from "./showCharacter";
 import p5Types from "p5";
-import getCharacter from "@/lib/findCharacter";
+import findCharacter from "@/lib/findCharacter";
 
 export function Sketch({
   people,
@@ -148,35 +148,21 @@ export function Sketch({
         p5.clear();
 
         p5.translate(offset.x, offset.y);
-        // p5.background(255, 0, 0);
 
         for (const person of displayedPeopleRef.current) {
           const box = person.smoothedBbox.bbox;
-          const s = 0.01;
 
           person.updateMovingStatus(speedThreshold.x, speedThreshold.y);
-          const aspectRatio =
-            person.smoothedBbox.height() / person.smoothedBbox.width();
 
-          if (person.movingStatus === "paused") {
-            // if (aspectRatio > 2) {
-            //   person.displayCharacter = { char: "I", xOffset: 0, yOffset: 0 };
-            // } else if (aspectRatio > 1) {
-            //   person.displayCharacter = { char: "Y", xOffset: 0, yOffset: 0 };
-            // } else if (aspectRatio > 0.75) {
-            //   person.displayCharacter = { char: "十", xOffset: 0, yOffset: 0 };
-            // } else if (aspectRatio > 0.5) {
-            //   person.displayCharacter = { char: "大", xOffset: 0, yOffset: 0 };
-            // } else {
-            //   person.displayCharacter = { char: "土", xOffset: 0, yOffset: 0 };
-            // }
-
-            const res = getCharacter(
+          if (p5.frameCount - person.lastUpdated > 5) {
+            const res = findCharacter(
               person.bbox.width(),
               person.bbox.height(),
-              "paused",
+              person.movingStatus,
               person.previousIndex
             );
+
+            console.log(res.char);
 
             person.previousIndex = res.index;
 
@@ -187,37 +173,7 @@ export function Sketch({
                 yOffset: 0,
               };
 
-            // const res = findClosestCharacter(
-            //   person.bbox.width() * s,
-            //   person.bbox.height() * s
-            // );
-            // if (res.char !== "") person.displayCharacter = res;
-          } else {
-            //walking
-            const res = getCharacter(
-              person.bbox.width(),
-              person.bbox.height(),
-              "walking",
-              person.previousIndex
-            );
-
-            if (res.char !== "")
-              person.displayCharacter = {
-                char: res.char,
-                xOffset: 0,
-                yOffset: 0,
-              };
-
-            // if (isAudioEnabled && p5.frameCount - person.lastUpdated > 5) {
-            //   person.characterId++;
-            //   person.lastUpdated = p5.frameCount;
-            //   setTimeout(function () {
-            //     audioList[person.characterId % charList.length].play();
-            //   }, 200);
-            //   person.pausedFrameCount = 0;
-            // }
-            // person.displayCharacter =
-            //   charList[person.characterId % charList.length];
+            person.lastUpdated = p5.frameCount;
           }
 
           showCharacter({ person, p5 });
