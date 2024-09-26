@@ -7,16 +7,14 @@ const Guide = ({
   frameRateTextRef,
   thresholdTextRef,
   thresholdRef,
-  xOffset,
-  yOffset,
+  offset,
   displayedPeopleRef,
   canvasSize,
 }: {
   frameRateTextRef: RefObject<HTMLParagraphElement>;
   thresholdTextRef: RefObject<HTMLParagraphElement>;
   thresholdRef: MutableRefObject<number>;
-  xOffset: number;
-  yOffset: number;
+  offset: { x: number; y: number };
   displayedPeopleRef: MutableRefObject<DisplayedPerson[]>;
   canvasSize: { width: number; height: number };
 }) => {
@@ -51,7 +49,7 @@ const Guide = ({
         p5.rect(0, 0, p5.width, p5.height);
         p5.pop();
 
-        p5.translate(xOffset, yOffset);
+        p5.translate(offset.x, offset.y);
 
         for (const person of displayedPeopleRef.current) {
           const box = person.smoothedBbox.bbox;
@@ -106,8 +104,7 @@ const Guide = ({
       thresholdTextRef,
       thresholdRef,
       displayedPeopleRef,
-      xOffset,
-      yOffset,
+      offset,
     ]
   );
 

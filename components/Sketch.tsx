@@ -25,12 +25,21 @@ export function Sketch({
   const displayedPeopleRef = useRef<DisplayedPerson[]>([]);
   const [textColor, setTextColor] = useState<string>("white");
   const [scale, setScale] = useState<number>(1);
-  const [xOffset, setXOffset] = useState<number>(0);
-  const [yOffset, setYOffset] = useState<number>(0);
-  const [xTranslate, setXTranslate] = useState<number>(50);
-  const [yTranslate, setYTranslate] = useState<number>(50);
-  const [xSpeedThreshold, setXSpeedThreshold] = useState<number>(1000);
-  const [ySpeedThreshold, setYSpeedThreshold] = useState<number>(1000);
+  const [offset, setOffset] = useState<{ x: number; y: number }>({
+    x: 0,
+    y: 0,
+  });
+  const [translate, setTranslate] = useState<{ x: number; y: number }>({
+    x: 50,
+    y: 50,
+  });
+  const [speedThreshold, setSpeedThreshold] = useState<{
+    x: number;
+    y: number;
+  }>({
+    x: 200,
+    y: 200,
+  });
   const [canvasSize, setCanvasSize] = useState<{
     width: number;
     height: number;
@@ -138,14 +147,14 @@ export function Sketch({
 
         p5.clear();
 
-        p5.translate(xOffset, yOffset);
+        p5.translate(offset.x, offset.y);
         // p5.background(255, 0, 0);
 
         for (const person of displayedPeopleRef.current) {
           const box = person.smoothedBbox.bbox;
           const s = 0.01;
 
-          person.updateMovingStatus(xSpeedThreshold, ySpeedThreshold);
+          person.updateMovingStatus(speedThreshold.x, speedThreshold.y);
           const aspectRatio =
             person.smoothedBbox.height() / person.smoothedBbox.width();
 
@@ -215,7 +224,7 @@ export function Sketch({
         }
       };
     },
-    [textColor, xOffset, yOffset, scale, xSpeedThreshold, ySpeedThreshold]
+    [textColor, offset, scale, speedThreshold]
   );
 
   return (
@@ -231,25 +240,19 @@ export function Sketch({
         <Debugger
           debuggerVisibility={debuggerVisibility}
           setDebuggerVisibility={setDebuggerVisibility}
-          xTranslate={xTranslate}
-          yTranslate={yTranslate}
-          setXTranslate={setXTranslate}
-          setYTranslate={setYTranslate}
+          translate={translate}
+          setTranslate={setTranslate}
           thresholdRef={thresholdRef}
           displayedPeopleRef={displayedPeopleRef}
           setTextColor={setTextColor}
-          xOffset={xOffset}
-          yOffset={yOffset}
+          offset={offset}
           canvasSize={canvasSize}
           scale={scale}
-          setXOffset={setXOffset}
-          setYOffset={setYOffset}
+          setOffset={setOffset}
           server={server}
           setServer={setServer}
-          xSpeedThreshold={xSpeedThreshold}
-          ySpeedThreshold={ySpeedThreshold}
-          setXSpeedThreshold={setXSpeedThreshold}
-          setYSpeedThreshold={setYSpeedThreshold}
+          speedThreshold={speedThreshold}
+          setSpeedThreshold={setSpeedThreshold}
           setScale={setScale}
           setCanvasSize={setCanvasSize}
         />
@@ -260,7 +263,7 @@ export function Sketch({
           position: absolute;
           top: 50%;
           left: 50%;
-          transform: translate(${-xTranslate}%, ${-yTranslate}%);
+          transform: translate(${-translate.x}%, ${-translate.y}%);
         }
       `}</style>
     </>

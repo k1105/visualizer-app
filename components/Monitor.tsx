@@ -6,8 +6,7 @@ type MonitorProps = {
     resolution: { width: number; height: number } | null
   ) => void;
   scale: number;
-  xOffset: number;
-  yOffset: number;
+  offset: { x: number; y: number };
   mirrored: boolean;
   canvasSize: { width: number; height: number };
 };
@@ -16,19 +15,15 @@ export const Monitor = ({
   setCameraResolution,
   scale,
   mirrored,
-  xOffset,
-  yOffset,
+  offset,
   canvasSize,
 }: MonitorProps) => {
   const webcamContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    webcamContainerRef.current!.style.left = `${xOffset}px`;
-  }, [xOffset]);
-
-  useEffect(() => {
-    webcamContainerRef.current!.style.top = `${yOffset}px`;
-  }, [yOffset]);
+    webcamContainerRef.current!.style.left = `${offset.x}px`;
+    webcamContainerRef.current!.style.top = `${offset.y}px`;
+  }, [offset]);
 
   const handleUserMedia = (stream: MediaStream) => {
     const videoTrack = stream.getVideoTracks()[0];

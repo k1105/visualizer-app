@@ -7,33 +7,25 @@ import { RadioOff } from "./icon/RadioOff";
 import Guide from "./debugger/Guide";
 import ToggleVisibilityButton from "./debugger/ToggleVisibilityButton";
 import ValueInputField from "./debugger/ValueInputField";
-import {
-  asekaku_240926,
-  default_preset,
-} from "@/public/data/240922AsekakuPresets";
+import XYInputField from "./debugger/XYInputField";
+import { asekaku_240926, default_preset } from "@/public/data/Presets";
 
 type Props = {
   thresholdRef: MutableRefObject<number>;
   displayedPeopleRef: MutableRefObject<DisplayedPerson[]>;
   setTextColor: (color: string) => void;
   scale: number;
-  xTranslate: number;
-  yTranslate: number;
-  xOffset: number;
-  yOffset: number;
+  translate: { x: number; y: number };
+  offset: { x: number; y: number };
   canvasSize: { width: number; height: number };
   server: string;
-  xSpeedThreshold: number;
-  ySpeedThreshold: number;
+  speedThreshold: { x: number; y: number };
   debuggerVisibility: boolean;
-  setXTranslate: (val: number) => void;
-  setYTranslate: (val: number) => void;
+  setTranslate: (val: { x: number; y: number }) => void;
   setScale: (scale: number) => void;
-  setXOffset: (offset: number) => void;
-  setYOffset: (offset: number) => void;
+  setOffset: (val: { x: number; y: number }) => void;
   setServer: (server: string) => void;
-  setXSpeedThreshold: (threshold: number) => void;
-  setYSpeedThreshold: (threshold: number) => void;
+  setSpeedThreshold: (val: { x: number; y: number }) => void;
   setCanvasSize: (size: { width: number; height: number }) => void;
   setDebuggerVisibility: (debuggerVisibility: boolean) => void;
 };
@@ -44,23 +36,17 @@ export const Debugger = ({
   thresholdRef,
   displayedPeopleRef,
   scale,
-  xTranslate,
-  yTranslate,
-  xOffset,
-  yOffset,
+  translate,
+  offset,
   server,
   canvasSize,
-  xSpeedThreshold,
-  ySpeedThreshold,
+  speedThreshold,
   setTextColor,
   setScale,
-  setXTranslate,
-  setYTranslate,
-  setXOffset,
-  setYOffset,
+  setTranslate,
+  setOffset,
   setServer,
-  setXSpeedThreshold,
-  setYSpeedThreshold,
+  setSpeedThreshold,
   setCanvasSize,
 }: Props) => {
   const thresholdTextRef = useRef<HTMLParagraphElement>(null);
@@ -87,18 +73,13 @@ export const Debugger = ({
     const selectedPreset = presets.find((p) => p.name === presetName);
     if (selectedPreset) {
       setPresetName(selectedPreset.name);
-      setXOffset(selectedPreset.xOffset);
-      setYOffset(selectedPreset.yOffset);
+      setOffset(selectedPreset.offset);
       setScale(selectedPreset.scale);
       setCanvasSize(selectedPreset.canvasSize);
       setServer(selectedPreset.server);
-      setXSpeedThreshold(selectedPreset.xSpeedThreshold);
-      setYSpeedThreshold(selectedPreset.ySpeedThreshold);
-      if (selectedPreset.xTranslate) {
-        setXTranslate(selectedPreset.xTranslate);
-      }
-      if (selectedPreset.yTranslate) {
-        setYTranslate(selectedPreset.yTranslate);
+      setSpeedThreshold(selectedPreset.speedThreshold);
+      if (selectedPreset.translate) {
+        setTranslate(selectedPreset.translate);
       }
     }
   };
@@ -157,8 +138,7 @@ export const Debugger = ({
             frameRateTextRef={frameRateTextRef}
             thresholdTextRef={thresholdTextRef}
             thresholdRef={thresholdRef}
-            xOffset={xOffset}
-            yOffset={yOffset}
+            offset={offset}
             displayedPeopleRef={displayedPeopleRef}
             canvasSize={canvasSize}
           />
@@ -202,35 +182,20 @@ export const Debugger = ({
                 value={scale}
                 setValue={setScale}
               />
-              <ValueInputField
-                propertyName="X-Translate"
-                value={xTranslate}
-                setValue={setXTranslate}
+              <XYInputField
+                propertyName="Translate"
+                value={translate}
+                setValue={setTranslate}
               />
-              <ValueInputField
-                propertyName="Y-Translate"
-                value={yTranslate}
-                setValue={setYTranslate}
+              <XYInputField
+                propertyName="Offset"
+                value={offset}
+                setValue={setOffset}
               />
-              <ValueInputField
-                propertyName="X-Offset"
-                value={xOffset}
-                setValue={setXOffset}
-              />
-              <ValueInputField
-                propertyName="Y-offset"
-                value={yOffset}
-                setValue={setYOffset}
-              />
-              <ValueInputField
-                propertyName="X-Speed Threshold"
-                value={xSpeedThreshold}
-                setValue={setXSpeedThreshold}
-              />
-              <ValueInputField
-                propertyName="Y-Speed Threshold"
-                value={ySpeedThreshold}
-                setValue={setYSpeedThreshold}
+              <XYInputField
+                propertyName="Speed Threshold"
+                value={speedThreshold}
+                setValue={setSpeedThreshold}
               />
               <div>
                 <p className="headline">canvas width:</p>
@@ -325,8 +290,7 @@ export const Debugger = ({
               setCameraResolution={setCameraResolution}
               mirrored={mirrored}
               scale={scale}
-              xOffset={xOffset}
-              yOffset={yOffset}
+              offset={offset}
             />
           )}
 
