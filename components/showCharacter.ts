@@ -13,7 +13,7 @@ const showCharacter = ({
   p5.push();
   p5.textSize(h);
   p5.textAlign(p5.CENTER);
-  p5.text(person.displayCharacter.char, box[0], box[1], box[2] - box[0]);
+  p5.text(person.displayCharacter.char, box[0], box[1] + h, box[2] - box[0]);
   p5.pop();
 };
 

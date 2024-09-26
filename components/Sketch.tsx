@@ -7,6 +7,7 @@ import { Debugger } from "./Debugger";
 import { useState, useRef, useCallback, useEffect } from "react";
 import { findClosestCharacter } from "@/lib/findClosestCharacter";
 import showCharacter from "./showCharacter";
+import p5Types from "p5";
 
 export function Sketch({
   people,
@@ -63,9 +64,15 @@ export function Sketch({
       const inputImageSize = { x: 1280, y: 720 };
       const inputAspectRatio = inputImageSize.y / inputImageSize.x;
       let isAudioEnabled = false;
+      let font: p5Types.Font;
+
+      p5.preload = () => {
+        font = p5.loadFont("/fonts/HinaMincho-Regular.ttf");
+      };
 
       p5.setup = () => {
         p5.createCanvas(p5.windowWidth, p5.windowHeight);
+        p5.textFont(font);
         p5.fill(textColor);
         p5.noStroke();
         const aspectRatio = p5.height / p5.width;
@@ -174,21 +181,6 @@ export function Sketch({
           }
 
           showCharacter({ person, p5 });
-
-          // p5.push();
-          // if (person.movingStatus == "walking") {
-          //   p5.textSize(person.bbox.bbox[3] - person.bbox.bbox[1]);
-          //   p5.textAlign(p5.CENTER);
-          //   p5.text(
-          //     person.displayCharacter.char,
-          //     box[0],
-          //     box[1],
-          //     box[2] - box[0]
-          //   );
-          // } else {
-          // }
-
-          // p5.pop();
         }
       };
     },
