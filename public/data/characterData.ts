@@ -2,57 +2,57 @@ export const characterData = [
   {
     aspectRatio: 0.1324,
     movingCharacter: [],
-    posingCharacter: ["l"],
+    posingCharacter: [],
   },
   {
     aspectRatio: 0.1943,
     movingCharacter: [],
-    posingCharacter: ["1"],
+    posingCharacter: [],
   },
   {
     aspectRatio: 0.2563,
     movingCharacter: [],
-    posingCharacter: ["I"],
+    posingCharacter: [],
   },
   {
     aspectRatio: 0.3183,
     movingCharacter: [],
-    posingCharacter: ["b"],
+    posingCharacter: [],
   },
   {
     aspectRatio: 0.3803,
     movingCharacter: ["7", "く"],
-    posingCharacter: ["g"],
+    posingCharacter: [],
   },
   {
     aspectRatio: 0.4422,
     movingCharacter: ["5"],
-    posingCharacter: ["J"],
+    posingCharacter: [],
   },
   {
     aspectRatio: 0.5042,
     movingCharacter: ["ノ", "り"],
-    posingCharacter: ["F", "ト"],
+    posingCharacter: ["l"],
   },
   {
     aspectRatio: 0.5662,
     movingCharacter: ["メ", "と"],
-    posingCharacter: ["q", "p"],
+    posingCharacter: ["h", "p", "I"],
   },
   {
     aspectRatio: 0.6282,
     movingCharacter: ["Z", "す"],
-    posingCharacter: [],
+    posingCharacter: ["b", "J"],
   },
   {
     aspectRatio: 0.6901,
     movingCharacter: ["N", "ら"],
-    posingCharacter: ["0", "も"],
+    posingCharacter: ["0", "も", "ト"],
   },
   {
     aspectRatio: 0.7521,
     movingCharacter: ["ん"],
-    posingCharacter: ["イ"],
+    posingCharacter: ["イ", "F"],
   },
   {
     aspectRatio: 0.8141,
@@ -92,27 +92,27 @@ export const characterData = [
   {
     aspectRatio: 1.3296,
     movingCharacter: ["ハ", "せ", "カ"],
-    posingCharacter: [],
+    posingCharacter: ["三"],
   },
   {
     aspectRatio: 1.449,
     movingCharacter: ["つ", "ス"],
-    posingCharacter: ["O", "h"],
+    posingCharacter: ["エ"],
   },
   {
     aspectRatio: 1.592,
     movingCharacter: [],
-    posingCharacter: ["三"],
+    posingCharacter: ["二"],
   },
   {
     aspectRatio: 1.7662,
     movingCharacter: [],
-    posingCharacter: ["エ"],
+    posingCharacter: ["一"],
   },
   {
     aspectRatio: 1.9833,
     movingCharacter: ["へ"],
-    posingCharacter: ["二", "m", "w"],
+    posingCharacter: ["m", "w"],
   },
   {
     aspectRatio: 2.2613,
@@ -142,6 +142,6 @@ export const characterData = [
   {
     aspectRatio: 7.5556,
     movingCharacter: [],
-    posingCharacter: ["一"],
+    posingCharacter: [],
   },
 ];
