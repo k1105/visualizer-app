@@ -6,6 +6,7 @@ import { DisplayedPerson } from "@/types/DisplayedPersonClass";
 import { Debugger } from "./Debugger";
 import { useState, useRef, useCallback, useEffect } from "react";
 import showCharacter from "./showCharacter";
+import showBoundingBox from "./showBoundingBox";
 import p5Types from "p5";
 import findCharacter from "@/lib/findCharacter";
 
@@ -162,8 +163,6 @@ export function Sketch({
               person.previousIndex
             );
 
-            console.log(res.char);
-
             person.previousIndex = res.index;
 
             if (res.char !== "")
@@ -177,6 +176,7 @@ export function Sketch({
           }
 
           showCharacter({ person, p5 });
+          showBoundingBox({ person, p5 });
         }
       };
     },
