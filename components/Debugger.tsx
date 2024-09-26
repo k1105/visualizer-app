@@ -8,7 +8,7 @@ import Guide from "./debugger/Guide";
 import ToggleVisibilityButton from "./debugger/ToggleVisibilityButton";
 import ValueInputField from "./debugger/ValueInputField";
 import {
-  asekaku_240922,
+  asekaku_240926,
   default_preset,
 } from "@/public/data/240922AsekakuPresets";
 
@@ -79,7 +79,7 @@ export const Debugger = ({
 
   const [mirrored, setMirrored] = useState<boolean>(false);
 
-  const presets = [asekaku_240922, default_preset];
+  const presets = [asekaku_240926, default_preset];
   const [presetName, setPresetName] = useState<string>(presets[0].name);
 
   const handlePresetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
