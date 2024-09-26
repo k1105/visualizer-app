@@ -94,6 +94,12 @@ export const Debugger = ({
       setServer(selectedPreset.server);
       setXSpeedThreshold(selectedPreset.xSpeedThreshold);
       setYSpeedThreshold(selectedPreset.ySpeedThreshold);
+      if (selectedPreset.xTranslate) {
+        setXTranslate(selectedPreset.xTranslate);
+      }
+      if (selectedPreset.yTranslate) {
+        setYTranslate(selectedPreset.yTranslate);
+      }
     }
   };
 

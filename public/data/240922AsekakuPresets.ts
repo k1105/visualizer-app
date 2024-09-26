@@ -1,5 +1,7 @@
 type Props = {
   name: string;
+  xTranslate?: number;
+  yTranslate?: number;
   xOffset: number;
   yOffset: number;
   scale: number;
@@ -7,6 +9,19 @@ type Props = {
   server: string;
   xSpeedThreshold: number;
   ySpeedThreshold: number;
+};
+
+export const asekaku_240926: Props = {
+  name: "240922_asekaku",
+  scale: 1,
+  xTranslate: 60.5,
+  yTranslate: 49.5,
+  xOffset: -296,
+  yOffset: -311,
+  xSpeedThreshold: 200,
+  ySpeedThreshold: 200,
+  canvasSize: { width: 1467, height: 1080 },
+  server: "192.168.1.10",
 };
 
 export const asekaku_240922: Props = {
