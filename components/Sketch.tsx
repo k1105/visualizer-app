@@ -165,12 +165,8 @@ export function Sketch({
 
             person.previousIndex = res.index;
 
-            if (res.char !== "")
-              person.displayCharacter = {
-                char: res.char,
-                xOffset: 0,
-                yOffset: 0,
-              };
+            if (res.charData.char !== "")
+              person.displayCharacter = res.charData;
 
             person.lastUpdated = p5.frameCount;
           }

@@ -1,182 +1,258 @@
-export const characterData = [
+export const characterData: {
+  aspectRatio: number;
+  movingCharacter: charData[];
+  pausedCharacter: charData[];
+}[] = [
   {
     aspectRatio: 0.1324,
     movingCharacter: [],
-    posingCharacter: [],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 0.1943,
     movingCharacter: [],
-    posingCharacter: [],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 0.2563,
     movingCharacter: [],
-    posingCharacter: [],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 0.3183,
     movingCharacter: [],
-    posingCharacter: [],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 0.3824,
-    movingCharacter: ["j"],
-    posingCharacter: [],
+    movingCharacter: [{ char: "j", x: 0, y: -0.25, s: 1 }],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 0.4182,
-    movingCharacter: ["ﾘ"],
-    posingCharacter: [],
+    movingCharacter: [{ char: "ﾘ", x: 0, y: 0, s: 1 }],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 0.4541,
-    movingCharacter: ["く"],
-    posingCharacter: [],
+    movingCharacter: [{ char: "く", x: 0, y: 0, s: 1 }],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 0.4897,
-    movingCharacter: ["9"],
-    posingCharacter: [],
+    movingCharacter: [{ char: "9", x: 0, y: 0, s: 1 }],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 0.5042,
     movingCharacter: [],
-    posingCharacter: ["l"],
+    pausedCharacter: [{ char: "l", x: 0, y: 0, s: 1 }],
   },
   {
     aspectRatio: 0.5256,
-    movingCharacter: ["ﾉ"],
-    posingCharacter: [],
+    movingCharacter: [{ char: "ﾉ", x: 0, y: 0, s: 1 }],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 0.5615,
-    movingCharacter: ["ｳ"],
-    posingCharacter: ["h", "p", "I"],
+    movingCharacter: [{ char: "ｳ", x: 0, y: 0, s: 1 }],
+    pausedCharacter: [
+      { char: "h", x: 0, y: 0, s: 1 },
+      { char: "p", x: 0, y: 0, s: 1 },
+      { char: "I", x: 0, y: 0, s: 1 },
+    ],
   },
   {
     aspectRatio: 0.5974,
-    movingCharacter: ["ﾝ"],
-    posingCharacter: [],
+    movingCharacter: [{ char: "ン", x: 0, y: 0, s: 1 }],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 0.6332,
-    movingCharacter: ["ﾊ"],
-    posingCharacter: ["b", "J"],
+    movingCharacter: [{ char: "ハ", x: 0, y: 0, s: 1 }],
+    pausedCharacter: [
+      { char: "b", x: 0, y: 0, s: 1 },
+      { char: "J", x: 0, y: 0, s: 1 },
+    ],
   },
   {
     aspectRatio: 0.6688,
-    movingCharacter: ["と"],
-    posingCharacter: [],
+    movingCharacter: [{ char: "と", x: 0, y: 0, s: 1 }],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 0.7047,
-    movingCharacter: ["り"],
-    posingCharacter: ["0", "も", "ト"],
+    movingCharacter: [{ char: "り", x: 0, y: 0, s: 1 }],
+    pausedCharacter: [
+      { char: "0", x: 0, y: 0, s: 1 },
+      { char: "も", x: 0, y: 0, s: 1 },
+      { char: "と", x: 0, y: 0, s: 1 },
+    ],
   },
   {
     aspectRatio: 0.7406,
-    movingCharacter: ["ミ"],
-    posingCharacter: ["イ", "F"],
+    movingCharacter: [{ char: "ミ", x: 0, y: 0, s: 1 }],
+    pausedCharacter: [
+      { char: "イ", x: 0, y: 0, s: 1 },
+      { char: "F", x: 0, y: 0, s: 1 },
+    ],
   },
   {
     aspectRatio: 0.7765,
-    movingCharacter: ["ノ"],
-    posingCharacter: [],
+    movingCharacter: [{ char: "ノ", x: 0, y: 0, s: 1 }],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 0.8124,
-    movingCharacter: ["う"],
-    posingCharacter: ["K", "Y"],
+    movingCharacter: [{ char: "う", x: 0, y: 0, s: 1 }],
+    pausedCharacter: [
+      { char: "K", x: 0, y: 0, s: 1 },
+      { char: "Y", x: 0, y: 0, s: 1 },
+    ],
   },
   {
     aspectRatio: 0.8482,
-    movingCharacter: ["メ"],
-    posingCharacter: [],
+    movingCharacter: [{ char: "メ", x: 0, y: 0, s: 1 }],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 0.8841,
-    movingCharacter: ["ナ"],
-    posingCharacter: ["ネ", "T"],
+    movingCharacter: [{ char: "ナ", x: 0, y: 0, s: 1 }],
+    pausedCharacter: [
+      { char: "ネ", x: 0, y: 0, s: 1 },
+      { char: "T", x: 0, y: 0, s: 1 },
+    ],
   },
   {
     aspectRatio: 0.938,
-    movingCharacter: ["ヤ", "ヒ", "チ"],
-    posingCharacter: ["よ", "ホ"],
+    movingCharacter: [
+      { char: "ヤ", x: 0, y: 0, s: 1 },
+      { char: "ヒ", x: 0, y: 0, s: 1 },
+      { char: "チ", x: 0, y: 0, s: 1 },
+    ],
+    pausedCharacter: [
+      { char: "よ", x: 0, y: 0, s: 1 },
+      { char: "ホ", x: 0, y: 0, s: 1 },
+    ],
   },
   {
     aspectRatio: 1.0,
-    movingCharacter: ["ひ", "人", "か", "ゆ", "八"],
-    posingCharacter: ["木", "オ", "十"],
+    movingCharacter: [
+      { char: "ひ", x: 0, y: 0, s: 1 },
+      { char: "人", x: 0, y: 0, s: 1 },
+      { char: "か", x: 0, y: 0, s: 1 },
+      { char: "ゆ", x: 0, y: 0, s: 1 },
+      { char: "八", x: 0, y: 0, s: 1 },
+    ],
+    pausedCharacter: [
+      { char: "木", x: 0, y: 0, s: 1 },
+      { char: "オ", x: 0, y: 0, s: 1 },
+      { char: "十", x: 0, y: 0, s: 1 },
+    ],
   },
   {
     aspectRatio: 1.0661,
-    movingCharacter: ["六", "や", "ふ", "た"],
-    posingCharacter: ["七"],
+    movingCharacter: [
+      { char: "六", x: 0, y: 0, s: 1 },
+      { char: "や", x: 0, y: 0, s: 1 },
+      { char: "ふ", x: 0, y: 0, s: 1 },
+      { char: "た", x: 0, y: 0, s: 1 },
+    ],
+    pausedCharacter: [{ char: "七", x: 0, y: 0, s: 1 }],
   },
   {
     aspectRatio: 1.1415,
-    movingCharacter: ["ム", "X", "ル"],
-    posingCharacter: ["モ", "テ"],
+    movingCharacter: [
+      { char: "ム", x: 0, y: 0, s: 1 },
+      { char: "X", x: 0, y: 0, s: 1 },
+      { char: "ル", x: 0, y: 0, s: 1 },
+    ],
+    pausedCharacter: [
+      { char: "モ", x: 0, y: 0, s: 1 },
+      { char: "テ", x: 0, y: 0, s: 1 },
+    ],
   },
   {
     aspectRatio: 1.2284,
-    movingCharacter: ["ヌ", "て", "九"],
-    posingCharacter: ["V", "A"],
+    movingCharacter: [
+      { char: "ヌ", x: 0, y: 0, s: 1 },
+      { char: "て", x: 0, y: 0, s: 1 },
+      { char: "九", x: 0, y: 0, s: 1 },
+    ],
+    pausedCharacter: [
+      { char: "V", x: 0, y: 0, s: 1 },
+      { char: "A", x: 0, y: 0, s: 1 },
+    ],
   },
   {
     aspectRatio: 1.3296,
-    movingCharacter: ["ハ", "せ", "カ"],
-    posingCharacter: ["三"],
+    movingCharacter: [
+      { char: "ハ", x: 0, y: 0, s: 1 },
+      { char: "せ", x: 0, y: 0, s: 1 },
+      { char: "カ", x: 0, y: 0, s: 1 },
+    ],
+    pausedCharacter: [{ char: "三", x: 0, y: 0, s: 1 }],
   },
   {
     aspectRatio: 1.449,
-    movingCharacter: ["つ", "ス"],
-    posingCharacter: ["エ"],
+    movingCharacter: [
+      { char: "つ", x: 0, y: 0, s: 1 },
+      { char: "ス", x: 0, y: 0, s: 1 },
+    ],
+    pausedCharacter: [{ char: "エ", x: 0, y: 0, s: 1 }],
   },
   {
     aspectRatio: 1.592,
     movingCharacter: [],
-    posingCharacter: ["二"],
+    pausedCharacter: [{ char: "二", x: 0, y: 0, s: 1 }],
   },
   {
     aspectRatio: 1.7662,
     movingCharacter: [],
-    posingCharacter: ["一"],
+    pausedCharacter: [{ char: "一", x: 0, y: 0, s: 1 }],
   },
   {
     aspectRatio: 1.9833,
-    movingCharacter: ["へ"],
-    posingCharacter: ["m", "w"],
+    movingCharacter: [{ char: "へ", x: 0, y: 0, s: 1 }],
+    pausedCharacter: [
+      { char: "m", x: 0, y: -0.25, s: 1 },
+      { char: "w", x: 0, y: -0.25, s: 1 },
+    ],
   },
   {
     aspectRatio: 2.2613,
     movingCharacter: [],
-    posingCharacter: ["n", "v"],
+    pausedCharacter: [
+      { char: "n", x: 0, y: -0.25, s: 1 },
+      { char: "v", x: 0, y: -0.25, s: 1 },
+    ],
   },
   {
     aspectRatio: 2.6298,
     movingCharacter: [],
-    posingCharacter: ["u", "t"],
+    pausedCharacter: [
+      { char: "u", x: 0, y: -0.25, s: 1 },
+      { char: "t", x: 0, y: -0.25, s: 1 },
+    ],
   },
   {
     aspectRatio: 3.1419,
     movingCharacter: [],
-    posingCharacter: ["c"],
+    pausedCharacter: [{ char: "c", x: 0, y: 0, s: 1 }],
   },
   {
     aspectRatio: 3.9016,
     movingCharacter: [],
-    posingCharacter: [],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 5.1459,
     movingCharacter: [],
-    posingCharacter: [],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 7.5556,
     movingCharacter: [],
-    posingCharacter: [],
+    pausedCharacter: [],
   },
 ];

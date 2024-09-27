@@ -7,7 +7,7 @@ export default function findCharacter(
   height: number,
   movingStatus: MovingStatus,
   previousIndex: number | null
-): { char: string; index: number | null } {
+): { charData: charData; index: number | null } {
   const aspectRatio = width / height;
   let closestIndex = 0;
   let minDifference = Infinity;
@@ -21,27 +21,15 @@ export default function findCharacter(
     }
   });
 
-  // if (aspectRatio > 2) {
-  //   person.displayCharacter = { char: "I", xOffset: 0, yOffset: 0 };
-  // } else if (aspectRatio > 1) {
-  //   person.displayCharacter = { char: "Y", xOffset: 0, yOffset: 0 };
-  // } else if (aspectRatio > 0.75) {
-  //   person.displayCharacter = { char: "十", xOffset: 0, yOffset: 0 };
-  // } else if (aspectRatio > 0.5) {
-  //   person.displayCharacter = { char: "大", xOffset: 0, yOffset: 0 };
-  // } else {
-  //   person.displayCharacter = { char: "土", xOffset: 0, yOffset: 0 };
-  // }
-
   // Select the appropriate character list based on movingStatus
   const selectedCharacters =
     movingStatus === "walking"
       ? characterData[closestIndex].movingCharacter
-      : characterData[closestIndex].posingCharacter;
+      : characterData[closestIndex].pausedCharacter;
 
   // Return the previous character if we're still in the same "closest" cell
   if (closestIndex === previousIndex && selectedCharacters.length > 0) {
-    return { char: selectedCharacters[0], index: closestIndex }; // Or you can store and return the last selected character
+    return { charData: selectedCharacters[0], index: closestIndex }; // Or you can store and return the last selected character
   }
 
   // Randomly pick a character if multiple are available
@@ -50,7 +38,7 @@ export default function findCharacter(
       ? selectedCharacters[
           Math.floor(Math.random() * selectedCharacters.length)
         ]
-      : "";
+      : { char: "", x: 0, y: 0, s: 0 };
 
-  return { char: randomCharacter, index: closestIndex };
+  return { charData: randomCharacter, index: closestIndex };
 }

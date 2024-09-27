@@ -11,6 +11,7 @@ const showCharacter = ({
   const box = person.smoothedBbox.bbox;
   const h = (box[3] - box[1]) * 1.2;
   p5.push();
+  p5.translate(person.displayCharacter.x * h, person.displayCharacter.y * h);
   p5.textSize(h);
   p5.textAlign(p5.CENTER);
   p5.text(

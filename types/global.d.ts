@@ -7,3 +7,10 @@ interface PersonAttribute {
   id: number;
   bbox: Bbox;
 }
+
+interface charData {
+  char: string;
+  x: number;
+  y: number;
+  s: number;
+}
