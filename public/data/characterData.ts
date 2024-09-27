@@ -58,7 +58,7 @@ export const characterData: {
     movingCharacter: [{ char: "ｳ", x: 0, y: 0, s: 1, name: "japanese_u" }],
     pausedCharacter: [
       { char: "h", x: 0, y: 0, s: 1, name: "alphabet_h" },
-      { char: "p", x: 0, y: 0.25, s: 1, name: "alphabet_p" },
+      { char: "p", x: 0, y: -0.25, s: 1, name: "alphabet_p" },
       { char: "I", x: 0, y: 0, s: 1, name: "alphabet_i" },
     ],
   },
