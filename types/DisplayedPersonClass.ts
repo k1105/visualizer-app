@@ -27,7 +27,7 @@ export class DisplayedPerson extends Person {
     this.displayCharacter = {
       char: "i",
       x: 0,
-      y: -0.25,
+      y: -0.15,
       s: 1,
       name: "alphabet_i",
     };
