@@ -15,7 +15,7 @@ const Home = () => {
   useEffect(() => {
     // const ws = new WebSocket("ws://192.168.0.100:8765");
     const personWs = new WebSocket(`ws://${server}:8765`);
-    const audioWs = new WebSocket(`ws//${server}:8080`);
+    const audioWs = new WebSocket(`ws://${server}:8080`);
 
     personWsRef.current = personWs;
     audioWsRef.current = audioWs;

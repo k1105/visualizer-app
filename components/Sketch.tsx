@@ -70,14 +70,14 @@ export function Sketch({
         { char: "8", xOffset: 4, yOffset: 42 },
         { char: "乙", xOffset: 9, yOffset: 40 },
       ];
-      const audioList = [
-        new Audio("/audio/lite/L-lite.m4a"),
-        new Audio("/audio/lite/He-lite.m4a"),
-        new Audio("/audio/lite/Kyu-lite.m4a"),
-        new Audio("/audio/lite/Fu-lite.m4a"),
-        new Audio("/audio/lite/Hachi-lite.m4a"),
-        new Audio("/audio/lite/Otsu-lite.m4a"),
-      ];
+      // const audioList = [
+      //   new Audio("/audio/lite/L-lite.m4a"),
+      //   new Audio("/audio/lite/He-lite.m4a"),
+      //   new Audio("/audio/lite/Kyu-lite.m4a"),
+      //   new Audio("/audio/lite/Fu-lite.m4a"),
+      //   new Audio("/audio/lite/Hachi-lite.m4a"),
+      //   new Audio("/audio/lite/Otsu-lite.m4a"),
+      // ];
 
       const inputImageSize = { x: 1280, y: 720 };
       const inputAspectRatio = inputImageSize.y / inputImageSize.x;
@@ -178,7 +178,13 @@ export function Sketch({
               res.charData.char !== person.displayCharacter.char
             ) {
               person.displayCharacter = res.charData;
-              audioWsRef.current!.send(JSON.stringify({ audio: "テスト" }));
+              if (
+                audioWsRef.current &&
+                audioWsRef.current.readyState === WebSocket.OPEN
+              ) {
+                console.log("sending data...");
+                audioWsRef.current.send(JSON.stringify({ audio: "He-lite" }));
+              }
             }
 
             person.lastUpdated = p5.frameCount;
