@@ -4,7 +4,13 @@ import { NextReactP5Wrapper } from "@p5-wrapper/next";
 import { Person } from "@/types/PersonClass";
 import { DisplayedPerson } from "@/types/DisplayedPersonClass";
 import { Debugger } from "./Debugger";
-import { useState, useRef, useCallback, useEffect } from "react";
+import {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  MutableRefObject,
+} from "react";
 import showCharacter from "./showCharacter";
 import showBoundingBox from "./showBoundingBox";
 import p5Types from "p5";
@@ -15,11 +21,13 @@ export function Sketch({
   isAudioEnabled,
   server,
   setServer,
+  audioWsRef,
 }: {
   people: Person[];
   isAudioEnabled: boolean;
   server: string;
   setServer: (server: string) => void;
+  audioWsRef: MutableRefObject<WebSocket | null>;
 }) {
   const thresholdRef = useRef<number>(200);
   const peopleRef = useRef<Person[]>([]);
@@ -165,8 +173,13 @@ export function Sketch({
 
             person.previousIndex = res.index;
 
-            if (res.charData.char !== "")
+            if (
+              res.charData.char !== "" &&
+              res.charData.char !== person.displayCharacter.char
+            ) {
               person.displayCharacter = res.charData;
+              audioWsRef.current!.send(JSON.stringify({ audio: "テスト" }));
+            }
 
             person.lastUpdated = p5.frameCount;
           }
