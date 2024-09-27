@@ -62,22 +62,6 @@ export function Sketch({
   const sketch = useCallback(
     (p5: P5CanvasInstance) => {
       let k = 0; //拡大比率
-      const charList = [
-        { char: "L", xOffset: 10, yOffset: 43 },
-        { char: "へ", xOffset: 5, yOffset: 52 },
-        { char: "9", xOffset: 4, yOffset: 41 },
-        { char: "フ", xOffset: 14, yOffset: 45 },
-        { char: "8", xOffset: 4, yOffset: 42 },
-        { char: "乙", xOffset: 9, yOffset: 40 },
-      ];
-      // const audioList = [
-      //   new Audio("/audio/lite/L-lite.m4a"),
-      //   new Audio("/audio/lite/He-lite.m4a"),
-      //   new Audio("/audio/lite/Kyu-lite.m4a"),
-      //   new Audio("/audio/lite/Fu-lite.m4a"),
-      //   new Audio("/audio/lite/Hachi-lite.m4a"),
-      //   new Audio("/audio/lite/Otsu-lite.m4a"),
-      // ];
 
       const inputImageSize = { x: 1280, y: 720 };
       const inputAspectRatio = inputImageSize.y / inputImageSize.x;
@@ -182,8 +166,9 @@ export function Sketch({
                 audioWsRef.current &&
                 audioWsRef.current.readyState === WebSocket.OPEN
               ) {
-                console.log("sending data...");
-                audioWsRef.current.send(JSON.stringify({ audio: "He-lite" }));
+                audioWsRef.current.send(
+                  JSON.stringify({ audio: person.displayCharacter.name })
+                );
               }
             }
 

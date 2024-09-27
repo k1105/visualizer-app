@@ -38,7 +38,7 @@ export default function findCharacter(
       ? selectedCharacters[
           Math.floor(Math.random() * selectedCharacters.length)
         ]
-      : { char: "", x: 0, y: 0, s: 0 };
+      : { char: "", x: 0, y: 0, s: 0, name: "none" };
 
   return { charData: randomCharacter, index: closestIndex };
 }

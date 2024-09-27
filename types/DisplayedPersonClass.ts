@@ -24,7 +24,13 @@ export class DisplayedPerson extends Person {
     this.pausedFrameCount = 0;
     this.bboxes = [bbox];
     this.smoothedBbox = bbox;
-    this.displayCharacter = { char: "i", x: 7, y: 39, s: 1 };
+    this.displayCharacter = {
+      char: "i",
+      x: 0,
+      y: -0.25,
+      s: 1,
+      name: "alphabet_i",
+    };
     this.previousIndex = null;
   }
 
