@@ -12,7 +12,7 @@ export const asekaku_240926: Props = {
   name: "240926_asekaku",
   scale: 1,
   translate: { x: 57.5, y: 49 },
-  offset: { x: -296, y: -311 },
+  offset: { x: -296, y: -300 },
   speedThreshold: { x: 200, y: 200 },
   canvasSize: { width: 1601, height: 1021 },
   server: "192.168.1.10",

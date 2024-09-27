@@ -18,13 +18,11 @@ import findCharacter from "@/lib/findCharacter";
 
 export function Sketch({
   people,
-  isAudioEnabled,
   server,
   setServer,
   audioWsRef,
 }: {
   people: Person[];
-  isAudioEnabled: boolean;
   server: string;
   setServer: (server: string) => void;
   audioWsRef: MutableRefObject<WebSocket | null>;
@@ -59,24 +57,46 @@ export function Sketch({
     setCanvasSize({ width: window.innerWidth, height: window.innerHeight });
   }, []);
 
-  const sketch = useCallback(
-    (p5: P5CanvasInstance) => {
-      let k = 0; //拡大比率
+  const sketch = useCallback((p5: P5CanvasInstance) => {
+    let k = 0; //拡大比率
 
-      const inputImageSize = { x: 1280, y: 720 };
-      const inputAspectRatio = inputImageSize.y / inputImageSize.x;
-      let isAudioEnabled = false;
-      let font: p5Types.Font;
+    const inputImageSize = { x: 1280, y: 720 };
+    const inputAspectRatio = inputImageSize.y / inputImageSize.x;
+    // let isAudioEnabled = false;
+    let font: p5Types.Font;
+    let walkingAnnotation = false;
 
-      p5.preload = () => {
-        font = p5.loadFont("/fonts/HinaMincho-Regular.ttf");
-      };
+    p5.preload = () => {
+      font = p5.loadFont("/fonts/HinaMincho-Regular.ttf");
+    };
 
-      p5.setup = () => {
-        p5.createCanvas(p5.windowWidth, p5.windowHeight);
-        p5.textFont(font);
-        p5.fill(textColor);
-        p5.noStroke();
+    p5.setup = () => {
+      p5.createCanvas(p5.windowWidth, p5.windowHeight);
+      p5.textFont(font);
+      p5.fill(textColor);
+      p5.noStroke();
+      const aspectRatio = p5.height / p5.width;
+
+      if (aspectRatio >= inputAspectRatio) {
+        k = p5.width / inputImageSize.x;
+      } else {
+        k = p5.height / inputImageSize.y;
+      }
+    };
+
+    p5.updateWithProps = (props) => {
+      walkingAnnotation = props.debuggerVisibility as boolean;
+      peopleRef.current = props.people as Person[];
+
+      // displayPeopleからフレームアウトした人を削除
+      displayedPeopleRef.current = displayedPeopleRef.current.filter(
+        (displayedPerson) =>
+          peopleRef.current.some((person) => person.id === displayedPerson.id)
+      );
+
+      if (props.canvasWidth && props.canvasHeight) {
+        p5.resizeCanvas(Number(props.canvasWidth), Number(props.canvasHeight));
+
         const aspectRatio = p5.height / p5.width;
 
         if (aspectRatio >= inputAspectRatio) {
@@ -84,108 +104,78 @@ export function Sketch({
         } else {
           k = p5.height / inputImageSize.y;
         }
-      };
+      }
+    };
 
-      p5.updateWithProps = (props) => {
-        isAudioEnabled = props.isAudioEnabled as boolean;
-
-        peopleRef.current = props.people as Person[];
-
-        // displayPeopleからフレームアウトした人を削除
-        displayedPeopleRef.current = displayedPeopleRef.current.filter(
-          (displayedPerson) =>
-            peopleRef.current.some((person) => person.id === displayedPerson.id)
+    p5.draw = () => {
+      // update displayPeople
+      for (const person of peopleRef.current) {
+        const displayedPerson = displayedPeopleRef.current.find(
+          (p) => p.id === person.id
         );
 
-        if (props.canvasWidth && props.canvasHeight) {
-          p5.resizeCanvas(
-            Number(props.canvasWidth),
-            Number(props.canvasHeight)
+        if (displayedPerson) {
+          displayedPerson.update(person);
+        } else {
+          displayedPeopleRef.current.push(
+            new DisplayedPerson(
+              person.id,
+              person.getSpeed(),
+              person.bbox,
+              p5.frameCount
+            )
+          );
+        }
+      }
+
+      for (const displayedPerson of displayedPeopleRef.current) {
+        displayedPerson.smoothedBbox.scale(k * scale);
+      }
+
+      p5.clear();
+
+      p5.translate(offset.x, offset.y);
+
+      for (const person of displayedPeopleRef.current) {
+        person.updateMovingStatus(speedThreshold.x, speedThreshold.y);
+
+        if (p5.frameCount - person.lastUpdated > 5) {
+          const res = findCharacter(
+            person.bbox.width(),
+            person.bbox.height(),
+            person.movingStatus,
+            person.previousIndex
           );
 
-          const aspectRatio = p5.height / p5.width;
+          person.previousIndex = res.index;
 
-          if (aspectRatio >= inputAspectRatio) {
-            k = p5.width / inputImageSize.x;
-          } else {
-            k = p5.height / inputImageSize.y;
-          }
-        }
-      };
-
-      p5.draw = () => {
-        // update displayPeople
-        for (const person of peopleRef.current) {
-          const displayedPerson = displayedPeopleRef.current.find(
-            (p) => p.id === person.id
-          );
-
-          if (displayedPerson) {
-            displayedPerson.update(person);
-          } else {
-            displayedPeopleRef.current.push(
-              new DisplayedPerson(
-                person.id,
-                person.getSpeed(),
-                person.bbox,
-                p5.frameCount
-              )
-            );
-          }
-        }
-
-        for (const displayedPerson of displayedPeopleRef.current) {
-          displayedPerson.smoothedBbox.scale(k * scale);
-        }
-
-        p5.clear();
-
-        p5.translate(offset.x, offset.y);
-
-        for (const person of displayedPeopleRef.current) {
-          const box = person.smoothedBbox.bbox;
-
-          person.updateMovingStatus(speedThreshold.x, speedThreshold.y);
-
-          if (p5.frameCount - person.lastUpdated > 5) {
-            const res = findCharacter(
-              person.bbox.width(),
-              person.bbox.height(),
-              person.movingStatus,
-              person.previousIndex
-            );
-
-            person.previousIndex = res.index;
-
+          if (
+            res.charData.char !== "" &&
+            res.charData.char !== person.displayCharacter.char
+          ) {
+            person.displayCharacter = res.charData;
             if (
-              res.charData.char !== "" &&
-              res.charData.char !== person.displayCharacter.char
+              audioWsRef.current &&
+              audioWsRef.current.readyState === WebSocket.OPEN
             ) {
-              person.displayCharacter = res.charData;
-              if (
-                audioWsRef.current &&
-                audioWsRef.current.readyState === WebSocket.OPEN
-              ) {
-                audioWsRef.current.send(
-                  JSON.stringify({ audio: person.displayCharacter.name })
-                );
-              }
+              audioWsRef.current.send(
+                JSON.stringify({ audio: person.displayCharacter.name })
+              );
             }
-
-            person.lastUpdated = p5.frameCount;
           }
 
-          showCharacter({ person, p5 });
-          showBoundingBox({
-            person,
-            p5,
-            walkingAnnotation: debuggerVisibility,
-          });
+          person.lastUpdated = p5.frameCount;
         }
-      };
-    },
-    [textColor, offset, scale, speedThreshold]
-  );
+
+        showCharacter({ person, p5 });
+        showBoundingBox({
+          person,
+          p5,
+          walkingAnnotation: walkingAnnotation,
+        });
+      }
+    };
+  }, []);
 
   return (
     <>
@@ -193,9 +183,9 @@ export function Sketch({
         <NextReactP5Wrapper
           sketch={sketch}
           people={people}
-          isAudioEnabled={isAudioEnabled}
           canvasWidth={canvasSize.width}
           canvasHeight={canvasSize.height}
+          debuggerVisibility={debuggerVisibility}
         />
         <Debugger
           debuggerVisibility={debuggerVisibility}
