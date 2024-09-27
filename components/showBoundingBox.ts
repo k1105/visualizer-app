@@ -4,16 +4,18 @@ import { P5CanvasInstance } from "@p5-wrapper/react";
 const showBoundingBox = ({
   person,
   p5,
+  walkingAnnotation,
 }: {
   person: DisplayedPerson;
   p5: P5CanvasInstance;
+  walkingAnnotation: boolean;
 }) => {
   const box = person.smoothedBbox.bbox;
   const bboxCenter = person.smoothedBbox.center();
   p5.push();
   p5.noFill();
   p5.stroke(0, 255, 0);
-  if (person.movingStatus == "walking") {
+  if (walkingAnnotation && person.movingStatus == "walking") {
     p5.strokeWeight(10);
   }
   // p5.circle(bboxCenter.x, bboxCenter.y, thresholdRef.current * 2);

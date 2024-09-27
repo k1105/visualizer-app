@@ -172,7 +172,11 @@ export function Sketch({
           }
 
           showCharacter({ person, p5 });
-          showBoundingBox({ person, p5 });
+          showBoundingBox({
+            person,
+            p5,
+            walkingAnnotation: debuggerVisibility,
+          });
         }
       };
     },
