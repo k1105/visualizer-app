@@ -32,6 +32,10 @@ export function Sketch({
   const displayedPeopleRef = useRef<DisplayedPerson[]>([]);
   const [textColor, setTextColor] = useState<string>("white");
   const [scale, setScale] = useState<number>(1);
+  const [areaRange, setAreaRange] = useState<{ min: number; max: number }>({
+    min: 0,
+    max: 100,
+  });
   const [offset, setOffset] = useState<{ x: number; y: number }>({
     x: 0,
     y: 0,
@@ -65,6 +69,8 @@ export function Sketch({
     // let isAudioEnabled = false;
     let font: p5Types.Font;
     let walkingAnnotation = false;
+    let area_min = 0;
+    let area_max = 100;
 
     p5.preload = () => {
       font = p5.loadFont("/fonts/HinaMincho-Regular.ttf");
@@ -87,6 +93,8 @@ export function Sketch({
     p5.updateWithProps = (props) => {
       walkingAnnotation = props.debuggerVisibility as boolean;
       peopleRef.current = props.people as Person[];
+      area_min = (props.areaRange as { min: number; max: number }).min;
+      area_max = (props.areaRange as { min: number; max: number }).max;
 
       // displayPeopleからフレームアウトした人を削除
       displayedPeopleRef.current = displayedPeopleRef.current.filter(
@@ -159,7 +167,17 @@ export function Sketch({
               audioWsRef.current.readyState === WebSocket.OPEN
             ) {
               audioWsRef.current.send(
-                JSON.stringify({ audio: person.displayCharacter.name })
+                JSON.stringify({
+                  audio: person.displayCharacter.name, // 音声ファイル名
+                  volume: Math.min(
+                    1,
+                    Math.max(
+                      0,
+                      (person.smoothedBbox.area() - area_min) /
+                        (area_max - area_min)
+                    )
+                  ), // 0〜1の音量パラメータ
+                })
               );
             }
           }
@@ -186,6 +204,7 @@ export function Sketch({
           canvasWidth={canvasSize.width}
           canvasHeight={canvasSize.height}
           debuggerVisibility={debuggerVisibility}
+          areaRange={areaRange}
         />
         <Debugger
           debuggerVisibility={debuggerVisibility}
@@ -198,6 +217,7 @@ export function Sketch({
           offset={offset}
           canvasSize={canvasSize}
           scale={scale}
+          areaRange={areaRange}
           setOffset={setOffset}
           server={server}
           setServer={setServer}
@@ -205,6 +225,7 @@ export function Sketch({
           setSpeedThreshold={setSpeedThreshold}
           setScale={setScale}
           setCanvasSize={setCanvasSize}
+          setAreaRange={setAreaRange}
         />
       </div>
       <style jsx>{`

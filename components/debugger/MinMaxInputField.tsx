@@ -1,33 +1,32 @@
 import classes from "@/styles/components/Debugger.module.css";
 
-const XYInputField = ({
+const MinMaxInputField = ({
   propertyName,
   value,
   setValue,
 }: {
   propertyName: string;
-  value: { x: number; y: number };
-  setValue: (val: { x: number; y: number }) => void;
+  value: { min: number; max: number };
+  setValue: (val: { min: number; max: number }) => void;
 }) => {
   return (
     <>
       <div>
         <p className={classes.headline}>{propertyName}:</p>
         <div className={classes.inputFieldContainer}>
-          <p>x: </p>
           <input
             type="number"
-            defaultValue={value.x}
+            defaultValue={value.min}
             onChange={(e) => {
-              setValue({ x: Number(e.target.value), y: value.y });
+              setValue({ min: Number(e.target.value), max: value.max });
             }}
           />
-          <p>y: </p>
+          <p> - </p>
           <input
             type="number"
-            defaultValue={value.y}
+            defaultValue={value.max}
             onChange={(e) => {
-              setValue({ x: value.x, y: Number(e.target.value) });
+              setValue({ min: value.min, max: Number(e.target.value) });
             }}
           />
         </div>
@@ -36,4 +35,4 @@ const XYInputField = ({
   );
 };
 
-export default XYInputField;
+export default MinMaxInputField;

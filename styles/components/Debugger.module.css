@@ -1,0 +1,13 @@
+.headline {
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+
+.inputFieldContainer {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.inputFieldContainer > input {
+  width: 55px;
+}

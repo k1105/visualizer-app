@@ -28,4 +28,8 @@ export class Bbox implements BboxAttribute {
     this.bbox[2] *= k;
     this.bbox[3] *= k;
   }
+
+  area() {
+    return this.width() * this.height();
+  }
 }

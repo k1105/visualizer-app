@@ -9,6 +9,9 @@ import ToggleVisibilityButton from "./debugger/ToggleVisibilityButton";
 import ValueInputField from "./debugger/ValueInputField";
 import XYInputField from "./debugger/XYInputField";
 import { asekaku_240926, default_preset } from "@/public/data/Presets";
+import classes from "@/styles/components/Debugger.module.css";
+import WidthHeightInputField from "./debugger/WidthHeightInputField";
+import MinMaxInputField from "./debugger/MinMaxInputField";
 
 type Props = {
   thresholdRef: MutableRefObject<number>;
@@ -18,6 +21,7 @@ type Props = {
   translate: { x: number; y: number };
   offset: { x: number; y: number };
   canvasSize: { width: number; height: number };
+  areaRange: { min: number; max: number };
   server: string;
   speedThreshold: { x: number; y: number };
   debuggerVisibility: boolean;
@@ -27,6 +31,7 @@ type Props = {
   setServer: (server: string) => void;
   setSpeedThreshold: (val: { x: number; y: number }) => void;
   setCanvasSize: (size: { width: number; height: number }) => void;
+  setAreaRange: (range: { min: number; max: number }) => void;
   setDebuggerVisibility: (debuggerVisibility: boolean) => void;
 };
 
@@ -40,6 +45,7 @@ export const Debugger = ({
   offset,
   server,
   canvasSize,
+  areaRange,
   speedThreshold,
   setTextColor,
   setScale,
@@ -48,6 +54,7 @@ export const Debugger = ({
   setServer,
   setSpeedThreshold,
   setCanvasSize,
+  setAreaRange,
 }: Props) => {
   const thresholdTextRef = useRef<HTMLParagraphElement>(null);
   const frameRateTextRef = useRef<HTMLParagraphElement>(null);
@@ -65,7 +72,7 @@ export const Debugger = ({
 
   const [mirrored, setMirrored] = useState<boolean>(false);
 
-  const presets = [asekaku_240926, default_preset];
+  const presets = [default_preset, asekaku_240926];
   const [presetName, setPresetName] = useState<string>(presets[0].name);
 
   const handlePresetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -149,17 +156,17 @@ export const Debugger = ({
           >
             <div className="item-list">
               <div>
-                <p className="headline">
+                <p className={classes.headline}>
                   Threshold: <span ref={thresholdTextRef} />
                 </p>
               </div>
               <div>
-                <p className="headline">
+                <p className={classes.headline}>
                   Frame Rate: <span ref={frameRateTextRef} />
                 </p>
               </div>
               <div>
-                <p className="headline">Camera Resolution: </p>
+                <p className={classes.headline}>Camera Resolution: </p>
                 {cameraResolution && (
                   <p>
                     {cameraResolution.width}x{cameraResolution.height}
@@ -170,11 +177,11 @@ export const Debugger = ({
 
             <div className="item-list">
               <div>
-                <p className="headline">Background Color: </p>
+                <p className={classes.headline}>Background Color: </p>
                 <ColorPalette setColor={setBackgroundColor} />
               </div>
               <div>
-                <p className="headline">Text Color: </p>
+                <p className={classes.headline}>Text Color: </p>
                 <ColorPalette setColor={setTextColor} />
               </div>
               <ValueInputField
@@ -197,34 +204,18 @@ export const Debugger = ({
                 value={speedThreshold}
                 setValue={setSpeedThreshold}
               />
+              <WidthHeightInputField
+                propertyName="Canvas Size"
+                value={canvasSize}
+                setValue={setCanvasSize}
+              />
+              <MinMaxInputField
+                propertyName="Area Range"
+                value={areaRange}
+                setValue={setAreaRange}
+              />
               <div>
-                <p className="headline">canvas width:</p>
-                <input
-                  type="number"
-                  defaultValue={canvasSize.width}
-                  onChange={(e) => {
-                    setCanvasSize({
-                      width: Number(e.target.value),
-                      height: canvasSize.height,
-                    });
-                  }}
-                />
-              </div>
-              <div>
-                <p className="headline">canvas height:</p>
-                <input
-                  type="number"
-                  defaultValue={canvasSize.height}
-                  onChange={(e) => {
-                    setCanvasSize({
-                      width: canvasSize.width,
-                      height: Number(e.target.value),
-                    });
-                  }}
-                />
-              </div>
-              <div>
-                <p className="headline">server:</p>
+                <p className={classes.headline}>server:</p>
                 <input
                   type="text"
                   defaultValue={server}
@@ -234,7 +225,7 @@ export const Debugger = ({
                 />
               </div>
               <div>
-                <p className="headline">Preset</p>
+                <p className={classes.headline}>Preset</p>
                 <select
                   id="presetSelector"
                   value={presetName}

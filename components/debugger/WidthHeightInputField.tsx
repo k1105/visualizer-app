@@ -1,33 +1,33 @@
 import classes from "@/styles/components/Debugger.module.css";
 
-const XYInputField = ({
+const WidthHeightInputField = ({
   propertyName,
   value,
   setValue,
 }: {
   propertyName: string;
-  value: { x: number; y: number };
-  setValue: (val: { x: number; y: number }) => void;
+  value: { width: number; height: number };
+  setValue: (val: { width: number; height: number }) => void;
 }) => {
   return (
     <>
       <div>
         <p className={classes.headline}>{propertyName}:</p>
         <div className={classes.inputFieldContainer}>
-          <p>x: </p>
+          <p>w: </p>
           <input
             type="number"
-            defaultValue={value.x}
+            defaultValue={value.width}
             onChange={(e) => {
-              setValue({ x: Number(e.target.value), y: value.y });
+              setValue({ width: Number(e.target.value), height: value.height });
             }}
           />
-          <p>y: </p>
+          <p>h: </p>
           <input
             type="number"
-            defaultValue={value.y}
+            defaultValue={value.height}
             onChange={(e) => {
-              setValue({ x: value.x, y: Number(e.target.value) });
+              setValue({ width: value.width, height: Number(e.target.value) });
             }}
           />
         </div>
@@ -36,4 +36,4 @@ const XYInputField = ({
   );
 };
 
-export default XYInputField;
+export default WidthHeightInputField;

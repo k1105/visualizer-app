@@ -1,3 +1,5 @@
+import classes from "@/styles/components/Debugger.module.css";
+
 const ValueInputField = ({
   propertyName,
   value,
@@ -10,7 +12,7 @@ const ValueInputField = ({
   return (
     <>
       <div>
-        <p className="headline">{propertyName}:</p>
+        <p className={classes.headline}>{propertyName}:</p>
         <input
           type="number"
           defaultValue={value}
@@ -19,12 +21,6 @@ const ValueInputField = ({
           }}
         />
       </div>
-      <style jsx>{`
-        .headline {
-          font-size: 0.9rem;
-          margin-bottom: 0.2rem;
-        }
-      `}</style>
     </>
   );
 };
