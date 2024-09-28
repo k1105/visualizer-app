@@ -71,6 +71,8 @@ export function Sketch({
     let walkingAnnotation = false;
     let area_min = 0;
     let area_max = 100;
+    let p5Offset: { x: number; y: number } = { x: 0, y: 0 };
+    let p5SpeedThreshold: { x: number; y: number } = { x: 200, y: 200 };
 
     p5.preload = () => {
       font = p5.loadFont("/fonts/HinaMincho-Regular.ttf");
@@ -95,6 +97,9 @@ export function Sketch({
       peopleRef.current = props.people as Person[];
       area_min = (props.areaRange as { min: number; max: number }).min;
       area_max = (props.areaRange as { min: number; max: number }).max;
+
+      p5Offset = props.offset as { x: number; y: number };
+      p5SpeedThreshold = props.speedThreshold as { x: number; y: number };
 
       // displayPeopleからフレームアウトした人を削除
       displayedPeopleRef.current = displayedPeopleRef.current.filter(
@@ -142,10 +147,10 @@ export function Sketch({
 
       p5.clear();
 
-      p5.translate(offset.x, offset.y);
+      p5.translate(p5Offset.x, p5Offset.y);
 
       for (const person of displayedPeopleRef.current) {
-        person.updateMovingStatus(speedThreshold.x, speedThreshold.y);
+        person.updateMovingStatus(p5SpeedThreshold.x, p5SpeedThreshold.y);
 
         if (p5.frameCount - person.lastUpdated > 5) {
           const res = findCharacter(
@@ -205,6 +210,8 @@ export function Sketch({
           canvasHeight={canvasSize.height}
           debuggerVisibility={debuggerVisibility}
           areaRange={areaRange}
+          offset={offset}
+          speedThreshold={speedThreshold}
         />
         <Debugger
           debuggerVisibility={debuggerVisibility}
