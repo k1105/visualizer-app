@@ -154,8 +154,8 @@ export function Sketch({
 
         if (p5.frameCount - person.lastUpdated > 5) {
           const res = findCharacter(
-            person.bbox.width(),
-            person.bbox.height(),
+            person.smoothedBbox.width(),
+            person.smoothedBbox.height(),
             person.movingStatus,
             person.previousIndex
           );
