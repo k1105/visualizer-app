@@ -214,31 +214,22 @@ export const characterData: {
   {
     aspectRatio: 1.9833,
     movingCharacter: [{ char: "へ", x: 0, y: 0, s: 1, name: "japanese_he" }],
-    pausedCharacter: [
-      { char: "m", x: 0, y: -0.2, s: 1, name: "alphabet_m" },
-      { char: "w", x: 0, y: -0.2, s: 1, name: "alphabet_w" },
-    ],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 2.2613,
     movingCharacter: [],
-    pausedCharacter: [
-      { char: "n", x: 0, y: -0.2, s: 1, name: "alphabet_n" },
-      { char: "v", x: 0, y: -0.2, s: 1, name: "alphabet_v" },
-    ],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 2.6298,
     movingCharacter: [],
-    pausedCharacter: [
-      { char: "u", x: 0, y: -0.25, s: 1, name: "alphabet_u" },
-      { char: "t", x: 0, y: -0.25, s: 1, name: "alphabet_t" },
-    ],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 3.1419,
     movingCharacter: [],
-    pausedCharacter: [{ char: "c", x: 0, y: 0, s: 1, name: "alphabet_c" }],
+    pausedCharacter: [],
   },
   {
     aspectRatio: 3.9016,

@@ -73,6 +73,7 @@ export function Sketch({
     let area_max = 100;
     let p5Offset: { x: number; y: number } = { x: 0, y: 0 };
     let p5SpeedThreshold: { x: number; y: number } = { x: 200, y: 200 };
+    let p5TextColor = "white";
 
     p5.preload = () => {
       font = p5.loadFont("/fonts/HinaMincho-Regular.ttf");
@@ -81,7 +82,6 @@ export function Sketch({
     p5.setup = () => {
       p5.createCanvas(p5.windowWidth, p5.windowHeight);
       p5.textFont(font);
-      p5.fill(textColor);
       p5.noStroke();
       const aspectRatio = p5.height / p5.width;
 
@@ -97,6 +97,7 @@ export function Sketch({
       peopleRef.current = props.people as Person[];
       area_min = (props.areaRange as { min: number; max: number }).min;
       area_max = (props.areaRange as { min: number; max: number }).max;
+      p5TextColor = props.textColor as string;
 
       p5Offset = props.offset as { x: number; y: number };
       p5SpeedThreshold = props.speedThreshold as { x: number; y: number };
@@ -108,7 +109,15 @@ export function Sketch({
       );
 
       if (props.canvasWidth && props.canvasHeight) {
-        p5.resizeCanvas(Number(props.canvasWidth), Number(props.canvasHeight));
+        if (
+          p5.width !== Number(props.canvasWidth) ||
+          p5.height !== Number(props.canvasHeight)
+        ) {
+          p5.resizeCanvas(
+            Number(props.canvasWidth),
+            Number(props.canvasHeight)
+          );
+        }
 
         const aspectRatio = p5.height / p5.width;
 
@@ -146,6 +155,7 @@ export function Sketch({
       }
 
       p5.clear();
+      p5.fill(p5TextColor);
 
       p5.translate(p5Offset.x, p5Offset.y);
 
@@ -212,6 +222,7 @@ export function Sketch({
           areaRange={areaRange}
           offset={offset}
           speedThreshold={speedThreshold}
+          textColor={textColor}
         />
         <Debugger
           debuggerVisibility={debuggerVisibility}
