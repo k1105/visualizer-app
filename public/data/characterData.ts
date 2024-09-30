@@ -4,26 +4,6 @@ export const characterData: {
   pausedCharacter: charData[];
 }[] = [
   {
-    aspectRatio: 0.1324,
-    movingCharacter: [],
-    pausedCharacter: [],
-  },
-  {
-    aspectRatio: 0.1943,
-    movingCharacter: [],
-    pausedCharacter: [],
-  },
-  {
-    aspectRatio: 0.2563,
-    movingCharacter: [],
-    pausedCharacter: [],
-  },
-  {
-    aspectRatio: 0.3183,
-    movingCharacter: [],
-    pausedCharacter: [],
-  },
-  {
     aspectRatio: 0.3824,
     movingCharacter: [{ char: "j", x: 0, y: -0.15, s: 1, name: "alphabet_j" }],
     pausedCharacter: [],
@@ -203,47 +183,12 @@ export const characterData: {
   },
   {
     aspectRatio: 1.592,
-    movingCharacter: [],
+    movingCharacter: [{ char: "へ", x: 0, y: 0, s: 1, name: "japanese_he" }],
     pausedCharacter: [{ char: "二", x: 0, y: 0, s: 1, name: "number_2" }],
   },
   {
     aspectRatio: 1.7662,
     movingCharacter: [],
     pausedCharacter: [{ char: "一", x: 0, y: 0, s: 1, name: "number_1" }],
-  },
-  {
-    aspectRatio: 1.9833,
-    movingCharacter: [{ char: "へ", x: 0, y: 0, s: 1, name: "japanese_he" }],
-    pausedCharacter: [],
-  },
-  {
-    aspectRatio: 2.2613,
-    movingCharacter: [],
-    pausedCharacter: [],
-  },
-  {
-    aspectRatio: 2.6298,
-    movingCharacter: [],
-    pausedCharacter: [],
-  },
-  {
-    aspectRatio: 3.1419,
-    movingCharacter: [],
-    pausedCharacter: [],
-  },
-  {
-    aspectRatio: 3.9016,
-    movingCharacter: [],
-    pausedCharacter: [],
-  },
-  {
-    aspectRatio: 5.1459,
-    movingCharacter: [],
-    pausedCharacter: [],
-  },
-  {
-    aspectRatio: 7.5556,
-    movingCharacter: [],
-    pausedCharacter: [],
   },
 ];
