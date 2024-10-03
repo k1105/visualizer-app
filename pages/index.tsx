@@ -17,7 +17,6 @@ const Home = () => {
     personWsRef.current = personWs;
 
     personWs.onmessage = (event) => {
-      console.log(event.data);
       setPeople(parseResponse(event.data) as Person[]);
     };
 
@@ -29,10 +28,6 @@ const Home = () => {
       personWs.close();
     };
   }, [server]);
-
-  useEffect(() => {
-    console.log(people);
-  }, [people]);
 
   return (
     <>
