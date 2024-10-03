@@ -28,17 +28,22 @@ export default function findCharacter(
       : characterData[closestIndex].pausedCharacter;
 
   // Return the previous character if we're still in the same "closest" cell
-  if (closestIndex === previousIndex && selectedCharacters.length > 0) {
-    return { charData: selectedCharacters[0], index: closestIndex }; // Or you can store and return the last selected character
-  }
-
-  // Randomly pick a character if multiple are available
-  const randomCharacter =
-    selectedCharacters.length > 0
-      ? selectedCharacters[
+  if (closestIndex !== previousIndex && selectedCharacters.length > 0) {
+    if (selectedCharacters.length == 1) {
+      return { charData: selectedCharacters[0], index: closestIndex }; // Or you can store and return the last selected character
+    } else {
+      // Randomly pick a character if multiple are available
+      const randomCharacter =
+        selectedCharacters[
           Math.floor(Math.random() * selectedCharacters.length)
-        ]
-      : { char: "", x: 0, y: 0, s: 0, name: "none" };
+        ];
 
-  return { charData: randomCharacter, index: closestIndex };
+      return { charData: randomCharacter, index: closestIndex };
+    }
+  } else {
+    return {
+      charData: { char: "", x: 0, y: 0, s: 0, name: "none" },
+      index: closestIndex,
+    };
+  }
 }
