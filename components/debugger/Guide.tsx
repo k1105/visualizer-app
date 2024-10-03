@@ -6,15 +6,11 @@ import showBoundingBox from "../showBoundingBox";
 
 const Guide = ({
   frameRateTextRef,
-  thresholdTextRef,
-  thresholdRef,
   offset,
   displayedPeopleRef,
   canvasSize,
 }: {
   frameRateTextRef: RefObject<HTMLParagraphElement>;
-  thresholdTextRef: RefObject<HTMLParagraphElement>;
-  thresholdRef: MutableRefObject<number>;
   offset: { x: number; y: number };
   displayedPeopleRef: MutableRefObject<DisplayedPerson[]>;
   canvasSize: { width: number; height: number };
@@ -37,7 +33,6 @@ const Guide = ({
 
       p5.draw = () => {
         frameRateTextRef.current!.innerText = `${Math.floor(p5.frameRate())}`;
-        thresholdTextRef.current!.innerText = `${thresholdRef.current}`;
 
         p5.clear();
         p5.textSize(16);
@@ -84,13 +79,7 @@ const Guide = ({
         }
       };
     },
-    [
-      frameRateTextRef,
-      thresholdTextRef,
-      thresholdRef,
-      displayedPeopleRef,
-      offset,
-    ]
+    [frameRateTextRef, displayedPeopleRef, offset]
   );
 
   return (

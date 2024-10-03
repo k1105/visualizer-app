@@ -14,7 +14,6 @@ import WidthHeightInputField from "./debugger/WidthHeightInputField";
 import MinMaxInputField from "./debugger/MinMaxInputField";
 
 type Props = {
-  thresholdRef: MutableRefObject<number>;
   displayedPeopleRef: MutableRefObject<DisplayedPerson[]>;
   setTextColor: (color: string) => void;
   scale: number;
@@ -38,7 +37,6 @@ type Props = {
 export const Debugger = ({
   debuggerVisibility,
   setDebuggerVisibility,
-  thresholdRef,
   displayedPeopleRef,
   scale,
   translate,
@@ -56,7 +54,6 @@ export const Debugger = ({
   setCanvasSize,
   setAreaRange,
 }: Props) => {
-  const thresholdTextRef = useRef<HTMLParagraphElement>(null);
   const frameRateTextRef = useRef<HTMLParagraphElement>(null);
   const messageRef = useRef<HTMLDivElement>(null);
   const [backgroundColor, setBackgroundColor] = useState<string>("black");
@@ -143,8 +140,6 @@ export const Debugger = ({
         <div>
           <Guide
             frameRateTextRef={frameRateTextRef}
-            thresholdTextRef={thresholdTextRef}
-            thresholdRef={thresholdRef}
             offset={offset}
             displayedPeopleRef={displayedPeopleRef}
             canvasSize={canvasSize}
@@ -155,11 +150,6 @@ export const Debugger = ({
              ${align === "left" && "left"} ${align === "right" && "right"}`}
           >
             <div className="item-list">
-              <div>
-                <p className={classes.headline}>
-                  Threshold: <span ref={thresholdTextRef} />
-                </p>
-              </div>
               <div>
                 <p className={classes.headline}>
                   Frame Rate: <span ref={frameRateTextRef} />
@@ -311,11 +301,6 @@ export const Debugger = ({
                 top: 10px;
                 right: 10px;
               }
-            }
-
-            .headline {
-              font-size: 0.9rem;
-              margin-bottom: 0.2rem;
             }
 
             .item-list {

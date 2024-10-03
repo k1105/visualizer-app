@@ -27,7 +27,6 @@ export function Sketch({
   setServer: (server: string) => void;
   audioWsRef: MutableRefObject<WebSocket | null>;
 }) {
-  const thresholdRef = useRef<number>(200);
   const peopleRef = useRef<Person[]>([]);
   const displayedPeopleRef = useRef<DisplayedPerson[]>([]);
   const [textColor, setTextColor] = useState<string>("white");
@@ -236,7 +235,6 @@ export function Sketch({
           setDebuggerVisibility={setDebuggerVisibility}
           translate={translate}
           setTranslate={setTranslate}
-          thresholdRef={thresholdRef}
           displayedPeopleRef={displayedPeopleRef}
           setTextColor={setTextColor}
           offset={offset}
