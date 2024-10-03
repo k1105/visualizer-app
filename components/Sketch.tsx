@@ -61,64 +61,30 @@ export function Sketch({
     setCanvasSize({ width: window.innerWidth, height: window.innerHeight });
   }, []);
 
-  const sketch = useCallback((p5: P5CanvasInstance) => {
-    let k = 0; //拡大比率
+  const sketch = useCallback(
+    (p5: P5CanvasInstance) => {
+      let k = 0; //拡大比率
 
-    const inputImageSize = { x: 1280, y: 720 };
-    const inputAspectRatio = inputImageSize.y / inputImageSize.x;
-    // let isAudioEnabled = false;
-    let font: p5Types.Font;
-    let walkingAnnotation = false;
-    let area_min = 0;
-    let area_max = 100;
-    let p5Offset: { x: number; y: number } = { x: 0, y: 0 };
-    let p5SpeedThreshold: { x: number; y: number } = { x: 200, y: 200 };
-    let p5TextColor = "white";
+      const inputImageSize = { x: 1280, y: 720 };
+      const inputAspectRatio = inputImageSize.y / inputImageSize.x;
+      // let isAudioEnabled = false;
+      let font: p5Types.Font;
+      let walkingAnnotation = false;
+      let area_min = 0;
+      let area_max = 100;
+      let p5Offset: { x: number; y: number } = { x: 0, y: 0 };
+      let p5SpeedThreshold: { x: number; y: number } = { x: 200, y: 200 };
+      let p5TextColor = "white";
+      let p5Scale: number = 1;
 
-    p5.preload = () => {
-      font = p5.loadFont("/fonts/HinaMincho-Regular.ttf");
-    };
+      p5.preload = () => {
+        font = p5.loadFont("/fonts/HinaMincho-Regular.ttf");
+      };
 
-    p5.setup = () => {
-      p5.createCanvas(p5.windowWidth, p5.windowHeight);
-      p5.textFont(font);
-      p5.noStroke();
-      const aspectRatio = p5.height / p5.width;
-
-      if (aspectRatio >= inputAspectRatio) {
-        k = p5.width / inputImageSize.x;
-      } else {
-        k = p5.height / inputImageSize.y;
-      }
-    };
-
-    p5.updateWithProps = (props) => {
-      walkingAnnotation = props.debuggerVisibility as boolean;
-      peopleRef.current = props.people as Person[];
-      area_min = (props.areaRange as { min: number; max: number }).min;
-      area_max = (props.areaRange as { min: number; max: number }).max;
-      p5TextColor = props.textColor as string;
-
-      p5Offset = props.offset as { x: number; y: number };
-      p5SpeedThreshold = props.speedThreshold as { x: number; y: number };
-
-      // displayPeopleからフレームアウトした人を削除
-      displayedPeopleRef.current = displayedPeopleRef.current.filter(
-        (displayedPerson) =>
-          peopleRef.current.some((person) => person.id === displayedPerson.id)
-      );
-
-      if (props.canvasWidth && props.canvasHeight) {
-        if (
-          p5.width !== Number(props.canvasWidth) ||
-          p5.height !== Number(props.canvasHeight)
-        ) {
-          p5.resizeCanvas(
-            Number(props.canvasWidth),
-            Number(props.canvasHeight)
-          );
-        }
-
+      p5.setup = () => {
+        p5.createCanvas(p5.windowWidth, p5.windowHeight);
+        p5.textFont(font);
+        p5.noStroke();
         const aspectRatio = p5.height / p5.width;
 
         if (aspectRatio >= inputAspectRatio) {
@@ -126,89 +92,129 @@ export function Sketch({
         } else {
           k = p5.height / inputImageSize.y;
         }
-      }
-    };
+      };
 
-    p5.draw = () => {
-      // update displayPeople
-      for (const person of peopleRef.current) {
-        const displayedPerson = displayedPeopleRef.current.find(
-          (p) => p.id === person.id
+      p5.updateWithProps = (props) => {
+        walkingAnnotation = props.debuggerVisibility as boolean;
+        peopleRef.current = props.people as Person[];
+        area_min = (props.areaRange as { min: number; max: number }).min;
+        area_max = (props.areaRange as { min: number; max: number }).max;
+        p5TextColor = props.textColor as string;
+
+        p5Offset = props.offset as { x: number; y: number };
+        p5SpeedThreshold = props.speedThreshold as { x: number; y: number };
+
+        p5Scale = props.scale as number;
+
+        // displayPeopleからフレームアウトした人を削除
+        displayedPeopleRef.current = displayedPeopleRef.current.filter(
+          (displayedPerson) =>
+            peopleRef.current.some((person) => person.id === displayedPerson.id)
         );
 
-        if (displayedPerson) {
-          displayedPerson.update(person);
-        } else {
-          displayedPeopleRef.current.push(
-            new DisplayedPerson(
-              person.id,
-              person.getSpeed(),
-              person.bbox,
-              p5.frameCount
-            )
-          );
-        }
-      }
-
-      for (const displayedPerson of displayedPeopleRef.current) {
-        displayedPerson.smoothedBbox.scale(k * scale);
-      }
-
-      p5.clear();
-      p5.fill(p5TextColor);
-
-      p5.translate(p5Offset.x, p5Offset.y);
-
-      for (const person of displayedPeopleRef.current) {
-        person.updateMovingStatus(p5SpeedThreshold.x, p5SpeedThreshold.y);
-
-        if (p5.frameCount - person.lastUpdated > 5) {
-          const res = findCharacter(
-            person.smoothedBbox.width(),
-            person.smoothedBbox.height(),
-            person.movingStatus,
-            person.previousIndex
-          );
-
-          person.previousIndex = res.index;
-
+        if (props.canvasWidth && props.canvasHeight) {
           if (
-            res.charData.char !== "" &&
-            res.charData.char !== person.displayCharacter.char
+            p5.width !== Number(props.canvasWidth) ||
+            p5.height !== Number(props.canvasHeight)
           ) {
-            person.displayCharacter = res.charData;
-            if (
-              audioWsRef.current &&
-              audioWsRef.current.readyState === WebSocket.OPEN
-            ) {
-              audioWsRef.current.send(
-                JSON.stringify({
-                  audio: person.displayCharacter.name, // 音声ファイル名
-                  volume: Math.min(
-                    1,
-                    Math.max(
-                      0,
-                      (person.smoothedBbox.area() - area_min) /
-                        (area_max - area_min)
-                    )
-                  ), // 0〜1の音量パラメータ
-                })
-              );
-            }
+            p5.resizeCanvas(
+              Number(props.canvasWidth),
+              Number(props.canvasHeight)
+            );
           }
 
-          person.lastUpdated = p5.frameCount;
+          const aspectRatio = p5.height / p5.width;
+
+          if (aspectRatio >= inputAspectRatio) {
+            k = p5.width / inputImageSize.x;
+          } else {
+            k = p5.height / inputImageSize.y;
+          }
+        }
+      };
+
+      p5.draw = () => {
+        // update displayPeople
+        for (const person of peopleRef.current) {
+          const displayedPerson = displayedPeopleRef.current.find(
+            (p) => p.id === person.id
+          );
+
+          if (displayedPerson) {
+            displayedPerson.update(person);
+          } else {
+            displayedPeopleRef.current.push(
+              new DisplayedPerson(
+                person.id,
+                person.getSpeed(),
+                person.bbox,
+                p5.frameCount
+              )
+            );
+          }
         }
 
-        showCharacter({ person, p5 });
-        showBoundingBox({
-          person,
-          p5,
-          walkingAnnotation: walkingAnnotation,
-        });
-      }
-    };
-  }, []);
+        for (const displayedPerson of displayedPeopleRef.current) {
+          displayedPerson.smoothedBbox.scale(k * p5Scale);
+        }
+
+        p5.clear();
+        p5.fill(p5TextColor);
+
+        p5.translate(p5Offset.x, p5Offset.y);
+
+        for (const person of displayedPeopleRef.current) {
+          person.updateMovingStatus(p5SpeedThreshold.x, p5SpeedThreshold.y);
+
+          if (p5.frameCount - person.lastUpdated > 5) {
+            const res = findCharacter(
+              person.smoothedBbox.width(),
+              person.smoothedBbox.height(),
+              person.movingStatus,
+              person.previousIndex
+            );
+
+            person.previousIndex = res.index;
+
+            if (
+              res.charData.char !== "" &&
+              res.charData.char !== person.displayCharacter.char
+            ) {
+              person.displayCharacter = res.charData;
+              if (
+                audioWsRef.current &&
+                audioWsRef.current.readyState === WebSocket.OPEN
+              ) {
+                audioWsRef.current.send(
+                  JSON.stringify({
+                    audio: person.displayCharacter.name, // 音声ファイル名
+                    volume: Math.min(
+                      1,
+                      Math.max(
+                        0,
+                        (person.smoothedBbox.area() - area_min) /
+                          (area_max - area_min)
+                      )
+                    ), // 0〜1の音量パラメータ
+                  })
+                );
+              }
+            }
+
+            person.lastUpdated = p5.frameCount;
+          }
+
+          showCharacter({ person, p5 });
+          showBoundingBox({
+            person,
+            p5,
+            walkingAnnotation: walkingAnnotation,
+          });
+        }
+      };
+    },
+    [audioWsRef]
+  );
 
   return (
     <>
@@ -223,6 +229,7 @@ export function Sketch({
           offset={offset}
           speedThreshold={speedThreshold}
           textColor={textColor}
+          scale={scale}
         />
         <Debugger
           debuggerVisibility={debuggerVisibility}
