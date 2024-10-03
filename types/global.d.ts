@@ -13,5 +13,4 @@ interface charData {
   x: number;
   y: number;
   s: number;
-  name: string;
 }

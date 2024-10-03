@@ -9,15 +9,12 @@ const Home = () => {
   const [server, setServer] = useState<string>("localhost");
 
   const personWsRef = useRef<WebSocket | null>(null);
-  const audioWsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     // const ws = new WebSocket("ws://192.168.0.100:8765");
     const personWs = new WebSocket(`ws://${server}:8765`);
-    const audioWs = new WebSocket(`ws://${server}:8080`);
 
     personWsRef.current = personWs;
-    audioWsRef.current = audioWs;
 
     personWs.onmessage = (event) => {
       // setBboxes(parseResponse(event.data) as Bbox[]);
@@ -28,25 +25,15 @@ const Home = () => {
       console.log("WebSocket connection to port 8765 closed");
     };
 
-    audioWs.onclose = () => {
-      console.log("WebSocket connection to port 8080 closed");
-    };
-
     return () => {
       personWs.close();
-      audioWs.close();
     };
   }, [server]);
 
   return (
     <>
       <div>
-        <Sketch
-          people={people}
-          server={server}
-          setServer={setServer}
-          audioWsRef={audioWsRef}
-        />
+        <Sketch people={people} server={server} setServer={setServer} />
       </div>
       <style jsx>{``}</style>
     </>

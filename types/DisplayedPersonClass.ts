@@ -7,7 +7,6 @@ export class DisplayedPerson extends Person {
   smoothedBbox: Bbox;
   movingStatus: "walking" | "paused";
   pausedFrameCount: number;
-  displayCharacter: charData;
   previousIndex: number | null;
   private bboxes: Bbox[];
 
@@ -24,13 +23,6 @@ export class DisplayedPerson extends Person {
     this.pausedFrameCount = 0;
     this.bboxes = [bbox];
     this.smoothedBbox = bbox;
-    this.displayCharacter = {
-      char: "i",
-      x: 0,
-      y: -0.15,
-      s: 1,
-      name: "alphabet_i",
-    };
     this.previousIndex = null;
   }
 
