@@ -80,11 +80,4 @@ export class DisplayedPerson extends Person {
       }
     }
   }
-
-  aspectRatio() {
-    return (
-      (this.bbox.bbox[3] - this.bbox.bbox[1]) /
-      (this.bbox.bbox[2] - this.bbox.bbox[0])
-    );
-  }
 }
