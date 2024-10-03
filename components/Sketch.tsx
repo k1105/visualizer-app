@@ -34,13 +34,6 @@ export function Sketch({
     x: 50,
     y: 50,
   });
-  const [speedThreshold, setSpeedThreshold] = useState<{
-    x: number;
-    y: number;
-  }>({
-    x: 200,
-    y: 200,
-  });
   const [canvasSize, setCanvasSize] = useState<{
     width: number;
     height: number;
@@ -62,7 +55,6 @@ export function Sketch({
     let area_min = 0;
     let area_max = 100;
     let p5Offset: { x: number; y: number } = { x: 0, y: 0 };
-    let p5SpeedThreshold: { x: number; y: number } = { x: 200, y: 200 };
     let p5TextColor = "white";
     let p5Scale: number = 1;
 
@@ -91,7 +83,6 @@ export function Sketch({
       p5TextColor = props.textColor as string;
 
       p5Offset = props.offset as { x: number; y: number };
-      p5SpeedThreshold = props.speedThreshold as { x: number; y: number };
 
       p5Scale = props.scale as number;
 
@@ -154,8 +145,6 @@ export function Sketch({
       p5.translate(p5Offset.x, p5Offset.y);
 
       for (const person of displayedPeopleRef.current) {
-        person.updateMovingStatus(p5SpeedThreshold.x, p5SpeedThreshold.y);
-
         showCharacter({ person, p5 });
         showBoundingBox({
           person,
@@ -177,7 +166,6 @@ export function Sketch({
           debuggerVisibility={debuggerVisibility}
           areaRange={areaRange}
           offset={offset}
-          speedThreshold={speedThreshold}
           textColor={textColor}
           scale={scale}
         />
@@ -195,8 +183,6 @@ export function Sketch({
           setOffset={setOffset}
           server={server}
           setServer={setServer}
-          speedThreshold={speedThreshold}
-          setSpeedThreshold={setSpeedThreshold}
           setScale={setScale}
           setCanvasSize={setCanvasSize}
           setAreaRange={setAreaRange}

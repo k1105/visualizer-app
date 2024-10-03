@@ -18,7 +18,8 @@ export const parseResponse = (data: string) => {
               x: item.displayCharacter.x,
               y: item.displayCharacter.y,
               s: item.displayCharacter.s,
-            }
+            },
+            item.movingStatus
           )
       );
 

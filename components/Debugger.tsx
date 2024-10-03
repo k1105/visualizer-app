@@ -22,13 +22,11 @@ type Props = {
   canvasSize: { width: number; height: number };
   areaRange: { min: number; max: number };
   server: string;
-  speedThreshold: { x: number; y: number };
   debuggerVisibility: boolean;
   setTranslate: (val: { x: number; y: number }) => void;
   setScale: (scale: number) => void;
   setOffset: (val: { x: number; y: number }) => void;
   setServer: (server: string) => void;
-  setSpeedThreshold: (val: { x: number; y: number }) => void;
   setCanvasSize: (size: { width: number; height: number }) => void;
   setAreaRange: (range: { min: number; max: number }) => void;
   setDebuggerVisibility: (debuggerVisibility: boolean) => void;
@@ -44,13 +42,11 @@ export const Debugger = ({
   server,
   canvasSize,
   areaRange,
-  speedThreshold,
   setTextColor,
   setScale,
   setTranslate,
   setOffset,
   setServer,
-  setSpeedThreshold,
   setCanvasSize,
   setAreaRange,
 }: Props) => {
@@ -81,7 +77,6 @@ export const Debugger = ({
       setScale(selectedPreset.scale);
       setCanvasSize(selectedPreset.canvasSize);
       setServer(selectedPreset.server);
-      setSpeedThreshold(selectedPreset.speedThreshold);
       if (selectedPreset.translate) {
         setTranslate(selectedPreset.translate);
       }
@@ -188,11 +183,6 @@ export const Debugger = ({
                 propertyName="Offset"
                 value={offset}
                 setValue={setOffset}
-              />
-              <XYInputField
-                propertyName="Speed Threshold"
-                value={speedThreshold}
-                setValue={setSpeedThreshold}
               />
               <WidthHeightInputField
                 propertyName="Canvas Size"
