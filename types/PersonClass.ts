@@ -7,12 +7,17 @@ export class Person implements PersonAttribute {
   lostFrameCount: number;
   displayCharacter: charData;
 
-  constructor(id: number, speed: { x: number; y: number }, bbox: Bbox) {
+  constructor(
+    id: number,
+    speed: { x: number; y: number },
+    bbox: Bbox,
+    displayCharacter: charData
+  ) {
     this.id = id;
     this.speed = speed;
     this.bbox = bbox;
     this.lostFrameCount = 0;
-    this.displayCharacter = { char: "i", x: 0, y: -0.15, s: 1 };
+    this.displayCharacter = displayCharacter;
   }
 
   getSpeed() {

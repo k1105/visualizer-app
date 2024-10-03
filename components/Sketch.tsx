@@ -137,7 +137,8 @@ export function Sketch({
               person.id,
               person.getSpeed(),
               person.bbox,
-              p5.frameCount
+              p5.frameCount,
+              person.displayCharacter
             )
           );
         }

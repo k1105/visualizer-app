@@ -14,9 +14,10 @@ export class DisplayedPerson extends Person {
     id: number,
     speed: { x: number; y: number },
     bbox: Bbox,
-    lastUpdated: number
+    lastUpdated: number,
+    displayCharacter: charData
   ) {
-    super(id, speed, bbox);
+    super(id, speed, bbox, displayCharacter);
     this.characterId = 0;
     this.lastUpdated = lastUpdated;
     this.movingStatus = "paused";
@@ -28,6 +29,7 @@ export class DisplayedPerson extends Person {
 
   update(person: Person) {
     this.bbox = person.bbox;
+    this.displayCharacter = person.displayCharacter;
     this.setSpeed(person.getSpeed());
     this.bboxes.push(person.bbox);
     if (this.bboxes.length > 5) this.bboxes.shift();
