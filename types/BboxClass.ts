@@ -32,4 +32,8 @@ export class Bbox implements BboxAttribute {
   area() {
     return this.width() * this.height();
   }
+
+  aspectRatio() {
+    return (this.bbox[3] - this.bbox[1]) / (this.bbox[2] - this.bbox[0]);
+  }
 }
