@@ -5,9 +5,7 @@ export class DisplayedPerson extends Person {
   characterId: number;
   lastUpdated: number;
   smoothedBbox: Bbox;
-  movingStatus: "walking" | "paused";
   pausedFrameCount: number;
-  displayCharacter: charData;
   previousIndex: number | null;
   private bboxes: Bbox[];
 
@@ -15,29 +13,24 @@ export class DisplayedPerson extends Person {
     id: number,
     speed: { x: number; y: number },
     bbox: Bbox,
-    lastUpdated: number
+    lastUpdated: number,
+    displayCharacter: charData
   ) {
-    super(id, speed, bbox);
+    super(id, speed, bbox, displayCharacter, "paused");
     this.characterId = 0;
     this.lastUpdated = lastUpdated;
-    this.movingStatus = "paused";
     this.pausedFrameCount = 0;
     this.bboxes = [bbox];
     this.smoothedBbox = bbox;
-    this.displayCharacter = {
-      char: "i",
-      x: 0,
-      y: -0.15,
-      s: 1,
-      name: "alphabet_i",
-    };
     this.previousIndex = null;
   }
 
   update(person: Person) {
     this.bbox = person.bbox;
+    this.displayCharacter = person.displayCharacter;
     this.setSpeed(person.getSpeed());
     this.bboxes.push(person.bbox);
+    this.movingStatus = person.movingStatus;
     if (this.bboxes.length > 5) this.bboxes.shift();
 
     const smoothedBbox: Bbox = new Bbox(0, [0, 0, 0, 0]);
@@ -61,23 +54,10 @@ export class DisplayedPerson extends Person {
     }
   }
 
-  updateMovingStatus(xSpeedThreshold: number, ySpeedThreshold: number) {
-    const speed = this.getSpeed();
-    if (
-      (Math.abs(speed.x) > xSpeedThreshold && speed.x / speed.y > 2) ||
-      this.movingStatus === "walking"
-    ) {
-      this.movingStatus = "walking";
-    }
-
-    if (
-      Math.abs(speed.x) < xSpeedThreshold &&
-      Math.abs(speed.y) < ySpeedThreshold
-    ) {
-      this.pausedFrameCount++;
-      if (this.pausedFrameCount > 3) {
-        this.movingStatus = "paused";
-      }
-    }
+  aspectRatio() {
+    return (
+      (this.bbox.bbox[3] - this.bbox.bbox[1]) /
+      (this.bbox.bbox[2] - this.bbox.bbox[0])
+    );
   }
 }

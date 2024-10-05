@@ -4,30 +4,25 @@ import { NextReactP5Wrapper } from "@p5-wrapper/next";
 import { Person } from "@/types/PersonClass";
 import { DisplayedPerson } from "@/types/DisplayedPersonClass";
 import { Debugger } from "./Debugger";
-import {
-  useState,
-  useRef,
-  useCallback,
-  useEffect,
-  MutableRefObject,
-} from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import showCharacter from "./showCharacter";
 import showBoundingBox from "./showBoundingBox";
 import p5Types from "p5";
-import findCharacter from "@/lib/findCharacter";
+import showPoseData from "./showPoseData";
 
 export function Sketch({
   people,
+  pose,
   server,
   setServer,
-  audioWsRef,
 }: {
   people: Person[];
+  pose: PoseData[];
   server: string;
   setServer: (server: string) => void;
-  audioWsRef: MutableRefObject<WebSocket | null>;
 }) {
   const peopleRef = useRef<Person[]>([]);
+  const poseRef = useRef<PoseData[]>([]);
   const displayedPeopleRef = useRef<DisplayedPerson[]>([]);
   const [textColor, setTextColor] = useState<string>("white");
   const [scale, setScale] = useState<number>(1);
@@ -43,13 +38,6 @@ export function Sketch({
     x: 50,
     y: 50,
   });
-  const [speedThreshold, setSpeedThreshold] = useState<{
-    x: number;
-    y: number;
-  }>({
-    x: 200,
-    y: 200,
-  });
   const [canvasSize, setCanvasSize] = useState<{
     width: number;
     height: number;
@@ -60,30 +48,66 @@ export function Sketch({
     setCanvasSize({ width: window.innerWidth, height: window.innerHeight });
   }, []);
 
-  const sketch = useCallback(
-    (p5: P5CanvasInstance) => {
-      let k = 0; //拡大比率
+  const sketch = useCallback((p5: P5CanvasInstance) => {
+    let k = 0; //拡大比率
 
-      const inputImageSize = { x: 1280, y: 720 };
-      const inputAspectRatio = inputImageSize.y / inputImageSize.x;
-      // let isAudioEnabled = false;
-      let font: p5Types.Font;
-      let walkingAnnotation = false;
-      let area_min = 0;
-      let area_max = 100;
-      let p5Offset: { x: number; y: number } = { x: 0, y: 0 };
-      let p5SpeedThreshold: { x: number; y: number } = { x: 200, y: 200 };
-      let p5TextColor = "white";
-      let p5Scale: number = 1;
+    const inputImageSize = { x: 1280, y: 720 };
+    const inputAspectRatio = inputImageSize.y / inputImageSize.x;
+    // let isAudioEnabled = false;
+    let font: p5Types.Font;
+    let debugging = false;
+    let area_min = 0;
+    let area_max = 100;
+    let p5Offset: { x: number; y: number } = { x: 0, y: 0 };
+    let p5TextColor = "white";
+    let p5Scale: number = 1;
 
-      p5.preload = () => {
-        font = p5.loadFont("/fonts/HinaMincho-Regular.ttf");
-      };
+    p5.preload = () => {
+      font = p5.loadFont("/fonts/HinaMincho-Regular.ttf");
+    };
 
-      p5.setup = () => {
-        p5.createCanvas(p5.windowWidth, p5.windowHeight);
-        p5.textFont(font);
-        p5.noStroke();
+    p5.setup = () => {
+      p5.createCanvas(p5.windowWidth, p5.windowHeight);
+      p5.textFont(font);
+      p5.noStroke();
+      const aspectRatio = p5.height / p5.width;
+
+      if (aspectRatio >= inputAspectRatio) {
+        k = p5.width / inputImageSize.x;
+      } else {
+        k = p5.height / inputImageSize.y;
+      }
+    };
+
+    p5.updateWithProps = (props) => {
+      debugging = props.debuggerVisibility as boolean;
+      peopleRef.current = props.people as Person[];
+      poseRef.current = props.pose as PoseData[];
+      area_min = (props.areaRange as { min: number; max: number }).min;
+      area_max = (props.areaRange as { min: number; max: number }).max;
+      p5TextColor = props.textColor as string;
+
+      p5Offset = props.offset as { x: number; y: number };
+
+      p5Scale = props.scale as number;
+
+      // displayPeopleからフレームアウトした人を削除
+      displayedPeopleRef.current = displayedPeopleRef.current.filter(
+        (displayedPerson) =>
+          peopleRef.current.some((person) => person.id === displayedPerson.id)
+      );
+
+      if (props.canvasWidth && props.canvasHeight) {
+        if (
+          p5.width !== Number(props.canvasWidth) ||
+          p5.height !== Number(props.canvasHeight)
+        ) {
+          p5.resizeCanvas(
+            Number(props.canvasWidth),
+            Number(props.canvasHeight)
+          );
+        }
+
         const aspectRatio = p5.height / p5.width;
 
         if (aspectRatio >= inputAspectRatio) {
@@ -91,129 +115,56 @@ export function Sketch({
         } else {
           k = p5.height / inputImageSize.y;
         }
-      };
+      }
+    };
 
-      p5.updateWithProps = (props) => {
-        walkingAnnotation = props.debuggerVisibility as boolean;
-        peopleRef.current = props.people as Person[];
-        area_min = (props.areaRange as { min: number; max: number }).min;
-        area_max = (props.areaRange as { min: number; max: number }).max;
-        p5TextColor = props.textColor as string;
-
-        p5Offset = props.offset as { x: number; y: number };
-        p5SpeedThreshold = props.speedThreshold as { x: number; y: number };
-
-        p5Scale = props.scale as number;
-
-        // displayPeopleからフレームアウトした人を削除
-        displayedPeopleRef.current = displayedPeopleRef.current.filter(
-          (displayedPerson) =>
-            peopleRef.current.some((person) => person.id === displayedPerson.id)
+    p5.draw = () => {
+      // update displayPeople
+      for (const person of peopleRef.current) {
+        const displayedPerson = displayedPeopleRef.current.find(
+          (p) => p.id === person.id
         );
 
-        if (props.canvasWidth && props.canvasHeight) {
-          if (
-            p5.width !== Number(props.canvasWidth) ||
-            p5.height !== Number(props.canvasHeight)
-          ) {
-            p5.resizeCanvas(
-              Number(props.canvasWidth),
-              Number(props.canvasHeight)
-            );
-          }
-
-          const aspectRatio = p5.height / p5.width;
-
-          if (aspectRatio >= inputAspectRatio) {
-            k = p5.width / inputImageSize.x;
-          } else {
-            k = p5.height / inputImageSize.y;
-          }
-        }
-      };
-
-      p5.draw = () => {
-        // update displayPeople
-        for (const person of peopleRef.current) {
-          const displayedPerson = displayedPeopleRef.current.find(
-            (p) => p.id === person.id
+        if (displayedPerson) {
+          displayedPerson.update(person);
+        } else {
+          displayedPeopleRef.current.push(
+            new DisplayedPerson(
+              person.id,
+              person.getSpeed(),
+              person.bbox,
+              p5.frameCount,
+              person.displayCharacter
+            )
           );
-
-          if (displayedPerson) {
-            displayedPerson.update(person);
-          } else {
-            displayedPeopleRef.current.push(
-              new DisplayedPerson(
-                person.id,
-                person.getSpeed(),
-                person.bbox,
-                p5.frameCount
-              )
-            );
-          }
         }
+      }
 
-        for (const displayedPerson of displayedPeopleRef.current) {
-          displayedPerson.smoothedBbox.scale(k * p5Scale);
+      for (const displayedPerson of displayedPeopleRef.current) {
+        displayedPerson.smoothedBbox.scale(k * p5Scale);
+      }
+
+      p5.clear();
+      p5.fill(p5TextColor);
+
+      p5.translate(p5Offset.x, p5Offset.y);
+
+      for (const person of displayedPeopleRef.current) {
+        showCharacter({ person, p5 });
+        showBoundingBox({
+          person,
+          p5,
+          walkingAnnotation: debugging,
+        });
+      }
+
+      if (debugging) {
+        for (const pose of poseRef.current) {
+          showPoseData({ pose, p5, scale: k });
         }
-
-        p5.clear();
-        p5.fill(p5TextColor);
-
-        p5.translate(p5Offset.x, p5Offset.y);
-
-        for (const person of displayedPeopleRef.current) {
-          person.updateMovingStatus(p5SpeedThreshold.x, p5SpeedThreshold.y);
-
-          if (p5.frameCount - person.lastUpdated > 5) {
-            const res = findCharacter(
-              person.smoothedBbox.width(),
-              person.smoothedBbox.height(),
-              person.movingStatus,
-              person.previousIndex
-            );
-
-            person.previousIndex = res.index;
-
-            if (
-              res.charData.char !== "" &&
-              res.charData.char !== person.displayCharacter.char
-            ) {
-              person.displayCharacter = res.charData;
-              if (
-                audioWsRef.current &&
-                audioWsRef.current.readyState === WebSocket.OPEN
-              ) {
-                audioWsRef.current.send(
-                  JSON.stringify({
-                    audio: person.displayCharacter.name, // 音声ファイル名
-                    volume: Math.min(
-                      1,
-                      Math.max(
-                        0,
-                        (person.smoothedBbox.area() - area_min) /
-                          (area_max - area_min)
-                      )
-                    ), // 0〜1の音量パラメータ
-                  })
-                );
-              }
-            }
-
-            person.lastUpdated = p5.frameCount;
-          }
-
-          showCharacter({ person, p5 });
-          showBoundingBox({
-            person,
-            p5,
-            walkingAnnotation: walkingAnnotation,
-          });
-        }
-      };
-    },
-    [audioWsRef]
-  );
+      }
+    };
+  }, []);
 
   return (
     <>
@@ -221,12 +172,12 @@ export function Sketch({
         <NextReactP5Wrapper
           sketch={sketch}
           people={people}
+          pose={pose}
           canvasWidth={canvasSize.width}
           canvasHeight={canvasSize.height}
           debuggerVisibility={debuggerVisibility}
           areaRange={areaRange}
           offset={offset}
-          speedThreshold={speedThreshold}
           textColor={textColor}
           scale={scale}
         />
@@ -244,8 +195,6 @@ export function Sketch({
           setOffset={setOffset}
           server={server}
           setServer={setServer}
-          speedThreshold={speedThreshold}
-          setSpeedThreshold={setSpeedThreshold}
           setScale={setScale}
           setCanvasSize={setCanvasSize}
           setAreaRange={setAreaRange}

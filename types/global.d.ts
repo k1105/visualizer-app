@@ -13,5 +13,14 @@ interface charData {
   x: number;
   y: number;
   s: number;
-  name: string;
+}
+
+interface Keypoint {
+  x: number;
+  y: number;
+}
+
+interface PoseData {
+  keypoints: Keypoint[];
+  confidence: Keypoint[];
 }

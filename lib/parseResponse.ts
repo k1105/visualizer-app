@@ -12,7 +12,14 @@ export const parseResponse = (data: string) => {
           new Person(
             item.id,
             item.speed,
-            new Bbox(item.bbox.confidence, item.bbox.bbox)
+            new Bbox(item.bbox.confidence, item.bbox.bbox),
+            {
+              char: item.displayCharacter.char,
+              x: item.displayCharacter.x,
+              y: item.displayCharacter.y,
+              s: item.displayCharacter.s,
+            },
+            item.movingStatus
           )
       );
 
