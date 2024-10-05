@@ -12,17 +12,14 @@ import showPoseData from "./showPoseData";
 
 export function Sketch({
   people,
-  pose,
   server,
   setServer,
 }: {
   people: Person[];
-  pose: PoseData[];
   server: string;
   setServer: (server: string) => void;
 }) {
   const peopleRef = useRef<Person[]>([]);
-  const poseRef = useRef<PoseData[]>([]);
   const displayedPeopleRef = useRef<DisplayedPerson[]>([]);
   const [textColor, setTextColor] = useState<string>("white");
   const [scale, setScale] = useState<number>(1);
@@ -82,7 +79,6 @@ export function Sketch({
     p5.updateWithProps = (props) => {
       debugging = props.debuggerVisibility as boolean;
       peopleRef.current = props.people as Person[];
-      poseRef.current = props.pose as PoseData[];
       area_min = (props.areaRange as { min: number; max: number }).min;
       area_max = (props.areaRange as { min: number; max: number }).max;
       p5TextColor = props.textColor as string;
@@ -134,7 +130,8 @@ export function Sketch({
               person.getSpeed(),
               person.bbox,
               p5.frameCount,
-              person.displayCharacter
+              person.displayCharacter,
+              person.pose
             )
           );
         }
@@ -156,11 +153,9 @@ export function Sketch({
           p5,
           walkingAnnotation: debugging,
         });
-      }
-
-      if (debugging) {
-        for (const pose of poseRef.current) {
-          showPoseData({ pose, p5, scale: k * p5Scale });
+        if (debugging && person.pose) {
+          console.log(person.pose);
+          showPoseData({ pose: person.pose, p5, scale: k * p5Scale });
         }
       }
     };
@@ -172,7 +167,6 @@ export function Sketch({
         <NextReactP5Wrapper
           sketch={sketch}
           people={people}
-          pose={pose}
           canvasWidth={canvasSize.width}
           canvasHeight={canvasSize.height}
           debuggerVisibility={debuggerVisibility}

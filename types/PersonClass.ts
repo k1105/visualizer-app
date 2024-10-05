@@ -7,13 +7,15 @@ export class Person implements PersonAttribute {
   lostFrameCount: number;
   displayCharacter: charData;
   movingStatus: "walking" | "paused";
+  pose: PoseData | null;
 
   constructor(
     id: number,
     speed: { x: number; y: number },
     bbox: Bbox,
     displayCharacter: charData,
-    movingStatus: "walking" | "paused"
+    movingStatus: "walking" | "paused",
+    pose: PoseData | null
   ) {
     this.id = id;
     this.speed = speed;
@@ -21,6 +23,7 @@ export class Person implements PersonAttribute {
     this.lostFrameCount = 0;
     this.displayCharacter = displayCharacter;
     this.movingStatus = movingStatus;
+    this.pose = pose;
   }
 
   getSpeed() {

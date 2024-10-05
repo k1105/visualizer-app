@@ -14,9 +14,10 @@ export class DisplayedPerson extends Person {
     speed: { x: number; y: number },
     bbox: Bbox,
     lastUpdated: number,
-    displayCharacter: charData
+    displayCharacter: charData,
+    pose: PoseData | null
   ) {
-    super(id, speed, bbox, displayCharacter, "paused");
+    super(id, speed, bbox, displayCharacter, "paused", pose);
     this.characterId = 0;
     this.lastUpdated = lastUpdated;
     this.pausedFrameCount = 0;
@@ -27,6 +28,7 @@ export class DisplayedPerson extends Person {
 
   update(person: Person) {
     this.bbox = person.bbox;
+    this.pose = person.pose;
     this.displayCharacter = person.displayCharacter;
     this.setSpeed(person.getSpeed());
     this.bboxes.push(person.bbox);

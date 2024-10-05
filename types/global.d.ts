@@ -22,5 +22,5 @@ interface Keypoint {
 
 interface PoseData {
   keypoints: Keypoint[];
-  confidence: Keypoint[];
+  confidence: number[];
 }
