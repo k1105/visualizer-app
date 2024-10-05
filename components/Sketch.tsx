@@ -160,7 +160,7 @@ export function Sketch({
 
       if (debugging) {
         for (const pose of poseRef.current) {
-          showPoseData({ pose, p5, scale: k });
+          showPoseData({ pose, p5, scale: k * p5Scale });
         }
       }
     };

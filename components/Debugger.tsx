@@ -8,7 +8,11 @@ import Guide from "./debugger/Guide";
 import ToggleVisibilityButton from "./debugger/ToggleVisibilityButton";
 import ValueInputField from "./debugger/ValueInputField";
 import XYInputField from "./debugger/XYInputField";
-import { asekaku_240926, default_preset } from "@/public/data/Presets";
+import {
+  asekaku_241005,
+  asekaku_240926,
+  default_preset,
+} from "@/public/data/Presets";
 import classes from "@/styles/components/Debugger.module.css";
 import WidthHeightInputField from "./debugger/WidthHeightInputField";
 import MinMaxInputField from "./debugger/MinMaxInputField";
@@ -65,7 +69,7 @@ export const Debugger = ({
 
   const [mirrored, setMirrored] = useState<boolean>(false);
 
-  const presets = [default_preset, asekaku_240926];
+  const presets = [default_preset, asekaku_241005];
   const [presetName, setPresetName] = useState<string>(presets[0].name);
 
   const handlePresetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
