@@ -8,17 +8,21 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import showCharacter from "./showCharacter";
 import showBoundingBox from "./showBoundingBox";
 import p5Types from "p5";
+import showPoseData from "./showPoseData";
 
 export function Sketch({
   people,
+  pose,
   server,
   setServer,
 }: {
   people: Person[];
+  pose: PoseData[];
   server: string;
   setServer: (server: string) => void;
 }) {
   const peopleRef = useRef<Person[]>([]);
+  const poseRef = useRef<PoseData[]>([]);
   const displayedPeopleRef = useRef<DisplayedPerson[]>([]);
   const [textColor, setTextColor] = useState<string>("white");
   const [scale, setScale] = useState<number>(1);
@@ -51,7 +55,7 @@ export function Sketch({
     const inputAspectRatio = inputImageSize.y / inputImageSize.x;
     // let isAudioEnabled = false;
     let font: p5Types.Font;
-    let walkingAnnotation = false;
+    let debugging = false;
     let area_min = 0;
     let area_max = 100;
     let p5Offset: { x: number; y: number } = { x: 0, y: 0 };
@@ -76,8 +80,9 @@ export function Sketch({
     };
 
     p5.updateWithProps = (props) => {
-      walkingAnnotation = props.debuggerVisibility as boolean;
+      debugging = props.debuggerVisibility as boolean;
       peopleRef.current = props.people as Person[];
+      poseRef.current = props.pose as PoseData[];
       area_min = (props.areaRange as { min: number; max: number }).min;
       area_max = (props.areaRange as { min: number; max: number }).max;
       p5TextColor = props.textColor as string;
@@ -149,8 +154,14 @@ export function Sketch({
         showBoundingBox({
           person,
           p5,
-          walkingAnnotation: walkingAnnotation,
+          walkingAnnotation: debugging,
         });
+      }
+
+      if (debugging) {
+        for (const pose of poseRef.current) {
+          showPoseData({ pose, p5, scale: k });
+        }
       }
     };
   }, []);
@@ -161,6 +172,7 @@ export function Sketch({
         <NextReactP5Wrapper
           sketch={sketch}
           people={people}
+          pose={pose}
           canvasWidth={canvasSize.width}
           canvasHeight={canvasSize.height}
           debuggerVisibility={debuggerVisibility}
