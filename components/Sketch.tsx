@@ -138,7 +138,8 @@ export function Sketch({
       }
 
       for (const displayedPerson of displayedPeopleRef.current) {
-        displayedPerson.smoothedBbox.scale(k * p5Scale);
+        if (displayedPerson.smoothedBbox)
+          displayedPerson.smoothedBbox.scale(k * p5Scale);
       }
 
       p5.clear();

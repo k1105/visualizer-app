@@ -48,34 +48,36 @@ const Guide = ({
         p5.translate(offset.x, offset.y);
 
         for (const person of displayedPeopleRef.current) {
-          const box = person.smoothedBbox.bbox;
-          const speed = person.getSpeed();
-          p5.push();
-          p5.textAlign(p5.LEFT);
-          p5.translate(20, 50);
-          p5.textSize(20);
-          p5.text("id: " + person.id, box[0], box[1]);
-          p5.translate(0, 30);
-          p5.text(
-            "speed-x: " + Math.floor(speed.x * 100) / 100,
-            box[0],
-            box[1]
-          );
-          p5.translate(0, 30);
-          p5.text(
-            "speed-y: " + Math.floor(speed.y * 100) / 100,
-            box[0],
-            box[1]
-          );
-          p5.translate(0, 30);
-          p5.text(
-            `bbox-size: ${Math.floor(person.bbox.width() * 100) / 100} x ${
-              Math.floor(person.bbox.height() * 100) / 100
-            }`,
-            box[0],
-            box[1]
-          );
-          p5.pop();
+          if (person.smoothedBbox) {
+            const box = person.smoothedBbox.bbox;
+            const speed = person.getSpeed();
+            p5.push();
+            p5.textAlign(p5.LEFT);
+            p5.translate(20, 50);
+            p5.textSize(20);
+            p5.text("id: " + person.id, box[0], box[1]);
+            p5.translate(0, 30);
+            p5.text(
+              "speed-x: " + Math.floor(speed.x * 100) / 100,
+              box[0],
+              box[1]
+            );
+            p5.translate(0, 30);
+            p5.text(
+              "speed-y: " + Math.floor(speed.y * 100) / 100,
+              box[0],
+              box[1]
+            );
+            p5.translate(0, 30);
+            p5.text(
+              `bbox-size: ${Math.floor(person.bbox.width() * 100) / 100} x ${
+                Math.floor(person.bbox.height() * 100) / 100
+              }`,
+              box[0],
+              box[1]
+            );
+            p5.pop();
+          }
         }
       };
     },
