@@ -11,10 +11,10 @@ type Props = {
 export const asekaku_241005: Props = {
   name: "241005_asekaku",
   scale: 1.9,
-  translate: { x: 57.5, y: 47 },
-  offset: { x: -1, y: -150 },
+  translate: { x: 57.3, y: 47 },
+  offset: { x: 75, y: -150 },
   speedThreshold: { x: 200, y: 200 },
-  canvasSize: { width: 1617, height: 1021 },
+  canvasSize: { width: 1604, height: 1021 },
   server: "192.168.1.10",
 };
 
