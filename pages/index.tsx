@@ -11,24 +11,32 @@ const Home = () => {
   const peopleWsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    // people用WebSocket（port:8765）
     const peopleWs = new WebSocket(`ws://${server}:8765`);
-    peopleWsRef.current = peopleWs;
 
+    peopleWs.onopen = () => {
+      console.log("peopleWs: connected!");
+    };
     peopleWs.onmessage = (event) => {
-      const data = parseResponse(event.data); // peopleデータのパース
+      console.log("peopleWs: onmessage", event.data);
+      const data = parseResponse(event.data);
       setPeople(data);
     };
-
+    peopleWs.onerror = (err) => {
+      console.error("peopleWs: error", err);
+    };
     peopleWs.onclose = () => {
-      console.log("WebSocket connection to port 8765 closed");
+      console.log("peopleWs: onclose");
     };
 
-    // pose用WebSocket（port:8080）
     const poseWs = new WebSocket(`ws://${server}:8080`);
-
+    poseWs.onopen = () => {
+      console.log("poseWs: connected!");
+    };
+    poseWs.onerror = (err) => {
+      console.error("poseWs: error", err);
+    };
     poseWs.onclose = () => {
-      console.log("WebSocket connection to port 8080 closed");
+      console.log("poseWs: onclose");
     };
 
     return () => {
