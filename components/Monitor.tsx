@@ -46,7 +46,6 @@ export const Monitor = ({
           top: "0",
           left: "0",
           zIndex: "-1",
-          opacity: "0.5",
         }}
         ref={webcamContainerRef}
       >

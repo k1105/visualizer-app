@@ -1,20 +1,18 @@
 import { P5CanvasInstance } from "@p5-wrapper/react";
 import { NextReactP5Wrapper } from "@p5-wrapper/next";
-import { MutableRefObject, RefObject, useCallback } from "react";
-import { DisplayedPerson } from "@/types/DisplayedPersonClass";
-import showBoundingBox from "../showBoundingBox";
+import { RefObject, useCallback } from "react";
+import { useProperty } from "../context/PropertyContext";
 
 const Guide = ({
   frameRateTextRef,
   offset,
-  displayedPeopleRef,
   canvasSize,
 }: {
   frameRateTextRef: RefObject<HTMLParagraphElement>;
   offset: { x: number; y: number };
-  displayedPeopleRef: MutableRefObject<DisplayedPerson[]>;
   canvasSize: { width: number; height: number };
 }) => {
+  const { displayedPeopleRef } = useProperty();
   const sketch = useCallback(
     (p5: P5CanvasInstance) => {
       p5.setup = () => {

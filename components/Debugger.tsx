@@ -1,5 +1,4 @@
-import { DisplayedPerson } from "@/types/DisplayedPersonClass";
-import { MutableRefObject, useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Monitor } from "./Monitor";
 import { ColorPalette } from "./debugger/ColorPalette";
 import { RadioOn } from "./icon/RadioOn";
@@ -8,52 +7,30 @@ import Guide from "./debugger/Guide";
 import ToggleVisibilityButton from "./debugger/ToggleVisibilityButton";
 import ValueInputField from "./debugger/ValueInputField";
 import XYInputField from "./debugger/XYInputField";
-import {
-  asekaku_241005,
-  asekaku_240926,
-  default_preset,
-} from "@/public/data/Presets";
+import { asekaku_241005, default_preset } from "@/public/data/Presets";
 import classes from "@/styles/components/Debugger.module.css";
 import WidthHeightInputField from "./debugger/WidthHeightInputField";
 import MinMaxInputField from "./debugger/MinMaxInputField";
+import { useProperty } from "./context/PropertyContext";
 
-type Props = {
-  displayedPeopleRef: MutableRefObject<DisplayedPerson[]>;
-  setTextColor: (color: string) => void;
-  scale: number;
-  translate: { x: number; y: number };
-  offset: { x: number; y: number };
-  canvasSize: { width: number; height: number };
-  areaRange: { min: number; max: number };
-  server: string;
-  debuggerVisibility: boolean;
-  setTranslate: (val: { x: number; y: number }) => void;
-  setScale: (scale: number) => void;
-  setOffset: (val: { x: number; y: number }) => void;
-  setServer: (server: string) => void;
-  setCanvasSize: (size: { width: number; height: number }) => void;
-  setAreaRange: (range: { min: number; max: number }) => void;
-  setDebuggerVisibility: (debuggerVisibility: boolean) => void;
-};
-
-export const Debugger = ({
-  debuggerVisibility,
-  setDebuggerVisibility,
-  displayedPeopleRef,
-  scale,
-  translate,
-  offset,
-  server,
-  canvasSize,
-  areaRange,
-  setTextColor,
-  setScale,
-  setTranslate,
-  setOffset,
-  setServer,
-  setCanvasSize,
-  setAreaRange,
-}: Props) => {
+export const Debugger = () => {
+  const {
+    scale,
+    setScale,
+    offset,
+    setOffset,
+    translate,
+    setTranslate,
+    canvasSize,
+    setCanvasSize,
+    debuggerVisibility,
+    setDebuggerVisibility,
+    setTextColor,
+    areaRange,
+    setAreaRange,
+    server,
+    setServer,
+  } = useProperty();
   const frameRateTextRef = useRef<HTMLParagraphElement>(null);
   const messageRef = useRef<HTMLDivElement>(null);
   const [backgroundColor, setBackgroundColor] = useState<string>("black");
@@ -140,7 +117,6 @@ export const Debugger = ({
           <Guide
             frameRateTextRef={frameRateTextRef}
             offset={offset}
-            displayedPeopleRef={displayedPeopleRef}
             canvasSize={canvasSize}
           />
 
@@ -271,28 +247,29 @@ export const Debugger = ({
 
           <style jsx>{`
             .debugger-container {
+              max-height: 100vh;
+              overflow-y: scroll;
               background-color: rgb(0 0 0 /0.3);
               padding: 30px;
               color: white;
-              border-radius: 10px;
               display: flex;
               flex-flow: column;
               gap: 2rem;
-              position: absolute;
+              position: fixed;
               z-index: 99;
 
               &.left {
-                top: 10px;
+                top: 0;
                 left: 10px;
               }
 
               &.center {
-                top: 10px;
+                top: 0;
                 left: 40vw;
               }
 
               &.right {
-                top: 10px;
+                top: 0;
                 right: 10px;
               }
             }
