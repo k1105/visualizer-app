@@ -1,3 +1,4 @@
+import { Debugger } from "@/components/Debugger";
 import { Sketch } from "@/components/Sketch";
 import { PropertyProvider } from "@/components/context/PropertyContext";
 
@@ -6,6 +7,7 @@ const Home = () => {
     <>
       <PropertyProvider>
         <Sketch />
+        <Debugger />
       </PropertyProvider>
     </>
   );

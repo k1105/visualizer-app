@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import Webcam from "react-webcam";
+import { useProperty } from "./context/PropertyContext";
 
 type MonitorProps = {
   setCameraResolution: (
@@ -20,10 +21,7 @@ export const Monitor = ({
 }: MonitorProps) => {
   const webcamContainerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    webcamContainerRef.current!.style.left = `${offset.x}px`;
-    webcamContainerRef.current!.style.top = `${offset.y}px`;
-  }, [offset]);
+  const { translate } = useProperty();
 
   const handleUserMedia = (stream: MediaStream) => {
     const videoTrack = stream.getVideoTracks()[0];
@@ -40,23 +38,34 @@ export const Monitor = ({
 
   return (
     <>
-      <div
-        style={{
-          position: "absolute",
-          top: "0",
-          left: "0",
-          zIndex: "-1",
-        }}
-        ref={webcamContainerRef}
-      >
-        <Webcam
-          mirrored={mirrored ? true : false}
-          width={canvasSize.width * scale}
-          height={canvasSize.height * scale}
-          onUserMedia={handleUserMedia}
-          videoConstraints={videoConstraints}
-        />
+      <div className="canvas-wrapper" ref={webcamContainerRef}>
+        <div className="webcam-wrapper">
+          <Webcam
+            mirrored={mirrored ? true : false}
+            width={canvasSize.width * scale}
+            height={canvasSize.height * scale}
+            onUserMedia={handleUserMedia}
+            videoConstraints={videoConstraints}
+          />
+        </div>
       </div>
+      <style jsx>{`
+        .canvas-wrapper {
+          position: absolute;
+          width: 100vw;
+          height: 100vh;
+          left: 50%;
+          top: 50%;
+          transform: translate(-${translate.x}%, -${translate.y}%);
+          z-index: -1;
+          overflow: hidden;
+        }
+
+        .webcam-wrapper {
+          margin-top: ${offset.y}px;
+          margin-left: ${offset.x}px;
+        }
+      `}</style>
     </>
   );
 };

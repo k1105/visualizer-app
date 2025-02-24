@@ -5,14 +5,12 @@ import { useProperty } from "../context/PropertyContext";
 
 const Guide = ({
   frameRateTextRef,
-  offset,
   canvasSize,
 }: {
   frameRateTextRef: RefObject<HTMLParagraphElement>;
-  offset: { x: number; y: number };
   canvasSize: { width: number; height: number };
 }) => {
-  const { displayedPeopleRef } = useProperty();
+  const { translate, displayedPeopleRef } = useProperty();
   const sketch = useCallback(
     (p5: P5CanvasInstance) => {
       p5.setup = () => {
@@ -35,15 +33,15 @@ const Guide = ({
         p5.clear();
         p5.textSize(16);
         p5.textAlign(p5.LEFT);
-
         p5.push();
         p5.stroke(255, 0, 0);
         p5.strokeWeight(10);
         p5.noFill();
         p5.rect(0, 0, p5.width, p5.height);
+        p5.strokeWeight(3);
+        p5.line(0, p5.height / 2, p5.width, p5.height / 2);
+        p5.line(p5.width / 2, 0, p5.width / 2, p5.height);
         p5.pop();
-
-        p5.translate(offset.x, offset.y);
 
         for (const person of displayedPeopleRef.current) {
           if (person.smoothedBbox) {
@@ -79,7 +77,7 @@ const Guide = ({
         }
       };
     },
-    [frameRateTextRef, displayedPeopleRef, offset]
+    [frameRateTextRef, displayedPeopleRef]
   );
 
   return (
@@ -96,7 +94,7 @@ const Guide = ({
           position: absolute;
           top: 50%;
           left: 50%;
-          transform: translate(-50%, -50%);
+          transform: translate(-${translate.x}%, -${translate.y}%);
           z-index: 90;
         }
       `}</style>

@@ -26,7 +26,9 @@ const showPoseData = ({
     x: pose.keypoints[11].x + (pose.keypoints[11].x + pose.keypoints[12].x) / 2,
     y: pose.keypoints[11].y + (pose.keypoints[12].y + pose.keypoints[12].y) / 2,
   };
-  p5.line(p1.x, p1.y, p2.x, p2.y);
+  if (p1.x !== 0 && p2.x !== 0 && p1.y !== 0 && p2.y !== 0) {
+    p5.line(p1.x, p1.y, p2.x, p2.y);
+  }
   p5.pop();
 };
 

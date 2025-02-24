@@ -3,13 +3,13 @@ import { P5CanvasInstance } from "@p5-wrapper/react";
 import { NextReactP5Wrapper } from "@p5-wrapper/next";
 import { Person } from "@/types/PersonClass";
 import { DisplayedPerson } from "@/types/DisplayedPersonClass";
-import { Debugger } from "./Debugger";
 import { useRef, useCallback } from "react";
 import showCharacter from "./showCharacter";
 import showBoundingBox from "./showBoundingBox";
 import p5Types from "p5";
 import showPoseData from "./showPoseData";
 import { useProperty } from "./context/PropertyContext";
+import { useEffect } from "react";
 
 export function Sketch() {
   const {
@@ -97,6 +97,7 @@ export function Sketch() {
 
       p5.draw = () => {
         // update displayPeople
+
         for (const person of peopleRef.current) {
           const displayedPerson = displayedPeopleRef.current.find(
             (p) => p.id === person.id
@@ -159,15 +160,14 @@ export function Sketch() {
           textColor={textColor}
           scale={scale}
         />
-        <Debugger />
       </div>
       <style jsx>{`
         .canvas-wrapper {
-          cursor: ${!debuggerVisibility && "none"};
           position: absolute;
           top: 50%;
           left: 50%;
-          transform: translate(${-translate.x}%, ${-translate.y}%);
+          transform: translate(-${translate.x}%, -${translate.y}%);
+          z-index: 90;
         }
       `}</style>
     </>

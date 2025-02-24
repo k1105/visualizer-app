@@ -114,11 +114,7 @@ export const Debugger = () => {
     <>
       {debuggerVisibility && (
         <div>
-          <Guide
-            frameRateTextRef={frameRateTextRef}
-            offset={offset}
-            canvasSize={canvasSize}
-          />
+          <Guide frameRateTextRef={frameRateTextRef} canvasSize={canvasSize} />
 
           <div
             className={`debugger-container ${align === "center" && "center"}
