@@ -9,7 +9,6 @@ import showBoundingBox from "./showBoundingBox";
 import p5Types from "p5";
 import showPoseData from "./showPoseData";
 import { useProperty } from "./context/PropertyContext";
-import { useEffect } from "react";
 
 export function Sketch() {
   const {

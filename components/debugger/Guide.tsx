@@ -10,9 +10,11 @@ const Guide = ({
   frameRateTextRef: RefObject<HTMLParagraphElement>;
   canvasSize: { width: number; height: number };
 }) => {
-  const { translate, displayedPeopleRef } = useProperty();
+  const { translate, displayedPeopleRef, offset } = useProperty();
   const sketch = useCallback(
     (p5: P5CanvasInstance) => {
+      let p5Offset: { x: number; y: number } = { x: 0, y: 0 };
+
       p5.setup = () => {
         p5.createCanvas(p5.windowWidth, p5.windowHeight);
         p5.fill(255);
@@ -24,6 +26,10 @@ const Guide = ({
             Number(props.canvasWidth),
             Number(props.canvasHeight)
           );
+        }
+
+        if (props.offset) {
+          p5Offset = props.offset as { x: number; y: number };
         }
       };
 
@@ -42,6 +48,9 @@ const Guide = ({
         p5.line(0, p5.height / 2, p5.width, p5.height / 2);
         p5.line(p5.width / 2, 0, p5.width / 2, p5.height);
         p5.pop();
+
+        p5.push();
+        p5.translate(p5Offset.x, p5Offset.y);
 
         for (const person of displayedPeopleRef.current) {
           if (person.smoothedBbox) {
@@ -75,6 +84,8 @@ const Guide = ({
             p5.pop();
           }
         }
+
+        p5.pop();
       };
     },
     [frameRateTextRef, displayedPeopleRef]
@@ -87,6 +98,7 @@ const Guide = ({
           sketch={sketch}
           canvasWidth={canvasSize.width}
           canvasHeight={canvasSize.height}
+          offset={offset}
         />
       </div>
       <style jsx>{`
