@@ -11,6 +11,7 @@ import classes from "@/styles/components/Debugger.module.css";
 import WidthHeightInputField from "./debugger/WidthHeightInputField";
 import MinMaxInputField from "./debugger/MinMaxInputField";
 import {useProperty} from "./context/PropertyContext";
+import {useCameraProperty} from "./context/CameraPropertyContext";
 
 export const Debugger = () => {
   const {
@@ -22,11 +23,6 @@ export const Debugger = () => {
     setTranslate,
     canvasSize,
     setCanvasSize,
-    cameraVisibility,
-    setCameraVisibility,
-    mirrored,
-    setMirrored,
-    cameraResolution,
     debuggerVisibility,
     setDebuggerVisibility,
     setTextColor,
@@ -35,6 +31,14 @@ export const Debugger = () => {
     server,
     setServer,
   } = useProperty();
+  const {
+    cameraResolution,
+    setCameraResolution,
+    mirrored,
+    setMirrored,
+    cameraVisibility,
+    setCameraVisibility,
+  } = useCameraProperty();
   const frameRateTextRef = useRef<HTMLParagraphElement>(null);
   const messageRef = useRef<HTMLDivElement>(null);
   const [backgroundColor, setBackgroundColor] = useState<string>("black");

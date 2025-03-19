@@ -22,17 +22,6 @@ interface PropertyContextProps {
   setTextColor: (textColor: string) => void;
   areaRange: {min: number; max: number};
   setAreaRange: (areaRange: {min: number; max: number}) => void;
-  cameraVisibility: boolean;
-  setCameraVisibility: (cameraVisibility: boolean) => void;
-  mirrored: boolean;
-  setMirrored: (mirrored: boolean) => void;
-  cameraResolution: {width: number; height: number} | null;
-  setCameraResolution: (
-    cameraResolution: {
-      width: number;
-      height: number;
-    } | null
-  ) => void;
   debuggerVisibility: boolean;
   setDebuggerVisibility: (debuggerVisibility: boolean) => void;
   server: string;
@@ -74,14 +63,6 @@ export const PropertyProvider: React.FC<{children: React.ReactNode}> = ({
   const [people, setPeople] = useState<Person[]>([]);
 
   const displayedPeopleRef = useRef<DisplayedPerson[]>([]);
-
-  const [cameraVisibility, setCameraVisibility] = useState<boolean>(true);
-
-  const [cameraResolution, setCameraResolution] = useState<{
-    width: number;
-    height: number;
-  } | null>(null);
-  const [mirrored, setMirrored] = useState<boolean>(false);
 
   useEffect(() => {
     const peopleWs = new WebSocket(`ws://${server}:8765`);
@@ -137,12 +118,6 @@ export const PropertyProvider: React.FC<{children: React.ReactNode}> = ({
         setTextColor,
         areaRange,
         setAreaRange,
-        cameraVisibility,
-        setCameraVisibility,
-        cameraResolution,
-        setCameraResolution,
-        mirrored,
-        setMirrored,
         debuggerVisibility,
         setDebuggerVisibility,
         server,

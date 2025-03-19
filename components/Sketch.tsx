@@ -10,6 +10,7 @@ import p5Types from "p5";
 import showPoseData from "./showPoseData";
 import {useProperty} from "./context/PropertyContext";
 import {Monitor} from "./Monitor";
+import {useCameraProperty} from "./context/CameraPropertyContext";
 
 export function Sketch() {
   const {
@@ -22,10 +23,9 @@ export function Sketch() {
     textColor,
     people,
     displayedPeopleRef,
-    cameraVisibility,
-    setCameraResolution,
-    mirrored,
   } = useProperty();
+
+  const {cameraVisibility, setCameraResolution, mirrored} = useCameraProperty();
   const peopleRef = useRef<Person[]>([]);
 
   const sketch = useCallback(
