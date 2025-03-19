@@ -5,23 +5,34 @@ import React, {
   useEffect,
   useRef,
 } from "react";
-import { Person } from "@/types/PersonClass";
-import { parseResponse } from "@/lib/parseResponse";
-import { DisplayedPerson } from "@/types/DisplayedPersonClass";
+import {Person} from "@/types/PersonClass";
+import {parseResponse} from "@/lib/parseResponse";
+import {DisplayedPerson} from "@/types/DisplayedPersonClass";
 
 interface PropertyContextProps {
   scale: number;
   setScale: (scale: number) => void;
-  offset: { x: number; y: number };
-  setOffset: (offset: { x: number; y: number }) => void;
-  translate: { x: number; y: number };
-  setTranslate: (translate: { x: number; y: number }) => void;
-  canvasSize: { width: number; height: number };
-  setCanvasSize: (canvasSize: { width: number; height: number }) => void;
+  offset: {x: number; y: number};
+  setOffset: (offset: {x: number; y: number}) => void;
+  translate: {x: number; y: number};
+  setTranslate: (translate: {x: number; y: number}) => void;
+  canvasSize: {width: number; height: number};
+  setCanvasSize: (canvasSize: {width: number; height: number}) => void;
   textColor: string;
   setTextColor: (textColor: string) => void;
-  areaRange: { min: number; max: number };
-  setAreaRange: (areaRange: { min: number; max: number }) => void;
+  areaRange: {min: number; max: number};
+  setAreaRange: (areaRange: {min: number; max: number}) => void;
+  cameraVisibility: boolean;
+  setCameraVisibility: (cameraVisibility: boolean) => void;
+  mirrored: boolean;
+  setMirrored: (mirrored: boolean) => void;
+  cameraResolution: {width: number; height: number} | null;
+  setCameraResolution: (
+    cameraResolution: {
+      width: number;
+      height: number;
+    } | null
+  ) => void;
   debuggerVisibility: boolean;
   setDebuggerVisibility: (debuggerVisibility: boolean) => void;
   server: string;
@@ -35,24 +46,24 @@ const PropertyContext = createContext<PropertyContextProps | undefined>(
   undefined
 );
 
-export const PropertyProvider: React.FC<{ children: React.ReactNode }> = ({
+export const PropertyProvider: React.FC<{children: React.ReactNode}> = ({
   children,
 }) => {
   const [scale, setScale] = useState<number>(1);
-  const [offset, setOffset] = useState<{ x: number; y: number }>({
+  const [offset, setOffset] = useState<{x: number; y: number}>({
     x: 0,
     y: 0,
   });
-  const [translate, setTranslate] = useState<{ x: number; y: number }>({
+  const [translate, setTranslate] = useState<{x: number; y: number}>({
     x: 50,
     y: 50,
   });
   const [canvasSize, setCanvasSize] = useState<{
     width: number;
     height: number;
-  }>({ width: 0, height: 0 });
+  }>({width: 0, height: 0});
   const [textColor, setTextColor] = useState<string>("white");
-  const [areaRange, setAreaRange] = useState<{ min: number; max: number }>({
+  const [areaRange, setAreaRange] = useState<{min: number; max: number}>({
     min: 0,
     max: 100,
   });
@@ -63,6 +74,14 @@ export const PropertyProvider: React.FC<{ children: React.ReactNode }> = ({
   const [people, setPeople] = useState<Person[]>([]);
 
   const displayedPeopleRef = useRef<DisplayedPerson[]>([]);
+
+  const [cameraVisibility, setCameraVisibility] = useState<boolean>(true);
+
+  const [cameraResolution, setCameraResolution] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
+  const [mirrored, setMirrored] = useState<boolean>(false);
 
   useEffect(() => {
     const peopleWs = new WebSocket(`ws://${server}:8765`);
@@ -100,7 +119,7 @@ export const PropertyProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [server]);
 
   useEffect(() => {
-    setCanvasSize({ width: window.innerWidth, height: window.innerHeight });
+    setCanvasSize({width: window.innerWidth, height: window.innerHeight});
   }, []);
 
   return (
@@ -118,6 +137,12 @@ export const PropertyProvider: React.FC<{ children: React.ReactNode }> = ({
         setTextColor,
         areaRange,
         setAreaRange,
+        cameraVisibility,
+        setCameraVisibility,
+        cameraResolution,
+        setCameraResolution,
+        mirrored,
+        setMirrored,
         debuggerVisibility,
         setDebuggerVisibility,
         server,

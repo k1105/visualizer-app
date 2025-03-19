@@ -1,17 +1,16 @@
-import { useRef, useState, useEffect } from "react";
-import { Monitor } from "./Monitor";
-import { ColorPalette } from "./debugger/ColorPalette";
-import { RadioOn } from "./icon/RadioOn";
-import { RadioOff } from "./icon/RadioOff";
+import {useRef, useState, useEffect} from "react";
+import {ColorPalette} from "./debugger/ColorPalette";
+import {RadioOn} from "./icon/RadioOn";
+import {RadioOff} from "./icon/RadioOff";
 import Guide from "./debugger/Guide";
 import ToggleVisibilityButton from "./debugger/ToggleVisibilityButton";
 import ValueInputField from "./debugger/ValueInputField";
 import XYInputField from "./debugger/XYInputField";
-import { asekaku_241005, default_preset } from "@/public/data/Presets";
+import {asekaku_241005, default_preset} from "@/public/data/Presets";
 import classes from "@/styles/components/Debugger.module.css";
 import WidthHeightInputField from "./debugger/WidthHeightInputField";
 import MinMaxInputField from "./debugger/MinMaxInputField";
-import { useProperty } from "./context/PropertyContext";
+import {useProperty} from "./context/PropertyContext";
 
 export const Debugger = () => {
   const {
@@ -23,6 +22,11 @@ export const Debugger = () => {
     setTranslate,
     canvasSize,
     setCanvasSize,
+    cameraVisibility,
+    setCameraVisibility,
+    mirrored,
+    setMirrored,
+    cameraResolution,
     debuggerVisibility,
     setDebuggerVisibility,
     setTextColor,
@@ -34,17 +38,10 @@ export const Debugger = () => {
   const frameRateTextRef = useRef<HTMLParagraphElement>(null);
   const messageRef = useRef<HTMLDivElement>(null);
   const [backgroundColor, setBackgroundColor] = useState<string>("black");
-  const [cameraResolution, setCameraResolution] = useState<{
-    width: number;
-    height: number;
-  } | null>(null);
 
   const [align, setAlign] = useState<string>("left");
-  const [cameraVisibility, setCameraVisibility] = useState<boolean>(true);
   const [guideVisibility, setGuideVisibility] = useState<boolean>(true);
   const [showMessage, setShowMessage] = useState<boolean>(false);
-
-  const [mirrored, setMirrored] = useState<boolean>(false);
 
   const presets = [default_preset, asekaku_241005];
   const [presetName, setPresetName] = useState<string>(presets[0].name);
@@ -206,11 +203,11 @@ export const Debugger = () => {
                 <p>Mirror Camera:</p>
                 {mirrored ? (
                   <RadioOn
-                    style={{ width: "1.5rem", height: "1.5rem", color: "gray" }}
+                    style={{width: "1.5rem", height: "1.5rem", color: "gray"}}
                   />
                 ) : (
                   <RadioOff
-                    style={{ width: "1.5rem", height: "1.5rem", color: "gray" }}
+                    style={{width: "1.5rem", height: "1.5rem", color: "gray"}}
                   />
                 )}
               </div>
@@ -231,15 +228,6 @@ export const Debugger = () => {
               />
             </div>
           </div>
-          {cameraVisibility && (
-            <Monitor
-              canvasSize={canvasSize}
-              setCameraResolution={setCameraResolution}
-              mirrored={mirrored}
-              scale={scale}
-              offset={offset}
-            />
-          )}
 
           <style jsx>{`
             .debugger-container {

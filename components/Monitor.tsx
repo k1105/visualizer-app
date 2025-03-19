@@ -1,15 +1,15 @@
-import { useRef } from "react";
+import {useRef} from "react";
 import Webcam from "react-webcam";
-import { useProperty } from "./context/PropertyContext";
+import {useProperty} from "./context/PropertyContext";
 
 type MonitorProps = {
   setCameraResolution: (
-    resolution: { width: number; height: number } | null
+    resolution: {width: number; height: number} | null
   ) => void;
   scale: number;
-  offset: { x: number; y: number };
+  offset: {x: number; y: number};
   mirrored: boolean;
-  canvasSize: { width: number; height: number };
+  canvasSize: {width: number; height: number};
 };
 
 export const Monitor = ({
@@ -21,13 +21,13 @@ export const Monitor = ({
 }: MonitorProps) => {
   const webcamContainerRef = useRef<HTMLDivElement>(null);
 
-  const { translate } = useProperty();
+  const {translate} = useProperty();
 
   const handleUserMedia = (stream: MediaStream) => {
     const videoTrack = stream.getVideoTracks()[0];
     const settings = videoTrack.getSettings();
-    const { width, height } = settings;
-    setCameraResolution({ width: width || 0, height: height || 0 });
+    const {width, height} = settings;
+    setCameraResolution({width: width || 0, height: height || 0});
   };
 
   const videoConstraints = {
@@ -52,8 +52,8 @@ export const Monitor = ({
       <style jsx>{`
         .canvas-wrapper {
           position: absolute;
-          width: 100vw;
-          height: 100vh;
+          width: ${canvasSize.width}px;
+          height: ${canvasSize.height}px;
           left: 50%;
           top: 50%;
           transform: translate(-${translate.x}%, -${translate.y}%);
