@@ -4,27 +4,24 @@ import {Person} from "./PersonClass";
 
 export class DisplayedPerson extends Person {
   characterId: number;
-  lastUpdated: number;
   smoothedBbox: Bbox | null;
   pausedFrameCount: number;
   previousIndex: number | null;
   private bboxes: Bbox[];
   private bodyAxisHistory: {p1: Point; p2: Point}[] = [];
   bboxHistory: Bbox[];
-  characterList: string[];
+  characterList: charData[];
   bodyAxis: {p1: Point; p2: Point};
 
   constructor(
     id: number,
     speed: {x: number; y: number},
     bbox: Bbox,
-    lastUpdated: number,
     displayCharacter: charData,
     pose: PoseData | null
   ) {
     super(id, speed, bbox, displayCharacter, "paused", pose);
     this.characterId = 0;
-    this.lastUpdated = lastUpdated;
     this.pausedFrameCount = 0;
     this.bboxes = [bbox];
     this.bboxHistory = [bbox]; //先頭に新しい要素が入ることに留意
@@ -43,18 +40,15 @@ export class DisplayedPerson extends Person {
     this.movingStatus = person.movingStatus;
     if (this.bboxes.length > 5) this.bboxes.shift();
     if (person.displayCharacter.char !== "") {
-      const listLength = this.characterList.length;
-      if (listLength > 0) {
-        if (
-          this.characterList[listLength - 1] !== person.displayCharacter.char
-        ) {
-          this.characterList.push(person.displayCharacter.char);
-          if (listLength + 1 > 6) {
-            this.characterList.shift();
+      if (this.characterList.length > 0) {
+        if (this.characterList[0].char !== person.displayCharacter.char) {
+          this.characterList.unshift(person.displayCharacter);
+          if (this.characterList.length > 6) {
+            this.characterList.pop();
           }
         }
       } else {
-        this.characterList.push(person.displayCharacter.char);
+        this.characterList.push(person.displayCharacter);
       }
     }
 
