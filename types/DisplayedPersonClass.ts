@@ -1,3 +1,4 @@
+import {averageBodyAxis} from "@/lib/averageBodyAxis";
 import {Bbox} from "./BboxClass";
 import {Person} from "./PersonClass";
 
@@ -8,6 +9,7 @@ export class DisplayedPerson extends Person {
   pausedFrameCount: number;
   previousIndex: number | null;
   private bboxes: Bbox[];
+  private bodyAxisHistory: {p1: Point; p2: Point}[] = [];
   characterList: string[];
   bodyAxis: {p1: Point; p2: Point};
 
@@ -61,9 +63,18 @@ export class DisplayedPerson extends Person {
       };
       const p2 = {
         x: (this.pose.keypoints[11].x + this.pose.keypoints[12].x) / 2,
-        y: (this.pose.keypoints[12].y + this.pose.keypoints[12].y) / 2,
+        y: (this.pose.keypoints[11].y + this.pose.keypoints[12].y) / 2,
       };
-      this.bodyAxis = {p1: p1, p2: p2};
+      // 軸データを保存
+      this.bodyAxisHistory.push({p1, p2});
+
+      // 配列が大きくなりすぎないよう、先頭を捨てる
+      if (this.bodyAxisHistory.length > 5) {
+        this.bodyAxisHistory.shift();
+      }
+
+      // 平均値を計算して代入
+      this.bodyAxis = averageBodyAxis(this.bodyAxisHistory);
     }
 
     const smoothedBbox: Bbox = new Bbox(0, [0, 0, 0, 0]);
