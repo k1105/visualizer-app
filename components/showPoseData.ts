@@ -1,4 +1,4 @@
-import { P5CanvasInstance } from "@p5-wrapper/react";
+import {P5CanvasInstance} from "@p5-wrapper/react";
 
 const showPoseData = ({
   pose,
@@ -27,7 +27,7 @@ const showPoseData = ({
     y: pose.keypoints[11].y + (pose.keypoints[12].y + pose.keypoints[12].y) / 2,
   };
   if (p1.x !== 0 && p2.x !== 0 && p1.y !== 0 && p2.y !== 0) {
-    p5.line(p1.x, p1.y, p2.x, p2.y);
+    p5.line(p1.x * scale, p1.y * scale, p2.x * scale, p2.y * scale);
   }
   p5.pop();
 };
