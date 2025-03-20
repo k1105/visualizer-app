@@ -1,5 +1,5 @@
-import { Bbox } from "./BboxClass";
-import { Person } from "./PersonClass";
+import {Bbox} from "./BboxClass";
+import {Person} from "./PersonClass";
 
 export class DisplayedPerson extends Person {
   characterId: number;
@@ -8,10 +8,11 @@ export class DisplayedPerson extends Person {
   pausedFrameCount: number;
   previousIndex: number | null;
   private bboxes: Bbox[];
+  characterList: string[];
 
   constructor(
     id: number,
-    speed: { x: number; y: number },
+    speed: {x: number; y: number},
     bbox: Bbox,
     lastUpdated: number,
     displayCharacter: charData,
@@ -24,6 +25,7 @@ export class DisplayedPerson extends Person {
     this.bboxes = [bbox];
     this.smoothedBbox = null;
     this.previousIndex = null;
+    this.characterList = [];
   }
 
   update(person: Person) {
@@ -34,6 +36,21 @@ export class DisplayedPerson extends Person {
     this.bboxes.push(person.bbox);
     this.movingStatus = person.movingStatus;
     if (this.bboxes.length > 5) this.bboxes.shift();
+    if (person.displayCharacter.char !== "") {
+      const listLength = this.characterList.length;
+      if (listLength > 0) {
+        if (
+          this.characterList[listLength - 1] !== person.displayCharacter.char
+        ) {
+          this.characterList.push(person.displayCharacter.char);
+          if (listLength + 1 > 6) {
+            this.characterList.shift();
+          }
+        }
+      } else {
+        this.characterList.push(person.displayCharacter.char);
+      }
+    }
 
     const smoothedBbox: Bbox = new Bbox(0, [0, 0, 0, 0]);
     if (this.bboxes.length >= 5) {

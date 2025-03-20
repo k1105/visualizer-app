@@ -1,19 +1,19 @@
-import { P5CanvasInstance } from "@p5-wrapper/react";
-import { NextReactP5Wrapper } from "@p5-wrapper/next";
-import { RefObject, useCallback } from "react";
-import { useProperty } from "../context/PropertyContext";
+import {P5CanvasInstance} from "@p5-wrapper/react";
+import {NextReactP5Wrapper} from "@p5-wrapper/next";
+import {RefObject, useCallback} from "react";
+import {useProperty} from "../context/PropertyContext";
 
 const Guide = ({
   frameRateTextRef,
   canvasSize,
 }: {
   frameRateTextRef: RefObject<HTMLParagraphElement>;
-  canvasSize: { width: number; height: number };
+  canvasSize: {width: number; height: number};
 }) => {
-  const { translate, displayedPeopleRef, offset } = useProperty();
+  const {translate, displayedPeopleRef, offset} = useProperty();
   const sketch = useCallback(
     (p5: P5CanvasInstance) => {
-      let p5Offset: { x: number; y: number } = { x: 0, y: 0 };
+      let p5Offset: {x: number; y: number} = {x: 0, y: 0};
 
       p5.setup = () => {
         p5.createCanvas(p5.windowWidth, p5.windowHeight);
@@ -29,7 +29,7 @@ const Guide = ({
         }
 
         if (props.offset) {
-          p5Offset = props.offset as { x: number; y: number };
+          p5Offset = props.offset as {x: number; y: number};
         }
       };
 
@@ -78,6 +78,13 @@ const Guide = ({
               `bbox-size: ${Math.floor(person.bbox.width() * 100) / 100} x ${
                 Math.floor(person.bbox.height() * 100) / 100
               }`,
+              box[0],
+              box[1]
+            );
+            p5.translate(0, 30);
+            p5.text(
+              `characters: ${person.characterList}
+              `,
               box[0],
               box[1]
             );
