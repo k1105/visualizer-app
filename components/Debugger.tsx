@@ -154,6 +154,7 @@ export const Debugger = () => {
               <XYInputField
                 propertyName="Translate"
                 value={translate}
+                min={0}
                 setValue={setTranslate}
               />
               <XYInputField
