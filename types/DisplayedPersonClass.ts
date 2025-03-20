@@ -10,6 +10,7 @@ export class DisplayedPerson extends Person {
   previousIndex: number | null;
   private bboxes: Bbox[];
   private bodyAxisHistory: {p1: Point; p2: Point}[] = [];
+  bboxHistory: Bbox[];
   characterList: string[];
   bodyAxis: {p1: Point; p2: Point};
 
@@ -26,6 +27,7 @@ export class DisplayedPerson extends Person {
     this.lastUpdated = lastUpdated;
     this.pausedFrameCount = 0;
     this.bboxes = [bbox];
+    this.bboxHistory = [bbox]; //先頭に新しい要素が入ることに留意
     this.smoothedBbox = null;
     this.previousIndex = null;
     this.characterList = [];
@@ -94,6 +96,8 @@ export class DisplayedPerson extends Person {
       }
       this.smoothedBbox = smoothedBbox;
     }
+    if (this.smoothedBbox) this.bboxHistory.unshift(this.smoothedBbox);
+    if (this.bboxHistory.length > 100) this.bboxHistory.pop();
   }
 
   aspectRatio() {

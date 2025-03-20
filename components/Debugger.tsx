@@ -32,6 +32,8 @@ export const Debugger = () => {
     setServer,
     rotationActive,
     setRotationActive,
+    lastCharacterVisibility,
+    setLastCharacterVisibility,
   } = useProperty();
 
   const {
@@ -237,6 +239,11 @@ export const Debugger = () => {
                 propertyName="Rotaiton"
                 visibility={rotationActive}
                 setVisibility={setRotationActive}
+              />
+              <ToggleVisibilityButton
+                propertyName="LastCharacter"
+                visibility={lastCharacterVisibility}
+                setVisibility={setLastCharacterVisibility}
               />
             </div>
           </div>

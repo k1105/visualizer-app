@@ -31,6 +31,8 @@ interface PropertyContextProps {
   displayedPeopleRef: React.MutableRefObject<DisplayedPerson[]>;
   rotationActive: boolean;
   setRotationActive: (rotationActive: boolean) => void;
+  lastCharacterVisibility: boolean;
+  setLastCharacterVisibility: (lastCharacterVisibility: boolean) => void;
 }
 
 const PropertyContext = createContext<PropertyContextProps | undefined>(
@@ -67,6 +69,9 @@ export const PropertyProvider: React.FC<{children: React.ReactNode}> = ({
   const displayedPeopleRef = useRef<DisplayedPerson[]>([]);
 
   const [rotationActive, setRotationActive] = useState<boolean>(false);
+
+  const [lastCharacterVisibility, setLastCharacterVisibility] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const peopleWs = new WebSocket(`ws://${server}:8765`);
@@ -131,6 +136,8 @@ export const PropertyProvider: React.FC<{children: React.ReactNode}> = ({
         displayedPeopleRef,
         rotationActive,
         setRotationActive,
+        lastCharacterVisibility,
+        setLastCharacterVisibility,
       }}
     >
       {children}
