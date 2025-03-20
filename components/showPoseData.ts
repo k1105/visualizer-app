@@ -2,10 +2,12 @@ import {P5CanvasInstance} from "@p5-wrapper/react";
 
 const showPoseData = ({
   pose,
+  bodyAxis,
   p5,
   scale,
 }: {
   pose: PoseData;
+  bodyAxis: {p1: Point; p2: Point};
   p5: P5CanvasInstance;
   scale: number;
 }) => {
@@ -18,16 +20,18 @@ const showPoseData = ({
       p5.circle(point.x * scale, point.y * scale, 10);
   }
   p5.stroke(255);
-  const p1 = {
-    x: (pose.keypoints[5].x + pose.keypoints[6].x) / 2,
-    y: (pose.keypoints[5].y + pose.keypoints[6].y) / 2,
-  };
-  const p2 = {
-    x: (pose.keypoints[11].x + pose.keypoints[12].x) / 2,
-    y: (pose.keypoints[12].y + pose.keypoints[12].y) / 2,
-  };
-  if (p1.x !== 0 && p2.x !== 0 && p1.y !== 0 && p2.y !== 0) {
-    p5.line(p1.x * scale, p1.y * scale, p2.x * scale, p2.y * scale);
+  if (
+    bodyAxis.p1.x !== 0 &&
+    bodyAxis.p2.x !== 0 &&
+    bodyAxis.p1.y !== 0 &&
+    bodyAxis.p2.y !== 0
+  ) {
+    p5.line(
+      bodyAxis.p1.x * scale,
+      bodyAxis.p1.y * scale,
+      bodyAxis.p2.x * scale,
+      bodyAxis.p2.y * scale
+    );
   }
   p5.pop();
 };

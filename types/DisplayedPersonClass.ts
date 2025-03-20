@@ -9,6 +9,7 @@ export class DisplayedPerson extends Person {
   previousIndex: number | null;
   private bboxes: Bbox[];
   characterList: string[];
+  bodyAxis: {p1: Point; p2: Point};
 
   constructor(
     id: number,
@@ -26,6 +27,7 @@ export class DisplayedPerson extends Person {
     this.smoothedBbox = null;
     this.previousIndex = null;
     this.characterList = [];
+    this.bodyAxis = {p1: {x: 0, y: 0}, p2: {x: 0, y: 0}};
   }
 
   update(person: Person) {
@@ -50,6 +52,18 @@ export class DisplayedPerson extends Person {
       } else {
         this.characterList.push(person.displayCharacter.char);
       }
+    }
+
+    if (this.pose) {
+      const p1 = {
+        x: (this.pose.keypoints[5].x + this.pose.keypoints[6].x) / 2,
+        y: (this.pose.keypoints[5].y + this.pose.keypoints[6].y) / 2,
+      };
+      const p2 = {
+        x: (this.pose.keypoints[11].x + this.pose.keypoints[12].x) / 2,
+        y: (this.pose.keypoints[12].y + this.pose.keypoints[12].y) / 2,
+      };
+      this.bodyAxis = {p1: p1, p2: p2};
     }
 
     const smoothedBbox: Bbox = new Bbox(0, [0, 0, 0, 0]);

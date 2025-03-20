@@ -141,7 +141,12 @@ export function Sketch() {
           });
           if (debugging && person.pose) {
             console.log(person.pose);
-            showPoseData({pose: person.pose, p5, scale: k * p5Scale});
+            showPoseData({
+              pose: person.pose,
+              bodyAxis: person.bodyAxis,
+              p5,
+              scale: k * p5Scale,
+            });
           }
         }
       };
