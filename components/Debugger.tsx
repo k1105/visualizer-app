@@ -30,10 +30,12 @@ export const Debugger = () => {
     setAreaRange,
     server,
     setServer,
+    rotationActive,
+    setRotationActive,
   } = useProperty();
+
   const {
     cameraResolution,
-    setCameraResolution,
     mirrored,
     setMirrored,
     cameraVisibility,
@@ -230,6 +232,11 @@ export const Debugger = () => {
                 propertyName="Debugger"
                 visibility={debuggerVisibility}
                 setVisibility={setDebuggerVisibility}
+              />
+              <ToggleVisibilityButton
+                propertyName="Rotaiton"
+                visibility={rotationActive}
+                setVisibility={setRotationActive}
               />
             </div>
           </div>

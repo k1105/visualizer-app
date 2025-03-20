@@ -23,6 +23,7 @@ export function Sketch() {
     textColor,
     people,
     displayedPeopleRef,
+    rotationActive,
   } = useProperty();
 
   const {cameraVisibility, setCameraResolution, mirrored} = useCameraProperty();
@@ -42,6 +43,7 @@ export function Sketch() {
       let p5Offset: {x: number; y: number} = {x: 0, y: 0};
       let p5TextColor = "white";
       let p5Scale: number = 1;
+      let p5RotationActive: boolean = false;
 
       p5.preload = () => {
         font = p5.loadFont("/fonts/HinaMincho-Regular.ttf");
@@ -70,6 +72,8 @@ export function Sketch() {
         p5Offset = props.offset as {x: number; y: number};
 
         p5Scale = props.scale as number;
+
+        p5RotationActive = props.rotationAcrive as boolean;
 
         // displayPeopleからフレームアウトした人を削除
         displayedPeopleRef.current = displayedPeopleRef.current.filter(
@@ -133,14 +137,13 @@ export function Sketch() {
         p5.translate(p5Offset.x, p5Offset.y);
 
         for (const person of displayedPeopleRef.current) {
-          showCharacter({person, p5});
+          showCharacter({person, rotationActive: p5RotationActive, p5});
           showBoundingBox({
             person,
             p5,
             walkingAnnotation: debugging,
           });
           if (debugging && person.pose) {
-            console.log(person.pose);
             showPoseData({
               pose: person.pose,
               bodyAxis: person.bodyAxis,
@@ -167,6 +170,7 @@ export function Sketch() {
           offset={offset}
           textColor={textColor}
           scale={scale}
+          rotationAcrive={rotationActive}
         />
       </div>
       {cameraVisibility && (

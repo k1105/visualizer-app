@@ -15,7 +15,6 @@ const showPoseData = ({
   p5.noStroke();
   p5.fill(255);
   for (const point of pose.keypoints) {
-    console.log(point);
     if (point.x !== 0 && point.y !== 0)
       p5.circle(point.x * scale, point.y * scale, 10);
   }

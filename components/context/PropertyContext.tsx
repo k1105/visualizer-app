@@ -29,6 +29,8 @@ interface PropertyContextProps {
   people: Person[];
   setPeople: (peole: Person[]) => void;
   displayedPeopleRef: React.MutableRefObject<DisplayedPerson[]>;
+  rotationActive: boolean;
+  setRotationActive: (rotationActive: boolean) => void;
 }
 
 const PropertyContext = createContext<PropertyContextProps | undefined>(
@@ -64,6 +66,8 @@ export const PropertyProvider: React.FC<{children: React.ReactNode}> = ({
 
   const displayedPeopleRef = useRef<DisplayedPerson[]>([]);
 
+  const [rotationActive, setRotationActive] = useState<boolean>(false);
+
   useEffect(() => {
     const peopleWs = new WebSocket(`ws://${server}:8765`);
 
@@ -71,7 +75,7 @@ export const PropertyProvider: React.FC<{children: React.ReactNode}> = ({
       console.log("peopleWs: connected!");
     };
     peopleWs.onmessage = (event) => {
-      console.log("peopleWs: onmessage", event.data);
+      // console.log("peopleWs: onmessage", event.data);
       const data = parseResponse(event.data);
       setPeople(data);
     };
@@ -125,6 +129,8 @@ export const PropertyProvider: React.FC<{children: React.ReactNode}> = ({
         people,
         setPeople,
         displayedPeopleRef,
+        rotationActive,
+        setRotationActive,
       }}
     >
       {children}
