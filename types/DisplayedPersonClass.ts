@@ -52,26 +52,51 @@ export class DisplayedPerson extends Person {
       }
     }
 
+    let isBodyAxisUpdated = false;
+
     if (this.pose) {
-      const p1 = {
-        x: (this.pose.keypoints[5].x + this.pose.keypoints[6].x) / 2,
-        y: (this.pose.keypoints[5].y + this.pose.keypoints[6].y) / 2,
-      };
-      const p2 = {
-        x: (this.pose.keypoints[11].x + this.pose.keypoints[12].x) / 2,
-        y: (this.pose.keypoints[11].y + this.pose.keypoints[12].y) / 2,
-      };
-      // 軸データを保存
-      this.bodyAxisHistory.push({p1, p2});
+      const leftShoulder = this.pose.keypoints[5];
+      const rightShoulder = this.pose.keypoints[6];
+      const leftHip = this.pose.keypoints[11];
+      const rightHip = this.pose.keypoints[12];
 
-      // 配列が大きくなりすぎないよう、先頭を捨てる
-      if (this.bodyAxisHistory.length > 5) {
-        this.bodyAxisHistory.shift();
+      if (leftShoulder && rightShoulder && leftHip && rightHip) {
+        // 検出データが足りてない → スキップ
+        if (
+          leftShoulder.x *
+            leftShoulder.y *
+            rightShoulder.x *
+            rightShoulder.y *
+            leftHip.x *
+            leftHip.y *
+            rightHip.x *
+            rightHip.y !==
+          0
+        ) {
+          const p1 = {
+            x: (leftShoulder.x + rightShoulder.x) / 2,
+            y: (leftShoulder.y + rightShoulder.y) / 2,
+          };
+          const p2 = {
+            x: (leftHip.x + rightHip.x) / 2,
+            y: (leftHip.y + rightHip.y) / 2,
+          };
+          // 軸データを保存
+          this.bodyAxisHistory.push({p1, p2});
+          isBodyAxisUpdated = true;
+        }
       }
-
-      // 平均値を計算して代入
-      this.bodyAxis = averageBodyAxis(this.bodyAxisHistory);
     }
+    if (!isBodyAxisUpdated)
+      this.bodyAxisHistory.push({p1: {x: 0, y: 0}, p2: {x: 0, y: 0}});
+
+    // 配列が大きくなりすぎないよう、先頭を捨てる
+    if (this.bodyAxisHistory.length > 5) {
+      this.bodyAxisHistory.shift();
+    }
+
+    // 平均値を計算して代入
+    this.bodyAxis = averageBodyAxis(this.bodyAxisHistory);
 
     const smoothedBbox: Bbox = new Bbox(0, [0, 0, 0, 0]);
     if (this.bboxes.length >= 5) {
