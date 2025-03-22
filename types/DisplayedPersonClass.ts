@@ -116,7 +116,7 @@ export class DisplayedPerson extends Person {
       this.smoothedBbox = smoothedBbox;
     }
     if (this.smoothedBbox) this.bboxHistory.unshift(this.smoothedBbox);
-    if (this.bboxHistory.length > 100) this.bboxHistory.pop();
+    if (this.bboxHistory.length > 120) this.bboxHistory.pop();
   }
 
   aspectRatio() {

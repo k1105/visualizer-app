@@ -12,7 +12,7 @@ const showCharacter = ({
   rotationActive: boolean;
   lastCharacterVisibility: boolean;
 }) => {
-  const step = 10;
+  const step = 20;
   const rot =
     person.bodyAxis.p1.x *
       person.bodyAxis.p1.y *
