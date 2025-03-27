@@ -32,7 +32,7 @@ const showCharacter = ({
     person.characterList.forEach((charData, index) => {
       if (
         index == 0 ||
-        (lastCharacterVisibility && person.movingStatus === "walking")
+        lastCharacterVisibility // && person.movingStatus === "walking"
       ) {
         if (boxHistory[index * step]) {
           if (index > 0) p5.textAlign(p5.LEFT);
