@@ -43,7 +43,11 @@ const showCharacter = ({
             charData.y * h + (lastBox[1] + lastBox[3]) / 2
           );
           if (rotationActive && person.pose && index == 0) p5.rotate(rot);
-          p5.textSize(h * 0.8 ** index);
+          if (index === 0) {
+            p5.textSize(h);
+          } else {
+            p5.textSize(h * 0.4 * 0.9 ** index);
+          }
           p5.text(
             charData.char,
             (lastBox[0] - lastBox[2]) / 2,
