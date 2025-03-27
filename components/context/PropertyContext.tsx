@@ -33,6 +33,8 @@ interface PropertyContextProps {
   setRotationActive: (rotationActive: boolean) => void;
   lastCharacterVisibility: boolean;
   setLastCharacterVisibility: (lastCharacterVisibility: boolean) => void;
+  bboxVisibility: boolean;
+  setBboxVisibility: (bboxVisibility: boolean) => void;
 }
 
 const PropertyContext = createContext<PropertyContextProps | undefined>(
@@ -72,6 +74,8 @@ export const PropertyProvider: React.FC<{children: React.ReactNode}> = ({
 
   const [lastCharacterVisibility, setLastCharacterVisibility] =
     useState<boolean>(false);
+
+  const [bboxVisibility, setBboxVisibility] = useState<boolean>(true);
 
   useEffect(() => {
     const peopleWs = new WebSocket(`ws://${server}:8765`);
@@ -138,6 +142,8 @@ export const PropertyProvider: React.FC<{children: React.ReactNode}> = ({
         setRotationActive,
         lastCharacterVisibility,
         setLastCharacterVisibility,
+        bboxVisibility,
+        setBboxVisibility,
       }}
     >
       {children}
