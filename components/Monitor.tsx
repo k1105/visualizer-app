@@ -1,4 +1,4 @@
-import {useRef} from "react";
+import {useRef, useState} from "react";
 import Webcam from "react-webcam";
 import {useProperty} from "./context/PropertyContext";
 
@@ -20,6 +20,11 @@ export const Monitor = ({
   canvasSize,
 }: MonitorProps) => {
   const webcamContainerRef = useRef<HTMLDivElement>(null);
+  const [videoConstraints, setVideoConstraints] = useState({
+    width: 1280,
+    height: 720,
+    aspectRatio: 16 / 9,
+  });
 
   const {translate} = useProperty();
 
@@ -27,13 +32,15 @@ export const Monitor = ({
     const videoTrack = stream.getVideoTracks()[0];
     const settings = videoTrack.getSettings();
     const {width, height} = settings;
-    setCameraResolution({width: width || 0, height: height || 0});
-  };
-
-  const videoConstraints = {
-    width: 1280,
-    height: 720,
-    aspectRatio: 16 / 9,
+    console.log("Actual camera resolution:", {width, height});
+    if (width && height) {
+      setCameraResolution({width, height});
+      setVideoConstraints({
+        width,
+        height,
+        aspectRatio: width / height,
+      });
+    }
   };
 
   return (
