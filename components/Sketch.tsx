@@ -28,14 +28,18 @@ export function Sketch() {
     bboxVisibility,
   } = useProperty();
 
-  const {cameraVisibility, setCameraResolution, mirrored} = useCameraProperty();
+  const {cameraVisibility, setCameraResolution, mirrored, cameraResolution} =
+    useCameraProperty();
   const peopleRef = useRef<Person[]>([]);
 
   const sketch = useCallback(
     (p5: P5CanvasInstance) => {
       let k = 0; //拡大比率
 
-      const inputImageSize = {x: 1280, y: 720};
+      const inputImageSize = {
+        x: cameraResolution?.width ?? 640,
+        y: cameraResolution?.height ?? 360,
+      };
       const inputAspectRatio = inputImageSize.y / inputImageSize.x;
       // let isAudioEnabled = false;
       let font: p5Types.Font;
@@ -168,7 +172,7 @@ export function Sketch() {
         }
       };
     },
-    [displayedPeopleRef]
+    [displayedPeopleRef, cameraResolution]
   );
 
   return (
