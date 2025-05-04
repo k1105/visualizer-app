@@ -1,6 +1,5 @@
-import { VisibilityOn } from "../icon/VisibilityOn";
-import { VisibilityOff } from "../icon/VisibilityOff";
-import { SetStateAction } from "react";
+import {VisibilityOn} from "../icon/VisibilityOn";
+import {VisibilityOff} from "../icon/VisibilityOff";
 
 const ToggleVisibilityButton = ({
   propertyName,
@@ -22,11 +21,11 @@ const ToggleVisibilityButton = ({
         <p>{propertyName}:</p>
         {visibility ? (
           <VisibilityOn
-            style={{ width: "1.5rem", height: "1.5rem", color: "gray" }}
+            style={{width: "1.5rem", height: "1.5rem", color: "gray"}}
           />
         ) : (
           <VisibilityOff
-            style={{ width: "1.5rem", height: "1.5rem", color: "gray" }}
+            style={{width: "1.5rem", height: "1.5rem", color: "gray"}}
           />
         )}
       </div>

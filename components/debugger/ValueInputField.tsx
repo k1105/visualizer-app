@@ -1,4 +1,4 @@
-import classes from "@/styles/components/Debugger.module.css";
+import styles from "@/styles/components/Debugger.module.scss";
 
 const ValueInputField = ({
   propertyName,
@@ -12,7 +12,7 @@ const ValueInputField = ({
   return (
     <>
       <div>
-        <p className={classes.headline}>{propertyName}:</p>
+        <p className={styles.headline}>{propertyName}:</p>
         <input
           type="number"
           defaultValue={value}

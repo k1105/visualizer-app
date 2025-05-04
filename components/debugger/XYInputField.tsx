@@ -1,4 +1,4 @@
-import classes from "@/styles/components/Debugger.module.css";
+import styles from "@/styles/components/Debugger.module.scss";
 
 const XYInputField = ({
   propertyName,
@@ -16,8 +16,8 @@ const XYInputField = ({
   return (
     <>
       <div>
-        <p className={classes.headline}>{propertyName}:</p>
-        <div className={classes.inputFieldContainer}>
+        <p className={styles.headline}>{propertyName}:</p>
+        <div className={styles.inputFieldContainer}>
           <p>x: </p>
           <input
             type="number"

@@ -7,11 +7,11 @@ import ToggleVisibilityButton from "./debugger/ToggleVisibilityButton";
 import ValueInputField from "./debugger/ValueInputField";
 import XYInputField from "./debugger/XYInputField";
 import {acc_250322, default_preset} from "@/public/data/Presets";
-import classes from "@/styles/components/Debugger.module.css";
 import WidthHeightInputField from "./debugger/WidthHeightInputField";
 import MinMaxInputField from "./debugger/MinMaxInputField";
 import {useProperty} from "./context/PropertyContext";
 import {useCameraProperty} from "./context/CameraPropertyContext";
+import styles from "@/styles/components/Debugger.module.scss";
 
 export const Debugger = () => {
   const {
@@ -124,17 +124,21 @@ export const Debugger = () => {
           <Guide frameRateTextRef={frameRateTextRef} canvasSize={canvasSize} />
 
           <div
-            className={`debugger-container ${align === "center" && "center"}
-             ${align === "left" && "left"} ${align === "right" && "right"}`}
+            className={`${styles.debuggerContainer} ${
+              align === "center" && styles.center
+            }
+             ${align === "left" && styles.left} ${
+              align === "right" && styles.right
+            }`}
           >
-            <div className="item-list">
+            <div className={styles.itemList}>
               <div>
-                <p className={classes.headline}>
+                <p className={styles.headline}>
                   Frame Rate: <span ref={frameRateTextRef} />
                 </p>
               </div>
               <div>
-                <p className={classes.headline}>Camera Resolution: </p>
+                <p className={styles.headline}>Camera Resolution: </p>
                 {cameraResolution && (
                   <p>
                     {cameraResolution.width}x{cameraResolution.height}
@@ -143,13 +147,13 @@ export const Debugger = () => {
               </div>
             </div>
 
-            <div className="item-list">
+            <div className={styles.itemList}>
               <div>
-                <p className={classes.headline}>Background Color: </p>
+                <p className={styles.headline}>Background Color: </p>
                 <ColorPalette setColor={setBackgroundColor} />
               </div>
               <div>
-                <p className={classes.headline}>Text Color: </p>
+                <p className={styles.headline}>Text Color: </p>
                 <ColorPalette setColor={setTextColor} />
               </div>
               <ValueInputField
@@ -179,7 +183,7 @@ export const Debugger = () => {
                 setValue={setAreaRange}
               />
               <div>
-                <p className={classes.headline}>server:</p>
+                <p className={styles.headline}>server:</p>
                 <input
                   type="text"
                   defaultValue={server}
@@ -189,7 +193,7 @@ export const Debugger = () => {
                 />
               </div>
               <div>
-                <p className={classes.headline}>Preset</p>
+                <p className={styles.headline}>Preset</p>
                 <select
                   id="presetSelector"
                   value={presetName}
@@ -204,9 +208,9 @@ export const Debugger = () => {
               </div>
             </div>
 
-            <div className="item-list">
+            <div className={styles.itemList}>
               <div
-                className="toggle-list"
+                className={styles.toggleList}
                 onClick={() => {
                   setMirrored(!mirrored);
                 }}
@@ -254,98 +258,17 @@ export const Debugger = () => {
               />
             </div>
           </div>
-
-          <style jsx>{`
-            .debugger-container {
-              max-height: 100vh;
-              overflow-y: scroll;
-              background-color: rgb(0 0 0 /0.3);
-              padding: 30px;
-              color: white;
-              display: flex;
-              flex-flow: column;
-              gap: 2rem;
-              position: fixed;
-              z-index: 99;
-
-              &.left {
-                top: 0;
-                left: 10px;
-              }
-
-              &.center {
-                top: 0;
-                left: 40vw;
-              }
-
-              &.right {
-                top: 0;
-                right: 10px;
-              }
-            }
-
-            .item-list {
-              display: flex;
-              flex-flow: column;
-              gap: 0.5rem;
-            }
-            .btn {
-              width: 10rem;
-              height: 2rem;
-              border-radius: 1rem;
-              border: none;
-              color: white;
-              background: #333;
-              text-size: 1rem;
-            }
-
-            .toggle-list {
-              font-size: 1rem;
-              display: flex;
-              width: 9rem;
-              justify-content: space-between;
-            }
-
-            .canvas-wrapper {
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              z-index: 90;
-            }
-          `}</style>
         </div>
       )}
       {/* Show message when debugger is hidden */}
       {!debuggerVisibility && (
         <>
           <div
-            className={`message ${!showMessage ? "hide" : ""}`}
+            className={`${styles.message} ${!showMessage ? styles.hide : ""}`}
             ref={messageRef}
           >
             Press &quot;D&quot; to toggle Debugger.
           </div>
-          <style jsx>{`
-            .message {
-              position: absolute;
-              top: 10%;
-              left: 50%;
-              width: 300px;
-              height: 3rem;
-              background-color: #333;
-              border-radius: 5px;
-              transform: translate(-50%, -50%);
-              text-align: center;
-              line-height: 3rem;
-              color: white;
-              opacity: 0.8;
-              transition: opacity 1s ease;
-            }
-
-            .hide {
-              opacity: 0;
-            }
-          `}</style>
         </>
       )}
     </>
