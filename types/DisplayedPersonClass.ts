@@ -2,8 +2,12 @@ import {averageBodyAxis} from "@/lib/averageBodyAxis";
 import {Bbox} from "./BboxClass";
 import {Person} from "./PersonClass";
 
+const generateRandomOffset = ({amp}: {amp: number}) => {
+  const theta = Math.random() * Math.PI * 2;
+  return {x: amp * Math.cos(theta), y: amp * Math.sin(theta)};
+};
+
 export class DisplayedPerson extends Person {
-  characterId: number;
   smoothedBbox: Bbox | null;
   pausedFrameCount: number;
   previousIndex: number | null;
@@ -11,7 +15,9 @@ export class DisplayedPerson extends Person {
   private bodyAxisHistory: {p1: Point; p2: Point}[] = [];
   bboxHistory: Bbox[];
   characterList: charData[];
+  characterUpdatedAt: number; //ms
   bodyAxis: {p1: Point; p2: Point};
+  characterOffset: {x: number; y: number};
 
   constructor(
     id: number,
@@ -21,7 +27,6 @@ export class DisplayedPerson extends Person {
     pose: PoseData | null
   ) {
     super(id, speed, bbox, displayCharacter, "paused", pose);
-    this.characterId = 0;
     this.pausedFrameCount = 0;
     this.bboxes = [bbox];
     this.bboxHistory = [bbox]; //先頭に新しい要素が入ることに留意
@@ -29,8 +34,9 @@ export class DisplayedPerson extends Person {
     this.previousIndex = null;
     this.characterList = [];
     this.bodyAxis = {p1: {x: 0, y: 0}, p2: {x: 0, y: 0}};
+    this.characterUpdatedAt = Date.now(); //ms
+    this.characterOffset = generateRandomOffset({amp: 10});
   }
-
   update(person: Person) {
     this.bbox = person.bbox;
     this.pose = person.pose;
@@ -42,6 +48,7 @@ export class DisplayedPerson extends Person {
     if (person.displayCharacter.char !== "") {
       if (this.characterList.length > 0) {
         if (this.characterList[0].char !== person.displayCharacter.char) {
+          this.characterUpdatedAt = Date.now();
           this.characterList.unshift(person.displayCharacter);
           if (this.characterList.length > 6) {
             this.characterList.pop();
@@ -51,7 +58,6 @@ export class DisplayedPerson extends Person {
         this.characterList.push(person.displayCharacter);
       }
     }
-
     let isBodyAxisUpdated = false;
 
     if (this.pose) {

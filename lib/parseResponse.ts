@@ -1,5 +1,5 @@
-import { Bbox } from "@/types/BboxClass";
-import { Person } from "@/types/PersonClass";
+import {Bbox} from "@/types/BboxClass";
+import {Person} from "@/types/PersonClass";
 
 export const parseResponse = (data: string) => {
   try {

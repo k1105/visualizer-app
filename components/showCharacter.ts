@@ -1,6 +1,15 @@
 import {DisplayedPerson} from "@/types/DisplayedPersonClass";
 import {P5CanvasInstance} from "@p5-wrapper/react";
 
+function easeOutExpo(x: number) {
+  return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
+}
+
+function archEase(t: number, k = 0.3) {
+  const C = Math.pow(k + 1, k + 1) / Math.pow(k, k); // 正規化で頂点を 1 に
+  return C * Math.pow(t, k) * (1.0 - t);
+}
+
 const showCharacter = ({
   person,
   p5,
@@ -12,6 +21,7 @@ const showCharacter = ({
   rotationActive: boolean;
   lastCharacterVisibility: boolean;
 }) => {
+  const animationDuration = 0.3; //second
   const step = 20;
   const rot =
     person.bodyAxis.p1.x *
@@ -45,9 +55,20 @@ const showCharacter = ({
             charData.x * h + (lastBox[0] + lastBox[2]) / 2,
             charData.y * h + (lastBox[1] + lastBox[3]) / 2
           );
-          if (rotationActive && person.pose && index == 0) p5.rotate(rot);
+
+          const t =
+            Math.min(
+              animationDuration,
+              (Date.now() - person.characterUpdatedAt) / 1000
+            ) / animationDuration;
+
           if (index === 0) {
-            p5.textSize(h);
+            p5.textSize(h * (1 + 0.3 * (1 - easeOutExpo(t))));
+            p5.translate(
+              person.characterOffset.x * archEase(t),
+              person.characterOffset.y * archEase(t)
+            );
+            if (rotationActive) p5.rotate(rot);
           } else {
             p5.textSize(h * 0.4 * 0.9 ** index);
           }
