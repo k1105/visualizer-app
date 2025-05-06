@@ -83,7 +83,9 @@ const Guide = ({
             );
             p5.translate(0, 30);
             p5.text(
-              `characters: ${person.characterList}
+              `characters: ${person.characterList
+                .map((char) => char.char)
+                .join(", ")}
               `,
               box[0],
               box[1]
